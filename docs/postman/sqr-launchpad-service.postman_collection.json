@@ -1,0 +1,365 @@
+{
+	"info": {
+		"_postman_id": "70bc2842-e4b7-4208-aa9d-f06c35dc6cec",
+		"name": "sqr-launchpad-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3158191"
+	},
+	"item": [
+		{
+			"name": "/version",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{srvUrl}}/version",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"version"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": \"ca2-f75c73b1-0f13-46ae-88f8-2048765c5a002\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{srvUrl}}/account",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/:network/addresses",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{srvUrl}}/bsc/addresses",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"bsc",
+						"addresses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/:network/blocks/:id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{srvUrl}}/bsc/blocks/latest",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"bsc",
+						"blocks",
+						"latest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/:network/withdrawal-requests",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": \"tu1-f75c73b1-0f13-46ae-88f8-2048765c5ad4\",\r\n    \"to\": \"0x955f7b8ff78b7e4d5895101be455822ccff1519b\",\r\n    \"amount\": 0.001\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{srvUrl}}/bsc/withdrawal-requests",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"bsc",
+						"withdrawal-requests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/:network/get-signature/withdraw",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\": \"tu1-f75c73b1-0f13-46ae-88f8-2048765c5ad4\",\r\n    \"transactionId\": \"62813e9b-bde7-40bf-adde-4cf3c3d76002\",\r\n    \"to\": \"0x955f7b8ff78b7e4d5895101be455822ccff1519b\",\r\n    \"amount\": 1.5681112683919842\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{srvUrl}}/bsc/get-signature/withdraw",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"bsc",
+						"get-signature",
+						"withdraw"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/:network/fund-items",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"addresses\": [\r\n        \"0x955f7b8ff78b7e4d5895101be455822ccff1519b+\",\r\n        \"0x955f7b8ff78b7e4d5895101be455822ccff1519b+\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{srvUrl}}/bsc/fund-items",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"bsc",
+						"fund-items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/:network/transaction-items",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"transactionIds\": [\r\n        \"c9f3fd9f-e039-4443-abbb-c1e2b2892af8\",\r\n        \"0000-missing\",\r\n        \"913b2370-ddfa-448a-8c3f-123b2b1728a0\",\r\n        \"4adc580a-a44a-4f2c-95df-f6ecd5ecffcd\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{srvUrl}}/bsc/transaction-items",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"bsc",
+						"transaction-items"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/indexer/:network/stats",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{srvUrl}}/indexer/bsc/stats",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"indexer",
+						"bsc",
+						"stats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/indexer/hard-reset",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{srvUrl}}/indexer/hard-reset",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"indexer",
+						"hard-reset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/indexer/soft-reset",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{srvUrl}}/indexer/soft-reset",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"indexer",
+						"soft-reset"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/security/status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"share\": \"227dbb8586117d55284e26620bc76534dfbd2394be34cf4a09cb775d593b6f2b\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{srvUrl}}/security/status",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"security",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/security/get-shares",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"secret\": \"227dbb8586117d55284e26620bc76534dfbd2394be34cf4a09cb775d593b6f2b\",\r\n    \"shares\": 5,\r\n    \"threshold\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{srvUrl}}/security/get-shares",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"security",
+						"get-shares"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/security/set-share",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"share\": \"CAVt47PkB2yghfGA6cHz5EmaZS4O/yVlsdv+kLJSFlyw+gLbT0GCCl/O1mKuXTAKNNhPh3iOCpHpVTiGtiNvasjS+eRa4KV4dFvZ4yvKklZS2hKKZpth/2Pj6irkZ6S3cTA7zUpx/oRi3jCUKsNNxomltzQPE77iYktBT7vOmiHi6tBb1nBNy3JigWSJLI7eXEo=\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{srvUrl}}/security/send-share",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"security",
+						"send-share"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/security/reset",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"share\": \"227dbb8586117d55284e26620bc76534dfbd2394be34cf4a09cb775d593b6f2b\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{srvUrl}}/security/reset",
+					"host": [
+						"{{srvUrl}}"
+					],
+					"path": [
+						"security",
+						"reset"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
