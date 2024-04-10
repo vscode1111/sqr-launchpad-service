@@ -14,7 +14,7 @@ import { processDbTable } from "~db/tableNames";
 import { Contract, Network, Transaction } from "../raw";
 import { Account } from "./Account";
 
-export const transactionItemTypes = ['stake', 'claim', 'unstake'] as const;
+export const transactionItemTypes = ['deposit'] as const;
 export type TransactionItemTypes = (typeof transactionItemTypes)[number];
 
 @Entity({ name: processDbTable.transaction_items })
@@ -64,8 +64,16 @@ export class TransactionItem  {
   @RelationId((p: TransactionItem) => p.account)
   accountAddress!: string;
 
-  @Column({ type: "float" })
-  userStakeId!: number;
+  @Index()
+  @Column()
+  userId!: string;
+
+  @Index()
+  @Column()
+  transactionId!: string;
+
+  @Column()
+  isSig!: boolean;
 
   @Column({ type: "float" })
   amount!: number;

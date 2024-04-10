@@ -23,169 +23,182 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export declare namespace SQRLaunchpad {
-  export type StakeEntryStruct = {
-    stakedAmount: BigNumberish;
-    claimedAmount: BigNumberish;
-    stakedAt: BigNumberish;
-    claimedAt: BigNumberish;
-    withdrawn: boolean;
+export declare namespace SQRPaymentGateway {
+  export type FundItemStruct = {
+    depositedAmount: BigNumberish;
+    withdrewAmount: BigNumberish;
   };
 
-  export type StakeEntryStructOutput = [
-    stakedAmount: bigint,
-    claimedAmount: bigint,
-    stakedAt: bigint,
-    claimedAt: bigint,
-    withdrawn: boolean
-  ] & {
-    stakedAmount: bigint;
-    claimedAmount: bigint;
-    stakedAt: bigint;
-    claimedAt: bigint;
-    withdrawn: boolean;
+  export type FundItemStructOutput = [
+    depositedAmount: bigint,
+    withdrewAmount: bigint
+  ] & { depositedAmount: bigint; withdrewAmount: bigint };
+
+  export type TransactionItemStruct = { amount: BigNumberish };
+
+  export type TransactionItemStructOutput = [amount: bigint] & {
+    amount: bigint;
   };
 }
 
 export interface SQRLaunchpadInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "APR_DIVIDER"
-      | "VERSION"
-      | "YEAR_PERIOD"
-      | "apr"
-      | "calculateCurrentRewardForUser"
-      | "calculateExcessReward"
-      | "calculateMaxRewardForUser"
-      | "calculateRequiredReward"
-      | "calculateReward"
-      | "claim"
-      | "depositDeadline"
-      | "duration"
+      | "MAX_INT"
+      | "UPGRADE_INTERFACE_VERSION"
+      | "balanceLimit"
+      | "balanceOf"
+      | "calculateRemainDeposit"
+      | "calculateRemainWithraw"
+      | "changeBalanceLimit"
+      | "closeDate"
+      | "coldWallet"
+      | "deposit"
+      | "depositGoal"
+      | "depositSig"
+      | "depositVerifier"
       | "erc20Token"
-      | "fetchStakesForUser"
+      | "fetchFundItem"
+      | "fetchTransactionItem"
+      | "forceWithdraw"
       | "getBalance"
-      | "getStakeCount"
-      | "getStakeCountForUser"
-      | "getStakerCount"
-      | "isStakeReady"
-      | "limit"
-      | "maxStakeAmount"
-      | "minStakeAmount"
+      | "getDepositNonce"
+      | "getWithdrawNonce"
+      | "initialize"
       | "owner"
+      | "proxiableUUID"
       | "renounceOwnership"
-      | "stake"
-      | "totalClaimed"
-      | "totalReservedReward"
-      | "totalStaked"
-      | "totalWithdrawn"
+      | "startDate"
+      | "totalDeposited"
+      | "totalWithdrew"
       | "transferOwnership"
-      | "unstake"
-      | "withdrawExcessReward"
+      | "upgradeToAndCall"
+      | "withdraw"
+      | "withdrawGoal"
+      | "withdrawSig"
+      | "withdrawVerifier"
   ): FunctionFragment;
 
   getEvent(
     nameOrSignatureOrTopic:
-      | "Claim"
+      | "ChangeBalanceLimit"
+      | "Deposit"
+      | "ForceWithdraw"
+      | "Initialized"
       | "OwnershipTransferred"
-      | "Stake"
-      | "Unstake"
-      | "WithdrawExcessReward"
+      | "Upgraded"
+      | "Withdraw"
   ): EventFragment;
 
+  encodeFunctionData(functionFragment: "MAX_INT", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "APR_DIVIDER",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "VERSION", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "YEAR_PERIOD",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "apr", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "calculateCurrentRewardForUser",
-    values: [AddressLike, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "calculateExcessReward",
+    functionFragment: "UPGRADE_INTERFACE_VERSION",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "calculateMaxRewardForUser",
-    values: [AddressLike, BigNumberish]
+    functionFragment: "balanceLimit",
+    values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "calculateRequiredReward",
+    functionFragment: "calculateRemainDeposit",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "calculateReward",
-    values: [BigNumberish, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "claim", values: [BigNumberish]): string;
-  encodeFunctionData(
-    functionFragment: "depositDeadline",
+    functionFragment: "calculateRemainWithraw",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "duration", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "changeBalanceLimit",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(functionFragment: "closeDate", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "coldWallet",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "deposit",
+    values: [
+      string,
+      string,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "depositGoal",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "depositSig",
+    values: [string, string, AddressLike, BigNumberish, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "depositVerifier",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "erc20Token",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "fetchStakesForUser",
-    values: [AddressLike]
+    functionFragment: "fetchFundItem",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchTransactionItem",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "forceWithdraw",
+    values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "getBalance",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getStakeCount",
-    values?: undefined
+    functionFragment: "getDepositNonce",
+    values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "getStakeCountForUser",
-    values: [AddressLike]
+    functionFragment: "getWithdrawNonce",
+    values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "getStakerCount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "isStakeReady",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "limit", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "maxStakeAmount",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "minStakeAmount",
-    values?: undefined
+    functionFragment: "initialize",
+    values: [
+      AddressLike,
+      AddressLike,
+      AddressLike,
+      BigNumberish,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish,
+      AddressLike,
+      BigNumberish
+    ]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "proxiableUUID",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "stake", values: [BigNumberish]): string;
+  encodeFunctionData(functionFragment: "startDate", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "totalClaimed",
+    functionFragment: "totalDeposited",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "totalReservedReward",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalStaked",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "totalWithdrawn",
+    functionFragment: "totalWithdrew",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -193,125 +206,180 @@ export interface SQRLaunchpadInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "unstake",
-    values: [BigNumberish]
+    functionFragment: "upgradeToAndCall",
+    values: [AddressLike, BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "withdrawExcessReward",
+    functionFragment: "withdraw",
+    values: [
+      string,
+      string,
+      AddressLike,
+      BigNumberish,
+      BigNumberish,
+      BigNumberish
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawGoal",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawSig",
+    values: [string, string, AddressLike, BigNumberish, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawVerifier",
     values?: undefined
   ): string;
 
+  decodeFunctionResult(functionFragment: "MAX_INT", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "APR_DIVIDER",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "VERSION", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "YEAR_PERIOD",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "apr", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "calculateCurrentRewardForUser",
+    functionFragment: "UPGRADE_INTERFACE_VERSION",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "calculateExcessReward",
+    functionFragment: "balanceLimit",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateRemainDeposit",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "calculateMaxRewardForUser",
+    functionFragment: "calculateRemainWithraw",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "calculateRequiredReward",
+    functionFragment: "changeBalanceLimit",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "closeDate", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "coldWallet", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "calculateReward",
+    functionFragment: "depositGoal",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "depositSig", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "depositDeadline",
+    functionFragment: "depositVerifier",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "duration", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "erc20Token", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "fetchStakesForUser",
+    functionFragment: "fetchFundItem",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchTransactionItem",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "forceWithdraw",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getStakeCount",
+    functionFragment: "getDepositNonce",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getStakeCountForUser",
+    functionFragment: "getWithdrawNonce",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getStakerCount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "isStakeReady",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "limit", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "maxStakeAmount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "minStakeAmount",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "proxiableUUID",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "stake", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "startDate", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "totalClaimed",
+    functionFragment: "totalDeposited",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "totalReservedReward",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "totalStaked",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "totalWithdrawn",
+    functionFragment: "totalWithdrew",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "unstake", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "withdrawExcessReward",
+    functionFragment: "upgradeToAndCall",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "withdraw", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawGoal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawSig",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawVerifier",
     data: BytesLike
   ): Result;
 }
 
-export namespace ClaimEvent {
+export namespace ChangeBalanceLimitEvent {
+  export type InputTuple = [sender: AddressLike, balanceLimit: BigNumberish];
+  export type OutputTuple = [sender: string, balanceLimit: bigint];
+  export interface OutputObject {
+    sender: string;
+    balanceLimit: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace DepositEvent {
+  export type InputTuple = [account: AddressLike, amount: BigNumberish];
+  export type OutputTuple = [account: string, amount: bigint];
+  export interface OutputObject {
+    account: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace ForceWithdrawEvent {
   export type InputTuple = [
-    user: AddressLike,
-    userStakeId: BigNumberish,
+    token: AddressLike,
+    to: AddressLike,
     amount: BigNumberish
   ];
-  export type OutputTuple = [user: string, userStakeId: bigint, amount: bigint];
+  export type OutputTuple = [token: string, to: string, amount: bigint];
   export interface OutputObject {
-    user: string;
-    userStakeId: bigint;
+    token: string;
+    to: string;
     amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace InitializedEvent {
+  export type InputTuple = [version: BigNumberish];
+  export type OutputTuple = [version: bigint];
+  export interface OutputObject {
+    version: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -332,17 +400,11 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace StakeEvent {
-  export type InputTuple = [
-    user: AddressLike,
-    userStakeId: BigNumberish,
-    amount: BigNumberish
-  ];
-  export type OutputTuple = [user: string, userStakeId: bigint, amount: bigint];
+export namespace UpgradedEvent {
+  export type InputTuple = [implementation: AddressLike];
+  export type OutputTuple = [implementation: string];
   export interface OutputObject {
-    user: string;
-    userStakeId: bigint;
-    amount: bigint;
+    implementation: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -350,28 +412,15 @@ export namespace StakeEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace UnstakeEvent {
+export namespace WithdrawEvent {
   export type InputTuple = [
-    user: AddressLike,
-    userStakeId: BigNumberish,
+    account: AddressLike,
+    to: AddressLike,
     amount: BigNumberish
   ];
-  export type OutputTuple = [user: string, userStakeId: bigint, amount: bigint];
+  export type OutputTuple = [account: string, to: string, amount: bigint];
   export interface OutputObject {
-    user: string;
-    userStakeId: bigint;
-    amount: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace WithdrawExcessRewardEvent {
-  export type InputTuple = [to: AddressLike, amount: BigNumberish];
-  export type OutputTuple = [to: string, amount: bigint];
-  export interface OutputObject {
+    account: string;
     to: string;
     amount: bigint;
   }
@@ -424,83 +473,112 @@ export interface SQRLaunchpad extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  APR_DIVIDER: TypedContractMethod<[], [bigint], "view">;
+  MAX_INT: TypedContractMethod<[], [bigint], "view">;
 
-  VERSION: TypedContractMethod<[], [string], "view">;
+  UPGRADE_INTERFACE_VERSION: TypedContractMethod<[], [string], "view">;
 
-  YEAR_PERIOD: TypedContractMethod<[], [bigint], "view">;
+  balanceLimit: TypedContractMethod<[], [bigint], "view">;
 
-  apr: TypedContractMethod<[], [bigint], "view">;
+  balanceOf: TypedContractMethod<[userId: string], [bigint], "view">;
 
-  calculateCurrentRewardForUser: TypedContractMethod<
-    [user: AddressLike, userStakeId: BigNumberish],
-    [bigint],
-    "view"
+  calculateRemainDeposit: TypedContractMethod<[], [bigint], "view">;
+
+  calculateRemainWithraw: TypedContractMethod<[], [bigint], "view">;
+
+  changeBalanceLimit: TypedContractMethod<
+    [_balanceLimit: BigNumberish],
+    [void],
+    "nonpayable"
   >;
 
-  calculateExcessReward: TypedContractMethod<[], [bigint], "view">;
+  closeDate: TypedContractMethod<[], [bigint], "view">;
 
-  calculateMaxRewardForUser: TypedContractMethod<
-    [user: AddressLike, userStakeId: BigNumberish],
-    [bigint],
-    "view"
+  coldWallet: TypedContractMethod<[], [string], "view">;
+
+  deposit: TypedContractMethod<
+    [
+      userId: string,
+      transactionId: string,
+      account: AddressLike,
+      amount: BigNumberish,
+      nonce: BigNumberish,
+      timestampLimit: BigNumberish
+    ],
+    [void],
+    "nonpayable"
   >;
 
-  calculateRequiredReward: TypedContractMethod<[], [bigint], "view">;
+  depositGoal: TypedContractMethod<[], [bigint], "view">;
 
-  calculateReward: TypedContractMethod<
-    [_amount: BigNumberish, _apr: BigNumberish, _duration: BigNumberish],
-    [bigint],
-    "view"
+  depositSig: TypedContractMethod<
+    [
+      userId: string,
+      transactionId: string,
+      account: AddressLike,
+      amount: BigNumberish,
+      timestampLimit: BigNumberish,
+      signature: BytesLike
+    ],
+    [void],
+    "nonpayable"
   >;
 
-  claim: TypedContractMethod<[userStakeId: BigNumberish], [void], "nonpayable">;
-
-  depositDeadline: TypedContractMethod<[], [bigint], "view">;
-
-  duration: TypedContractMethod<[], [bigint], "view">;
+  depositVerifier: TypedContractMethod<[], [string], "view">;
 
   erc20Token: TypedContractMethod<[], [string], "view">;
 
-  fetchStakesForUser: TypedContractMethod<
-    [user: AddressLike],
-    [SQRLaunchpad.StakeEntryStructOutput[]],
+  fetchFundItem: TypedContractMethod<
+    [userId: string],
+    [SQRPaymentGateway.FundItemStructOutput],
     "view"
+  >;
+
+  fetchTransactionItem: TypedContractMethod<
+    [transactionId: string],
+    [SQRPaymentGateway.TransactionItemStructOutput],
+    "view"
+  >;
+
+  forceWithdraw: TypedContractMethod<
+    [token: AddressLike, to: AddressLike, amount: BigNumberish],
+    [void],
+    "nonpayable"
   >;
 
   getBalance: TypedContractMethod<[], [bigint], "view">;
 
-  getStakeCount: TypedContractMethod<[], [bigint], "view">;
+  getDepositNonce: TypedContractMethod<[userId: string], [bigint], "view">;
 
-  getStakeCountForUser: TypedContractMethod<
-    [user: AddressLike],
-    [bigint],
-    "view"
+  getWithdrawNonce: TypedContractMethod<[userId: string], [bigint], "view">;
+
+  initialize: TypedContractMethod<
+    [
+      _newOwner: AddressLike,
+      _erc20Token: AddressLike,
+      _depositVerifier: AddressLike,
+      _depositGoal: BigNumberish,
+      _withdrawVerifier: AddressLike,
+      _withdrawGoal: BigNumberish,
+      _startDate: BigNumberish,
+      _closeDate: BigNumberish,
+      _coldWallet: AddressLike,
+      _balanceLimit: BigNumberish
+    ],
+    [void],
+    "nonpayable"
   >;
-
-  getStakerCount: TypedContractMethod<[], [bigint], "view">;
-
-  isStakeReady: TypedContractMethod<[], [boolean], "view">;
-
-  limit: TypedContractMethod<[], [bigint], "view">;
-
-  maxStakeAmount: TypedContractMethod<[], [bigint], "view">;
-
-  minStakeAmount: TypedContractMethod<[], [bigint], "view">;
 
   owner: TypedContractMethod<[], [string], "view">;
 
+  proxiableUUID: TypedContractMethod<[], [string], "view">;
+
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
-  stake: TypedContractMethod<[amount: BigNumberish], [void], "nonpayable">;
+  startDate: TypedContractMethod<[], [bigint], "view">;
 
-  totalClaimed: TypedContractMethod<[], [bigint], "view">;
+  totalDeposited: TypedContractMethod<[], [bigint], "view">;
 
-  totalReservedReward: TypedContractMethod<[], [bigint], "view">;
-
-  totalStaked: TypedContractMethod<[], [bigint], "view">;
-
-  totalWithdrawn: TypedContractMethod<[], [bigint], "view">;
+  totalWithdrew: TypedContractMethod<[], [bigint], "view">;
 
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
@@ -508,137 +586,248 @@ export interface SQRLaunchpad extends BaseContract {
     "nonpayable"
   >;
 
-  unstake: TypedContractMethod<
-    [userStakeId: BigNumberish],
+  upgradeToAndCall: TypedContractMethod<
+    [newImplementation: AddressLike, data: BytesLike],
+    [void],
+    "payable"
+  >;
+
+  withdraw: TypedContractMethod<
+    [
+      userId: string,
+      transactionId: string,
+      to: AddressLike,
+      amount: BigNumberish,
+      nonce: BigNumberish,
+      timestampLimit: BigNumberish
+    ],
     [void],
     "nonpayable"
   >;
 
-  withdrawExcessReward: TypedContractMethod<[], [void], "nonpayable">;
+  withdrawGoal: TypedContractMethod<[], [bigint], "view">;
+
+  withdrawSig: TypedContractMethod<
+    [
+      userId: string,
+      transactionId: string,
+      to: AddressLike,
+      amount: BigNumberish,
+      timestampLimit: BigNumberish,
+      signature: BytesLike
+    ],
+    [void],
+    "nonpayable"
+  >;
+
+  withdrawVerifier: TypedContractMethod<[], [string], "view">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
   getFunction(
-    nameOrSignature: "APR_DIVIDER"
+    nameOrSignature: "MAX_INT"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "VERSION"
+    nameOrSignature: "UPGRADE_INTERFACE_VERSION"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "YEAR_PERIOD"
+    nameOrSignature: "balanceLimit"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "apr"
+    nameOrSignature: "balanceOf"
+  ): TypedContractMethod<[userId: string], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "calculateRemainDeposit"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "calculateCurrentRewardForUser"
+    nameOrSignature: "calculateRemainWithraw"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "changeBalanceLimit"
+  ): TypedContractMethod<[_balanceLimit: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "closeDate"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "coldWallet"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "deposit"
   ): TypedContractMethod<
-    [user: AddressLike, userStakeId: BigNumberish],
-    [bigint],
-    "view"
+    [
+      userId: string,
+      transactionId: string,
+      account: AddressLike,
+      amount: BigNumberish,
+      nonce: BigNumberish,
+      timestampLimit: BigNumberish
+    ],
+    [void],
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "calculateExcessReward"
+    nameOrSignature: "depositGoal"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "calculateMaxRewardForUser"
+    nameOrSignature: "depositSig"
   ): TypedContractMethod<
-    [user: AddressLike, userStakeId: BigNumberish],
-    [bigint],
-    "view"
+    [
+      userId: string,
+      transactionId: string,
+      account: AddressLike,
+      amount: BigNumberish,
+      timestampLimit: BigNumberish,
+      signature: BytesLike
+    ],
+    [void],
+    "nonpayable"
   >;
   getFunction(
-    nameOrSignature: "calculateRequiredReward"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "calculateReward"
-  ): TypedContractMethod<
-    [_amount: BigNumberish, _apr: BigNumberish, _duration: BigNumberish],
-    [bigint],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "claim"
-  ): TypedContractMethod<[userStakeId: BigNumberish], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "depositDeadline"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "duration"
-  ): TypedContractMethod<[], [bigint], "view">;
+    nameOrSignature: "depositVerifier"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "erc20Token"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "fetchStakesForUser"
+    nameOrSignature: "fetchFundItem"
   ): TypedContractMethod<
-    [user: AddressLike],
-    [SQRLaunchpad.StakeEntryStructOutput[]],
+    [userId: string],
+    [SQRPaymentGateway.FundItemStructOutput],
     "view"
+  >;
+  getFunction(
+    nameOrSignature: "fetchTransactionItem"
+  ): TypedContractMethod<
+    [transactionId: string],
+    [SQRPaymentGateway.TransactionItemStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "forceWithdraw"
+  ): TypedContractMethod<
+    [token: AddressLike, to: AddressLike, amount: BigNumberish],
+    [void],
+    "nonpayable"
   >;
   getFunction(
     nameOrSignature: "getBalance"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "getStakeCount"
-  ): TypedContractMethod<[], [bigint], "view">;
+    nameOrSignature: "getDepositNonce"
+  ): TypedContractMethod<[userId: string], [bigint], "view">;
   getFunction(
-    nameOrSignature: "getStakeCountForUser"
-  ): TypedContractMethod<[user: AddressLike], [bigint], "view">;
+    nameOrSignature: "getWithdrawNonce"
+  ): TypedContractMethod<[userId: string], [bigint], "view">;
   getFunction(
-    nameOrSignature: "getStakerCount"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "isStakeReady"
-  ): TypedContractMethod<[], [boolean], "view">;
-  getFunction(
-    nameOrSignature: "limit"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "maxStakeAmount"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "minStakeAmount"
-  ): TypedContractMethod<[], [bigint], "view">;
+    nameOrSignature: "initialize"
+  ): TypedContractMethod<
+    [
+      _newOwner: AddressLike,
+      _erc20Token: AddressLike,
+      _depositVerifier: AddressLike,
+      _depositGoal: BigNumberish,
+      _withdrawVerifier: AddressLike,
+      _withdrawGoal: BigNumberish,
+      _startDate: BigNumberish,
+      _closeDate: BigNumberish,
+      _coldWallet: AddressLike,
+      _balanceLimit: BigNumberish
+    ],
+    [void],
+    "nonpayable"
+  >;
   getFunction(
     nameOrSignature: "owner"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "proxiableUUID"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "stake"
-  ): TypedContractMethod<[amount: BigNumberish], [void], "nonpayable">;
-  getFunction(
-    nameOrSignature: "totalClaimed"
+    nameOrSignature: "startDate"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "totalReservedReward"
+    nameOrSignature: "totalDeposited"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "totalStaked"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "totalWithdrawn"
+    nameOrSignature: "totalWithdrew"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "transferOwnership"
   ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "unstake"
-  ): TypedContractMethod<[userStakeId: BigNumberish], [void], "nonpayable">;
+    nameOrSignature: "upgradeToAndCall"
+  ): TypedContractMethod<
+    [newImplementation: AddressLike, data: BytesLike],
+    [void],
+    "payable"
+  >;
   getFunction(
-    nameOrSignature: "withdrawExcessReward"
-  ): TypedContractMethod<[], [void], "nonpayable">;
+    nameOrSignature: "withdraw"
+  ): TypedContractMethod<
+    [
+      userId: string,
+      transactionId: string,
+      to: AddressLike,
+      amount: BigNumberish,
+      nonce: BigNumberish,
+      timestampLimit: BigNumberish
+    ],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "withdrawGoal"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "withdrawSig"
+  ): TypedContractMethod<
+    [
+      userId: string,
+      transactionId: string,
+      to: AddressLike,
+      amount: BigNumberish,
+      timestampLimit: BigNumberish,
+      signature: BytesLike
+    ],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "withdrawVerifier"
+  ): TypedContractMethod<[], [string], "view">;
 
   getEvent(
-    key: "Claim"
+    key: "ChangeBalanceLimit"
   ): TypedContractEvent<
-    ClaimEvent.InputTuple,
-    ClaimEvent.OutputTuple,
-    ClaimEvent.OutputObject
+    ChangeBalanceLimitEvent.InputTuple,
+    ChangeBalanceLimitEvent.OutputTuple,
+    ChangeBalanceLimitEvent.OutputObject
+  >;
+  getEvent(
+    key: "Deposit"
+  ): TypedContractEvent<
+    DepositEvent.InputTuple,
+    DepositEvent.OutputTuple,
+    DepositEvent.OutputObject
+  >;
+  getEvent(
+    key: "ForceWithdraw"
+  ): TypedContractEvent<
+    ForceWithdrawEvent.InputTuple,
+    ForceWithdrawEvent.OutputTuple,
+    ForceWithdrawEvent.OutputObject
+  >;
+  getEvent(
+    key: "Initialized"
+  ): TypedContractEvent<
+    InitializedEvent.InputTuple,
+    InitializedEvent.OutputTuple,
+    InitializedEvent.OutputObject
   >;
   getEvent(
     key: "OwnershipTransferred"
@@ -648,37 +837,63 @@ export interface SQRLaunchpad extends BaseContract {
     OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
-    key: "Stake"
+    key: "Upgraded"
   ): TypedContractEvent<
-    StakeEvent.InputTuple,
-    StakeEvent.OutputTuple,
-    StakeEvent.OutputObject
+    UpgradedEvent.InputTuple,
+    UpgradedEvent.OutputTuple,
+    UpgradedEvent.OutputObject
   >;
   getEvent(
-    key: "Unstake"
+    key: "Withdraw"
   ): TypedContractEvent<
-    UnstakeEvent.InputTuple,
-    UnstakeEvent.OutputTuple,
-    UnstakeEvent.OutputObject
-  >;
-  getEvent(
-    key: "WithdrawExcessReward"
-  ): TypedContractEvent<
-    WithdrawExcessRewardEvent.InputTuple,
-    WithdrawExcessRewardEvent.OutputTuple,
-    WithdrawExcessRewardEvent.OutputObject
+    WithdrawEvent.InputTuple,
+    WithdrawEvent.OutputTuple,
+    WithdrawEvent.OutputObject
   >;
 
   filters: {
-    "Claim(address,uint32,uint256)": TypedContractEvent<
-      ClaimEvent.InputTuple,
-      ClaimEvent.OutputTuple,
-      ClaimEvent.OutputObject
+    "ChangeBalanceLimit(address,uint256)": TypedContractEvent<
+      ChangeBalanceLimitEvent.InputTuple,
+      ChangeBalanceLimitEvent.OutputTuple,
+      ChangeBalanceLimitEvent.OutputObject
     >;
-    Claim: TypedContractEvent<
-      ClaimEvent.InputTuple,
-      ClaimEvent.OutputTuple,
-      ClaimEvent.OutputObject
+    ChangeBalanceLimit: TypedContractEvent<
+      ChangeBalanceLimitEvent.InputTuple,
+      ChangeBalanceLimitEvent.OutputTuple,
+      ChangeBalanceLimitEvent.OutputObject
+    >;
+
+    "Deposit(address,uint256)": TypedContractEvent<
+      DepositEvent.InputTuple,
+      DepositEvent.OutputTuple,
+      DepositEvent.OutputObject
+    >;
+    Deposit: TypedContractEvent<
+      DepositEvent.InputTuple,
+      DepositEvent.OutputTuple,
+      DepositEvent.OutputObject
+    >;
+
+    "ForceWithdraw(address,address,uint256)": TypedContractEvent<
+      ForceWithdrawEvent.InputTuple,
+      ForceWithdrawEvent.OutputTuple,
+      ForceWithdrawEvent.OutputObject
+    >;
+    ForceWithdraw: TypedContractEvent<
+      ForceWithdrawEvent.InputTuple,
+      ForceWithdrawEvent.OutputTuple,
+      ForceWithdrawEvent.OutputObject
+    >;
+
+    "Initialized(uint64)": TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
+    >;
+    Initialized: TypedContractEvent<
+      InitializedEvent.InputTuple,
+      InitializedEvent.OutputTuple,
+      InitializedEvent.OutputObject
     >;
 
     "OwnershipTransferred(address,address)": TypedContractEvent<
@@ -692,37 +907,26 @@ export interface SQRLaunchpad extends BaseContract {
       OwnershipTransferredEvent.OutputObject
     >;
 
-    "Stake(address,uint32,uint256)": TypedContractEvent<
-      StakeEvent.InputTuple,
-      StakeEvent.OutputTuple,
-      StakeEvent.OutputObject
+    "Upgraded(address)": TypedContractEvent<
+      UpgradedEvent.InputTuple,
+      UpgradedEvent.OutputTuple,
+      UpgradedEvent.OutputObject
     >;
-    Stake: TypedContractEvent<
-      StakeEvent.InputTuple,
-      StakeEvent.OutputTuple,
-      StakeEvent.OutputObject
-    >;
-
-    "Unstake(address,uint32,uint256)": TypedContractEvent<
-      UnstakeEvent.InputTuple,
-      UnstakeEvent.OutputTuple,
-      UnstakeEvent.OutputObject
-    >;
-    Unstake: TypedContractEvent<
-      UnstakeEvent.InputTuple,
-      UnstakeEvent.OutputTuple,
-      UnstakeEvent.OutputObject
+    Upgraded: TypedContractEvent<
+      UpgradedEvent.InputTuple,
+      UpgradedEvent.OutputTuple,
+      UpgradedEvent.OutputObject
     >;
 
-    "WithdrawExcessReward(address,uint256)": TypedContractEvent<
-      WithdrawExcessRewardEvent.InputTuple,
-      WithdrawExcessRewardEvent.OutputTuple,
-      WithdrawExcessRewardEvent.OutputObject
+    "Withdraw(address,address,uint256)": TypedContractEvent<
+      WithdrawEvent.InputTuple,
+      WithdrawEvent.OutputTuple,
+      WithdrawEvent.OutputObject
     >;
-    WithdrawExcessReward: TypedContractEvent<
-      WithdrawExcessRewardEvent.InputTuple,
-      WithdrawExcessRewardEvent.OutputTuple,
-      WithdrawExcessRewardEvent.OutputObject
+    Withdraw: TypedContractEvent<
+      WithdrawEvent.InputTuple,
+      WithdrawEvent.OutputTuple,
+      WithdrawEvent.OutputObject
     >;
   };
 }

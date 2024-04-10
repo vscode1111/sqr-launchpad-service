@@ -7,50 +7,228 @@ import type { SQRLaunchpad, SQRLaunchpadInterface } from "../SQRLaunchpad";
 
 const _abi = [
   {
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    inputs: [],
+    name: "AchievedDepositGoal",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "AchievedWithdrawGoal",
+    type: "error",
+  },
+  {
     inputs: [
       {
         internalType: "address",
-        name: "_newOwner",
+        name: "target",
         type: "address",
       },
+    ],
+    name: "AddressEmptyCode",
+    type: "error",
+  },
+  {
+    inputs: [
       {
         internalType: "address",
-        name: "_erc20Token",
+        name: "account",
         type: "address",
       },
-      {
-        internalType: "uint32",
-        name: "_duration",
-        type: "uint32",
-      },
-      {
-        internalType: "uint32",
-        name: "_apr",
-        type: "uint32",
-      },
-      {
-        internalType: "uint32",
-        name: "_depositDeadline",
-        type: "uint32",
-      },
+    ],
+    name: "AddressInsufficientBalance",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "AmountNotZero",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CloseDateMustBeGreaterThanCurrentTime",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ColdWalletNotZeroAddress",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ContractMustHaveSufficientFunds",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ECDSAInvalidSignature",
+    type: "error",
+  },
+  {
+    inputs: [
       {
         internalType: "uint256",
-        name: "_limit",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "_minStakeAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "_maxStakeAmount",
+        name: "length",
         type: "uint256",
       },
     ],
-    stateMutability: "nonpayable",
-    type: "constructor",
+    name: "ECDSAInvalidSignatureLength",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "s",
+        type: "bytes32",
+      },
+    ],
+    name: "ECDSAInvalidSignatureS",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "implementation",
+        type: "address",
+      },
+    ],
+    name: "ERC1967InvalidImplementation",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ERC1967NonPayable",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ERC20TokenNotZeroAddress",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "FailedInnerCall",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidInitialization",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidNonce",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "InvalidSignature",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NewOwnerNotZeroAddress",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotInitializing",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "OwnableInvalidOwner",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "OwnableUnauthorizedAccount",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ReentrancyGuardReentrantCall",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "SafeERC20FailedOperation",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "StartDateMustBeGreaterThanCurrentTime",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TimeoutBlocker",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TooEarly",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "TooLate",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "UUPSUnauthorizedCallContext",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "slot",
+        type: "bytes32",
+      },
+    ],
+    name: "UUPSUnsupportedProxiableUUID",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "UsedTransactionId",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "UserMustAllowToUseFunds",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "UserMustHaveFunds",
+    type: "error",
   },
   {
     anonymous: false,
@@ -58,14 +236,27 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "user",
+        name: "sender",
         type: "address",
       },
       {
         indexed: false,
-        internalType: "uint32",
-        name: "userStakeId",
-        type: "uint32",
+        internalType: "uint256",
+        name: "balanceLimit",
+        type: "uint256",
+      },
+    ],
+    name: "ChangeBalanceLimit",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
       },
       {
         indexed: false,
@@ -74,7 +265,45 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "Claim",
+    name: "Deposit",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "ForceWithdraw",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint64",
+        name: "version",
+        type: "uint64",
+      },
+    ],
+    name: "Initialized",
     type: "event",
   },
   {
@@ -102,23 +331,11 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "user",
+        name: "implementation",
         type: "address",
       },
-      {
-        indexed: false,
-        internalType: "uint32",
-        name: "userStakeId",
-        type: "uint32",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
     ],
-    name: "Stake",
+    name: "Upgraded",
     type: "event",
   },
   {
@@ -127,28 +344,9 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "user",
+        name: "account",
         type: "address",
       },
-      {
-        indexed: false,
-        internalType: "uint32",
-        name: "userStakeId",
-        type: "uint32",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "Unstake",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
       {
         indexed: true,
         internalType: "address",
@@ -162,17 +360,17 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "WithdrawExcessReward",
+    name: "Withdraw",
     type: "event",
   },
   {
     inputs: [],
-    name: "APR_DIVIDER",
+    name: "MAX_INT",
     outputs: [
       {
-        internalType: "uint32",
+        internalType: "uint256",
         name: "",
-        type: "uint32",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -180,7 +378,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "VERSION",
+    name: "UPGRADE_INTERFACE_VERSION",
     outputs: [
       {
         internalType: "string",
@@ -193,25 +391,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "YEAR_PERIOD",
+    name: "balanceLimit",
     outputs: [
       {
-        internalType: "uint32",
+        internalType: "uint256",
         name: "",
-        type: "uint32",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "apr",
-    outputs: [
-      {
-        internalType: "uint32",
-        name: "",
-        type: "uint32",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -220,17 +405,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "user",
-        type: "address",
-      },
-      {
-        internalType: "uint32",
-        name: "userStakeId",
-        type: "uint32",
+        internalType: "string",
+        name: "userId",
+        type: "string",
       },
     ],
-    name: "calculateCurrentRewardForUser",
+    name: "balanceOf",
     outputs: [
       {
         internalType: "uint256",
@@ -243,31 +423,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "calculateExcessReward",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "user",
-        type: "address",
-      },
-      {
-        internalType: "uint32",
-        name: "userStakeId",
-        type: "uint32",
-      },
-    ],
-    name: "calculateMaxRewardForUser",
+    name: "calculateRemainDeposit",
     outputs: [
       {
         internalType: "uint256",
@@ -280,7 +436,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "calculateRequiredReward",
+    name: "calculateRemainWithraw",
     outputs: [
       {
         internalType: "uint256",
@@ -295,47 +451,18 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "_amount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "_apr",
-        type: "uint256",
-      },
-      {
-        internalType: "uint32",
-        name: "_duration",
-        type: "uint32",
-      },
-    ],
-    name: "calculateReward",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
+        name: "_balanceLimit",
         type: "uint256",
       },
     ],
-    stateMutability: "pure",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint32",
-        name: "userStakeId",
-        type: "uint32",
-      },
-    ],
-    name: "claim",
+    name: "changeBalanceLimit",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [],
-    name: "depositDeadline",
+    name: "closeDate",
     outputs: [
       {
         internalType: "uint32",
@@ -348,12 +475,114 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "duration",
+    name: "coldWallet",
     outputs: [
       {
-        internalType: "uint32",
+        internalType: "address",
         name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "userId",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "transactionId",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint32",
+        name: "nonce",
         type: "uint32",
+      },
+      {
+        internalType: "uint32",
+        name: "timestampLimit",
+        type: "uint32",
+      },
+    ],
+    name: "deposit",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "depositGoal",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "userId",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "transactionId",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint32",
+        name: "timestampLimit",
+        type: "uint32",
+      },
+      {
+        internalType: "bytes",
+        name: "signature",
+        type: "bytes",
+      },
+    ],
+    name: "depositSig",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "depositVerifier",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -375,47 +604,81 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "user",
-        type: "address",
+        internalType: "string",
+        name: "userId",
+        type: "string",
       },
     ],
-    name: "fetchStakesForUser",
+    name: "fetchFundItem",
     outputs: [
       {
         components: [
           {
             internalType: "uint256",
-            name: "stakedAmount",
+            name: "depositedAmount",
             type: "uint256",
           },
           {
             internalType: "uint256",
-            name: "claimedAmount",
+            name: "withdrewAmount",
             type: "uint256",
           },
-          {
-            internalType: "uint32",
-            name: "stakedAt",
-            type: "uint32",
-          },
-          {
-            internalType: "uint32",
-            name: "claimedAt",
-            type: "uint32",
-          },
-          {
-            internalType: "bool",
-            name: "withdrawn",
-            type: "bool",
-          },
         ],
-        internalType: "struct SQRLaunchpad.StakeEntry[]",
+        internalType: "struct SQRPaymentGateway.FundItem",
         name: "",
-        type: "tuple[]",
+        type: "tuple",
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "transactionId",
+        type: "string",
+      },
+    ],
+    name: "fetchTransactionItem",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "amount",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct SQRPaymentGateway.TransactionItem",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "forceWithdraw",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -432,8 +695,33 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "getStakeCount",
+    inputs: [
+      {
+        internalType: "string",
+        name: "userId",
+        type: "string",
+      },
+    ],
+    name: "getDepositNonce",
+    outputs: [
+      {
+        internalType: "uint32",
+        name: "",
+        type: "uint32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "userId",
+        type: "string",
+      },
+    ],
+    name: "getWithdrawNonce",
     outputs: [
       {
         internalType: "uint32",
@@ -448,84 +736,58 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "user",
+        name: "_newOwner",
         type: "address",
       },
-    ],
-    name: "getStakeCountForUser",
-    outputs: [
+      {
+        internalType: "address",
+        name: "_erc20Token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_depositVerifier",
+        type: "address",
+      },
       {
         internalType: "uint256",
-        name: "",
+        name: "_depositGoal",
         type: "uint256",
       },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "getStakerCount",
-    outputs: [
+      {
+        internalType: "address",
+        name: "_withdrawVerifier",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_withdrawGoal",
+        type: "uint256",
+      },
       {
         internalType: "uint32",
-        name: "",
+        name: "_startDate",
         type: "uint32",
       },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "isStakeReady",
-    outputs: [
       {
-        internalType: "bool",
-        name: "",
-        type: "bool",
+        internalType: "uint32",
+        name: "_closeDate",
+        type: "uint32",
       },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "limit",
-    outputs: [
+      {
+        internalType: "address",
+        name: "_coldWallet",
+        type: "address",
+      },
       {
         internalType: "uint256",
-        name: "",
+        name: "_balanceLimit",
         type: "uint256",
       },
     ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "maxStakeAmount",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "minStakeAmount",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -543,27 +805,40 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "proxiableUUID",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "startDate",
+    outputs: [
       {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
+        internalType: "uint32",
+        name: "",
+        type: "uint32",
       },
     ],
-    name: "stake",
-    outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
-    name: "totalClaimed",
+    name: "totalDeposited",
     outputs: [
       {
         internalType: "uint256",
@@ -576,33 +851,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "totalReservedReward",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "totalStaked",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "totalWithdrawn",
+    name: "totalWithdrew",
     outputs: [
       {
         internalType: "uint256",
@@ -629,21 +878,121 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "newImplementation",
+        type: "address",
+      },
+      {
+        internalType: "bytes",
+        name: "data",
+        type: "bytes",
+      },
+    ],
+    name: "upgradeToAndCall",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "userId",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "transactionId",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
         internalType: "uint32",
-        name: "userStakeId",
+        name: "nonce",
+        type: "uint32",
+      },
+      {
+        internalType: "uint32",
+        name: "timestampLimit",
         type: "uint32",
       },
     ],
-    name: "unstake",
+    name: "withdraw",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [],
-    name: "withdrawExcessReward",
+    name: "withdrawGoal",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "userId",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "transactionId",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint32",
+        name: "timestampLimit",
+        type: "uint32",
+      },
+      {
+        internalType: "bytes",
+        name: "signature",
+        type: "bytes",
+      },
+    ],
+    name: "withdrawSig",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "withdrawVerifier",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
 ] as const;

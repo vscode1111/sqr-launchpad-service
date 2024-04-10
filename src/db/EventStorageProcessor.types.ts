@@ -1,7 +1,8 @@
 export interface DepositInput {
+  userId: string;
+  transactionId: string;
+  account: string;
   amount: bigint;
-}
-
-export interface ContractSettings {
-  duration: number;
+  timestampLimit: number;
+  signature: string;
 }

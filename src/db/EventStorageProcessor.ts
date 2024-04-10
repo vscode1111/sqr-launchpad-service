@@ -1,4 +1,5 @@
 import Bluebird from 'bluebird';
+import { Interface } from 'ethers';
 import { services } from 'index';
 import { ServiceBroker } from 'moleculer';
 import { DataSource, Repository } from 'typeorm';
@@ -8,6 +9,7 @@ import {
   MISSING_SERVICE_PRIVATE_KEY,
   Promisable,
   decodeData,
+  decodeInput,
   getAddressFromSlot,
   toNumberDecimals,
 } from '~common';
@@ -16,12 +18,11 @@ import {
   INDEXER_CONCURRENCY_COUNT,
   ServiceBrokerBase,
   findContracts,
-  logInfo,
-  processNetworkObject,
 } from '~common-service';
+import sqrLaunchpadABI from '~contracts/abi/SQRLaunchpad.json';
 import { TypedContractEvent, TypedDeferredTopicFilter } from '~typechain-types/common';
 import { Web3BusEvent, Web3BusEventType } from '~types';
-import { ContractSettings } from './EventStorageProcessor.types';
+import { DepositInput } from './EventStorageProcessor.types';
 import { getChainConfig } from './constants';
 import {
   Account,
@@ -52,11 +53,10 @@ async function getTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>): 
 const idLock = new IdLock();
 
 export class EventStorageProcessor extends ServiceBrokerBase implements StorageProcessor {
-  private stakeTopic0!: string;
-  private claimTopic0!: string;
-  private unstakeTopic0!: string;
+  private abiInterfaces!: Interface[];
+  private currentAbiInterface!: Interface;
+  private depositTopic0!: string;
   private topics0: string[];
-  private contractsSettings: Record<string, ContractSettings> | null;
 
   constructor(
     broker: ServiceBroker,
@@ -67,10 +67,12 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     super(broker);
 
     this.topics0 = [];
-    this.contractsSettings = null;
   }
 
   async start() {
+    this.abiInterfaces = [new Interface(sqrLaunchpadABI)];
+    this.currentAbiInterface = this.abiInterfaces[0];
+
     const context = services.getNetworkContext(this.network);
     if (!context) {
       throw MISSING_SERVICE_PRIVATE_KEY;
@@ -80,52 +82,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     const firstKey = Object.keys(sqrLaunchpads)[0];
     const firstSqrStaking = sqrLaunchpads[firstKey];
 
-    this.stakeTopic0 = await this.setTopic0(firstSqrStaking.filters.Stake());
-    this.claimTopic0 = await this.setTopic0(firstSqrStaking.filters.Claim());
-    this.unstakeTopic0 = await this.setTopic0(firstSqrStaking.filters.Unstake());
-  }
-
-  private async fillContractsSettings(): Promise<boolean> {
-    return await idLock.tryInvoke(`contracts-settings`, async () => {
-      if (this.contractsSettings) {
-        return true;
-      }
-
-      const context = services.getNetworkContext(this.network);
-      if (!context) {
-        throw MISSING_SERVICE_PRIVATE_KEY;
-      }
-
-      const { sqrLaunchpads } = context;
-
-      await processNetworkObject(
-        sqrLaunchpads,
-        async (key) => {
-          const sqrLaunchpad = sqrLaunchpads[key];
-
-          const contractAddress = await sqrLaunchpad.getAddress();
-
-          const rawDuration = await sqrLaunchpad.duration();
-          const contractDuration = Number(rawDuration);
-
-          if (Number.isNaN(contractDuration) || contractDuration === 0) {
-            throw `Contract ${contractAddress} has no correct duration: ${rawDuration}`;
-          }
-
-          if (!this.contractsSettings) {
-            this.contractsSettings = {};
-          }
-
-          this.contractsSettings[contractAddress] = {
-            duration: contractDuration,
-          };
-        },
-        true,
-      );
-
-      logInfo(this.broker, `Contracts settings: ${JSON.stringify(this.contractsSettings)}`);
-      return true;
-    });
+    this.depositTopic0 = await this.setTopic0(firstSqrStaking.filters.Deposit());
   }
 
   async setTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>) {
@@ -150,6 +107,30 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     });
   }
 
+  private tryDecode<T>(transactionInput: string) {
+    let error;
+
+    try {
+      return decodeInput<T>(transactionInput, this.currentAbiInterface);
+    } catch (e) {
+      error = e;
+    }
+
+    for (const abiInterface of this.abiInterfaces) {
+      if (abiInterface === this.currentAbiInterface) {
+        continue;
+      }
+      try {
+        const result = decodeInput<T>(transactionInput, abiInterface);
+        this.currentAbiInterface = abiInterface;
+        return result;
+      } catch (e) {
+        error = e;
+      }
+    }
+    throw error;
+  }
+
   private async saveTransactionItem({
     event,
     dbNetwork,
@@ -165,6 +146,11 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     transactionItemRepostory: Repository<TransactionItem>;
     accountRepostory: Repository<Account>;
   }): Promise<Web3BusEvent | null> {
+    const decodedDepositInput = this.tryDecode<DepositInput>(event.transactionHash.input);
+    const userId = decodedDepositInput.userId;
+    const transactionId = decodedDepositInput.transactionId;
+    const isSig = decodedDepositInput.signature !== undefined;
+
     const dbTransactionItem = new TransactionItem();
     const networkId = dbNetwork.id;
     dbTransactionItem.networkId = networkId;
@@ -177,26 +163,17 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     const account = getAddressFromSlot(event.topic1);
     const dbAccount = await this.getOrSaveAccount(account, accountRepostory);
     dbTransactionItem.account = dbAccount;
-    const eventData = decodeData(event.data!, ['uint32', 'uint256']);
+    const eventData = decodeData(event.data!, ['uint256']);
     const { sqrDecimals } = getChainConfig(dbNetwork.name);
-    const userStakeId = Number(eventData[0]);
-    dbTransactionItem.userStakeId = userStakeId;
-    const amount = toNumberDecimals(BigInt(eventData[1]), sqrDecimals);
+    dbTransactionItem.userId = userId;
+    dbTransactionItem.transactionId = transactionId;
+    dbTransactionItem.isSig = isSig;
+    const amount = toNumberDecimals(BigInt(eventData[0]), sqrDecimals);
     dbTransactionItem.amount = amount;
     const timestamp = event.transactionHash.block.timestamp;
     dbTransactionItem.timestamp = timestamp;
 
-    if (!this.contractsSettings) {
-      return null;
-    }
-
     const contractAddress = dbTransactionItem.contract.address;
-    const contractSettings = this.contractsSettings[contractAddress];
-    if (!contractSettings) {
-      return null;
-    }
-
-    const contractDuration = contractSettings.duration;
 
     await transactionItemRepostory.save(dbTransactionItem);
     return {
@@ -204,9 +181,10 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
       data: {
         network: dbNetwork.name as DeployNetworkKey,
         contractAddress,
-        contractDuration,
+        userId,
+        transactionId,
+        isSig,
         account,
-        userStakeId,
         amount,
         timestamp,
         tx: event.transactionHash.hash,
@@ -233,38 +211,17 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
       return null;
     }
 
-    if (!(await this.fillContractsSettings())) {
-      return null;
+    if (event.topic0 === this.depositTopic0) {
+      return await this.saveTransactionItem({
+        event,
+        dbNetwork,
+        type: 'deposit',
+        eventType: 'FCFS_DEPOSIT',
+        transactionItemRepostory,
+        accountRepostory,
+      });
     }
 
-    if (event.topic0 === this.stakeTopic0) {
-      return await this.saveTransactionItem({
-        event,
-        dbNetwork,
-        type: 'stake',
-        eventType: 'STAKE',
-        transactionItemRepostory,
-        accountRepostory,
-      });
-    } else if (event.topic0 === this.claimTopic0) {
-      return await this.saveTransactionItem({
-        event,
-        dbNetwork,
-        type: 'claim',
-        eventType: 'CLAIM',
-        transactionItemRepostory,
-        accountRepostory,
-      });
-    } else if (event.topic0 === this.unstakeTopic0) {
-      return await this.saveTransactionItem({
-        event,
-        dbNetwork,
-        type: 'unstake',
-        eventType: 'UNSTAKE',
-        transactionItemRepostory,
-        accountRepostory,
-      });
-    }
     return null;
   }
 

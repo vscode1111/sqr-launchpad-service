@@ -16,7 +16,7 @@ export interface TokenWeb3BusEventData {
   tx: string;
 }
 
-export type Web3BusEventType = 'STAKE' | 'CLAIM' | 'UNSTAKE';
+export type Web3BusEventType = 'FCFS_DEPOSIT';
 
 export interface Web3BusEvent {
   event: Web3BusEventType;
@@ -26,10 +26,11 @@ export interface Web3BusEvent {
 export type Web3BusEventDataBase = {
   network: DeployNetworkKey;
   contractAddress: string;
-  contractDuration: number;
+  userId: string;
+  transactionId: string;
   account: string;
-  userStakeId: number;
   amount: number;
+  isSig: boolean;
   timestamp?: Date;
 };
 
