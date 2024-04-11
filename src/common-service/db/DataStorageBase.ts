@@ -87,7 +87,23 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
   }
 
   async getNetwork(network: DeployNetworkKey): Promise<Network> {
-    return findNetwork(this.networkRepository, network);
+    return findNetwork(network, this.networkRepository);
+  }
+
+  async getOrSaveNetwork(
+    network: DeployNetworkKey,
+    networkRepository: Repository<Network>,
+  ): Promise<Network> {
+    return this.idLock.tryInvoke(`network_${network}`, async () => {
+      let dbNetwork = await networkRepository.findOneBy({ name: network });
+      if (!dbNetwork) {
+        dbNetwork = new Network();
+        dbNetwork.name = network;
+        await networkRepository.save(dbNetwork);
+      }
+
+      return dbNetwork;
+    });
   }
 
   async getContract(address: string) {
@@ -103,7 +119,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     blockNumber: number,
     blockRepository: Repository<Block>,
   ) {
-    return this.idLock.tryInvoke<Block>(`block_${blockNumber}`, async () => {
+    return this.idLock.tryInvoke(`block_${blockNumber}`, async () => {
       let dbBlock = await blockRepository.findOneBy({ number: blockNumber });
       if (!dbBlock) {
         const block = await this.getBlockFn(blockNumber);
@@ -147,7 +163,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     dbBlock: Block,
     transactionRepository: Repository<Transaction>,
   ) {
-    return this.idLock.tryInvoke<Transaction>(`transaction_${transactionHash}`, async () => {
+    return this.idLock.tryInvoke(`transaction_${transactionHash}`, async () => {
       let dbTransaction = await transactionRepository.findOneBy({ hash: transactionHash });
       if (dbTransaction?.blockNumber === GENESIS_BLOCK_NUMBER) {
         await this.updateTransaction(

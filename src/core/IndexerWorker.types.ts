@@ -20,6 +20,7 @@ export interface IndexerWorkerStats extends WorkerBaseStats {
   syncBlockNumber: number;
   rawBlockNumber: number;
   processBlockNumber: number;
+  kafkaMessages: number;
   blockNumberFilter: {
     status: AnalyzeResponseStatus;
     history: number[];

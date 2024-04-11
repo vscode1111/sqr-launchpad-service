@@ -42,6 +42,9 @@ export class Contract {
   @Column({ nullable: true })
   name!: string;
 
+  @Column({ nullable: true })
+  disable!: boolean;
+
   @Column()
   syncBlockNumber!: number;
 
@@ -64,5 +67,5 @@ export class Contract {
   contractTransactionItems!: TransactionItem[];
 }
 
-export const CContract = C(Contract);
+export const  CContract = C(Contract);
 export const PContract = NF2<Contract>((name) => `${CContract}.${name}`);

@@ -18,5 +18,6 @@ export interface MonitoringWorkerStats {
   rawBlockNumberPerSec: number;
   processBlockNumberPerSec: number;
   _transactionPerSec: number;
+  kafkaMessagesPerSec: number;
   startDate: Date;
 }

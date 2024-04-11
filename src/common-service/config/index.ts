@@ -5,11 +5,11 @@ import { toBoolean } from '~common';
 
 export * from './utils';
 
-const LOG_CONSOLE = false;
+const PRINT_CONFIG = false;
 
 export const config: BaseConfig = require(path.join(appRoot.path, 'config'));
 
-if (LOG_CONSOLE) {
+if (PRINT_CONFIG) {
   console.log('config:', config);
 }
 

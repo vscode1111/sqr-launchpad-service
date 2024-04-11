@@ -225,7 +225,10 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     return null;
   }
 
-  async process(onProcessEvent?: (event: Event) => Promisable<void>) {
+  async process(
+    onProcessEvent?: (event: Event) => Promisable<void>,
+    onContractEvent?: (event: Web3BusEvent) => Promisable<void>,
+  ) {
     await this.dataSource.transaction(async (entityManager) => {
       const networkRepository = entityManager.getRepository(Network);
       const contractRepository = entityManager.getRepository(Contract);
@@ -275,11 +278,16 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
               accountRepostory,
               networkRepository,
             );
-            if (contractEvent) {
-              await this.eventNotifier.send(contractEvent);
-            }
+
             if (onProcessEvent) {
               await onProcessEvent(event);
+            }
+
+            if (contractEvent) {
+              await this.eventNotifier.send(contractEvent);
+              if (onContractEvent) {
+                await onContractEvent(contractEvent);
+              }
             }
           }
 

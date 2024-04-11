@@ -150,9 +150,14 @@ export class IndexerWorker extends WorkerBase<IndexerWorkerStats> {
   }
 
   private async fillProcessData() {
-    await this.storageProcessor.process((event) => {
-      this.statsData.processBlockNumber = event.transactionHash.blockNumber;
-    });
+    await this.storageProcessor.process(
+      (event) => {
+        this.statsData.processBlockNumber = event.transactionHash.blockNumber;
+      },
+      () => {
+        this.statsData.kafkaMessages++;
+      },
+    );
   }
 
   async getStats(): Promise<IndexerWorkerStats> {
@@ -170,6 +175,7 @@ export class IndexerWorker extends WorkerBase<IndexerWorkerStats> {
       syncBlockNumber: 0,
       rawBlockNumber: 0,
       processBlockNumber: 0,
+      kafkaMessages: 0,
       lastSuccessDate: new Date(),
       blockNumberFilter: {
         status: 'preparing',

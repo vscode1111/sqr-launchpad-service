@@ -10,6 +10,7 @@ export interface DbWorkerContractStat {
   name?: string;
   syncBlockNumber: number;
   processBlockNumber: number;
+  disable?: boolean;
 }
 
 export interface DbWorkerStats {

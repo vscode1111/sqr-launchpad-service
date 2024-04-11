@@ -1,7 +1,13 @@
 import { ServiceBroker } from 'moleculer';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { Started, Stopped } from '~common';
-import { DataStorageBase, DeployNetworkKey, deployNetworks, logInfo } from '~common-service';
+import {
+  DataStorageBase,
+  DeployNetworkKey,
+  deployNetworks,
+  findContract,
+  logInfo,
+} from '~common-service';
 import { DbWorkerStats } from '~core';
 import { getContractData } from '~utils';
 import { dataSourceConfig } from './dataSource';
@@ -29,31 +35,39 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
     await this.dataSource.transaction(async (entityManager) => {
       const networkRepository = entityManager.getRepository(Network);
       const contractRepository = entityManager.getRepository(Contract);
-      const count = await contractRepository.count();
-      if (count === 0) {
-        for (const network of deployNetworks) {
-          const dbNetwork = new Network();
-          dbNetwork.name = network;
-          await networkRepository.save(dbNetwork);
+      for (const network of deployNetworks) {
+        const dbNetwork = await this.getOrSaveNetwork(network, networkRepository);
 
-          const { sqrLaunchpadData } = getContractData(network);
+        const { sqrLaunchpadData } = getContractData(network);
 
-          for (const sqrLaunchpadItem of sqrLaunchpadData) {
-            if (sqrLaunchpadItem.disable) {
-              continue;
+        for (const sqrStakingItem of sqrLaunchpadData) {
+          const foundContract = await findContract(
+            contractRepository,
+            sqrStakingItem.address,
+            networkRepository,
+            network,
+          );
+
+          if (foundContract) {
+            if (typeof sqrStakingItem.disable !== 'undefined') {
+              foundContract.disable = sqrStakingItem.disable;
+              await contractRepository.save(foundContract);
             }
-
+          } else {
             const dbContract = new Contract();
-            dbContract.address = sqrLaunchpadItem.address;
-            dbContract.syncBlockNumber = sqrLaunchpadItem.blockNumber ?? 0;
-            dbContract.processBlockNumber = sqrLaunchpadItem.blockNumber ?? 0;
+            dbContract.address = sqrStakingItem.address;
+            dbContract.syncBlockNumber = sqrStakingItem.blockNumber ?? 0;
+            dbContract.processBlockNumber = sqrStakingItem.blockNumber ?? 0;
             dbContract.network = dbNetwork;
+            if (typeof sqrStakingItem.disable !== 'undefined') {
+              dbContract.disable = sqrStakingItem.disable;
+            }
             await contractRepository.save(dbContract);
           }
         }
-
-        logInfo(this.broker, `Database was seeded`);
       }
+
+      logInfo(this.broker, `Database was seeded`);
     });
   }
 
@@ -76,7 +90,11 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
         networkId: dbNetwork.id,
       };
     }
-    const contracts = await this.contractRepository.find();
+    const contracts = await this.contractRepository.find({
+      order: {
+        id: 'ASC',
+      },
+    });
     const _transaction = await this.transactionRepostory.countBy(transactionFindOption);
     const _events = await this.eventRepository.countBy(eventFindOption);
     const transactionItems = await this.transactionItemRepostory.countBy(transactionItemFindOption);

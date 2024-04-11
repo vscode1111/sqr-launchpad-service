@@ -1,6 +1,17 @@
+import Bluebird from 'bluebird';
 import { Context } from 'moleculer';
-import { checkIfNumber, toDate } from '~common';
-import { HandlerFunc, checkIfNetwork, commonHandlers, web3Constants } from '~common-service';
+import { checkIfNumber, toDate, toNumberDecimals } from '~common';
+import {
+  HANDLER_CONCURRENCY_COUNT,
+  HandlerFunc,
+  MissingServicePrivateKey,
+  ZERO,
+  checkIfNetwork,
+  commonHandlers,
+  config,
+  getChainConfig,
+  web3Constants,
+} from '~common-service';
 import { StatsData } from '~core';
 import { services } from '~index';
 import {
@@ -8,6 +19,8 @@ import {
   GetBlockResponse,
   GetNetworkAddressesResponse,
   GetNetworkParams,
+  GetTransactionItemsParams,
+  GetTransactionItemsResponse,
   HandlerParams,
 } from '~types';
 import { getContractData } from '~utils';
@@ -65,6 +78,53 @@ const handlerFunc: HandlerFunc = () => ({
           services.getStats(),
         ]);
         return { ...engineStats, ...servicesStats };
+      },
+    },
+
+    'network.transaction-items.transaction-ids': {
+      params: {
+        network: { type: 'string' },
+        transactionIds: { type: 'array', items: { type: 'string' } },
+      } as HandlerParams<GetTransactionItemsParams>,
+      async handler(
+        ctx: Context<GetTransactionItemsParams>,
+      ): Promise<GetTransactionItemsResponse[]> {
+        const network = checkIfNetwork(ctx?.params?.network);
+        const transactionIds = ctx?.params.transactionIds;
+
+        const context = services.getNetworkContext(network);
+        if (!context) {
+          throw new MissingServicePrivateKey();
+        }
+
+        const { sqrLaunchpads } = context;
+        const { sqrDecimals } = getChainConfig(network);
+
+        const contractAddress = config.web3.contracts[network][0].address;
+        const sqrLaunchpad = sqrLaunchpads[contractAddress];
+
+        return Bluebird.map(
+          transactionIds,
+          async (transactionId) => {
+            const [amount] = await sqrLaunchpad.fetchTransactionItem(transactionId);
+
+            if (amount !== ZERO) {
+              const result: GetTransactionItemsResponse = {
+                transactionId,
+                amount: toNumberDecimals(amount, sqrDecimals),
+                status: 'exists',
+              };
+              return result;
+            }
+
+            const result: GetTransactionItemsResponse = {
+              transactionId,
+              status: 'missing',
+            };
+            return result;
+          },
+          { concurrency: HANDLER_CONCURRENCY_COUNT },
+        );
       },
     },
 

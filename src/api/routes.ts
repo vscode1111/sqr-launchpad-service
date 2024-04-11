@@ -11,7 +11,6 @@ export const routes: ApiRouteSchema[] = modifyRoutes([
       'GET addresses': `${apiPrefix}network.addresses`,
       'GET blocks/:id': `${apiPrefix}network.blocks.id`,
       'POST transaction-items': `${apiPrefix}network.transaction-items.transaction-ids`,
-      'POST get-signature/withdraw': `${apiPrefix}network.get-signature.withdraw`,
     },
   },
   {

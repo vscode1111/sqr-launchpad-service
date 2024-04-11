@@ -20,6 +20,7 @@ export class MonitoringWorker extends WorkerBase<MonitoringWorkerStats | null> {
   private rawBlockNumberCounter: SpeedCounter;
   private processBlockNumberCounter: SpeedCounter;
   private _transactionCounter: SpeedCounter;
+  private kafkaMessageCounter: SpeedCounter;
 
   constructor({
     broker,
@@ -42,6 +43,7 @@ export class MonitoringWorker extends WorkerBase<MonitoringWorkerStats | null> {
     this.rawBlockNumberCounter = new SpeedCounter();
     this.processBlockNumberCounter = new SpeedCounter();
     this._transactionCounter = new SpeedCounter();
+    this.kafkaMessageCounter = new SpeedCounter();
     this.reset();
   }
 
@@ -74,6 +76,9 @@ export class MonitoringWorker extends WorkerBase<MonitoringWorkerStats | null> {
 
     this._transactionCounter.store(this.dbStats._transaction);
     this.statsData._transactionPerSec = Math.round(this._transactionCounter.stats().speed);
+
+    this.kafkaMessageCounter.store(this.indexerStats.kafkaMessages);
+    this.statsData.kafkaMessagesPerSec = Math.round(this.kafkaMessageCounter.stats().speed);
   }
 
   async getStats(): Promise<MonitoringWorkerStats | null> {
@@ -104,6 +109,7 @@ export class MonitoringWorker extends WorkerBase<MonitoringWorkerStats | null> {
       rawBlockNumberPerSec: 0,
       processBlockNumberPerSec: 0,
       _transactionPerSec: 0,
+      kafkaMessagesPerSec: 0,
       startDate: this.startDate,
     };
   }

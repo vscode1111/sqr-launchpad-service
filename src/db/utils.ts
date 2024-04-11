@@ -29,5 +29,6 @@ export function mapContract(contract: Contract): DbWorkerContractStat {
     name: contract.name || undefined,
     syncBlockNumber: contract.syncBlockNumber,
     processBlockNumber: contract.processBlockNumber,
+    disable: contract.disable || undefined,
   };
 }
