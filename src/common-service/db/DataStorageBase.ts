@@ -8,14 +8,16 @@ import { Block, Contract, Event, Network, Transaction } from '../../db/entities'
 import { GENESIS_BLOCK_NUMBER, INDEXER_CONCURRENCY_COUNT } from '../constants';
 import { ServiceBrokerBase } from '../core';
 import { DeployNetworkKey, GetBlockFn, GetTransactionByHashFn, Web3Event } from '../types';
-import { logInfo } from '../utils';
-import { findContracts, findNetwork } from './utils';
+import { deployNetworks, logInfo } from '../utils';
+import { GetContractDataFn } from './types';
+import { findContract, findContracts, findNetwork } from './utils';
 
 const CREATED_DATABASE = false;
 
 export class DataStorageBase extends ServiceBrokerBase implements Started, Stopped {
   protected dataSourceOptions: PostgresConnectionOptions;
   protected dataSource!: DataSource;
+  protected getContractDataFn: GetContractDataFn;
   protected networkRepository!: Repository<Network>;
   protected contractRepository!: Repository<Contract>;
   protected eventRepository!: Repository<Event>;
@@ -25,10 +27,15 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
   protected getTransactionByHashFn!: GetTransactionByHashFn;
   protected idLock: IdLock;
 
-  constructor(broker: ServiceBroker, dataSourceOptions: PostgresConnectionOptions) {
+  constructor(
+    broker: ServiceBroker,
+    dataSourceOptions: PostgresConnectionOptions,
+    getContractDataFn: GetContractDataFn,
+  ) {
     super(broker);
     this.dataSourceOptions = dataSourceOptions;
     this.dataSource = new DataSource(this.dataSourceOptions);
+    this.getContractDataFn = getContractDataFn;
     this.isDestroyed = false;
     this.idLock = new IdLock();
   }
@@ -53,6 +60,46 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     this.contractRepository = this.dataSource.getRepository(Contract);
     this.transactionRepostory = this.dataSource.getRepository(Transaction);
     this.eventRepository = this.dataSource.getRepository(Event);
+
+    this.updateContracts(this.getContractDataFn);
+  }
+
+  async updateContracts(getContractData: GetContractDataFn) {
+    await this.dataSource.transaction(async (entityManager) => {
+      const networkRepository = entityManager.getRepository(Network);
+      const contractRepository = entityManager.getRepository(Contract);
+      for (const network of deployNetworks) {
+        const dbNetwork = await this.getOrSaveNetwork(network, networkRepository);
+
+        const contractData = getContractData(network);
+
+        for (const contractItem of contractData) {
+          const foundContract = await findContract(
+            contractRepository,
+            contractItem.address,
+            networkRepository,
+            network,
+          );
+
+          if (foundContract) {
+            if (typeof contractItem.disable !== 'undefined') {
+              foundContract.disable = contractItem.disable;
+              await contractRepository.save(foundContract);
+            }
+          } else {
+            const dbContract = new Contract();
+            dbContract.address = contractItem.address;
+            dbContract.syncBlockNumber = contractItem.blockNumber ?? 0;
+            dbContract.processBlockNumber = contractItem.blockNumber ?? 0;
+            dbContract.network = dbNetwork;
+            if (typeof contractItem.disable !== 'undefined') {
+              dbContract.disable = contractItem.disable;
+            }
+            await contractRepository.save(dbContract);
+          }
+        }
+      }
+    });
   }
 
   setRpcFns({

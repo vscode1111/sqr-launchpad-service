@@ -1,4 +1,4 @@
-import { Web3ConfigContract } from 'msq-moleculer-core';
+import { Web3ConfigContract } from '~common-service';
 
 export interface ContractDataCollection {
   sqrLaunchpadData: Web3ConfigContract[];

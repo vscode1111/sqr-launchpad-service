@@ -1,6 +1,6 @@
 import NodeVault from 'node-vault';
 import { config } from '../config';
-import { VaultAuthResponse, VaultRecordSubdata } from './types';
+import { VaultAuthResponse, VaultRecordSubdata } from './vault.types';
 
 export async function readVault(): Promise<VaultRecordSubdata | null> {
   if (!config.web3.vault) {

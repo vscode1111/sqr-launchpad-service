@@ -1,4 +1,4 @@
-import { BaseConfig } from 'msq-moleculer-core';
+import { BaseConfig } from './types';
 import { readVault } from './vault';
 
 export async function modifyConfig(config: BaseConfig) {

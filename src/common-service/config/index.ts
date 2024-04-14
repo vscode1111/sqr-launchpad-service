@@ -1,8 +1,9 @@
 import appRoot from 'app-root-path';
-import { BaseConfig } from 'msq-moleculer-core';
 import path from 'path';
 import { toBoolean } from '~common';
+import { BaseConfig } from './types';
 
+export * from './types';
 export * from './utils';
 
 const PRINT_CONFIG = false;

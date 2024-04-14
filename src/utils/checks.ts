@@ -1,5 +1,5 @@
-import { BaseConfig } from 'msq-moleculer-core';
 import { checkVariable } from '~common';
+import { BaseConfig } from '~common-service';
 
 export function checkBaseConfig(config: BaseConfig) {
   checkVariable(config.web3.contracts, 'config.web3.contracts', true);

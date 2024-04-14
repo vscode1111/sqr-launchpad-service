@@ -2,7 +2,7 @@ import { Promisable } from '~common';
 import { DeployNetworkKey } from '../types';
 import { objectFactory } from './objects';
 
-export const deployNetworks: Array<DeployNetworkKey> = ['bsc'];
+export const deployNetworks: DeployNetworkKey[] = ['bsc'];
 
 export function networkObjectFactory<T>(fn: (network: DeployNetworkKey) => T) {
   return objectFactory(deployNetworks, fn);

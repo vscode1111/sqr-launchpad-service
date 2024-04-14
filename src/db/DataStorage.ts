@@ -1,17 +1,11 @@
 import { ServiceBroker } from 'moleculer';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { Started, Stopped } from '~common';
-import {
-  DataStorageBase,
-  DeployNetworkKey,
-  deployNetworks,
-  findContract,
-  logInfo,
-} from '~common-service';
+import { DataStorageBase, DeployNetworkKey, logInfo } from '~common-service';
 import { DbWorkerStats } from '~core';
 import { getContractData } from '~utils';
 import { dataSourceConfig } from './dataSource';
-import { Account, Contract, Event, Network, Transaction, TransactionItem } from './entities';
+import { Account, Event, Transaction, TransactionItem } from './entities';
 import { dbHardReset, dbSoftReset, mapContract } from './utils';
 
 export class DataStorage extends DataStorageBase implements Started, Stopped {
@@ -19,7 +13,7 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
   private transactionItemRepostory!: Repository<TransactionItem>;
 
   constructor(broker: ServiceBroker) {
-    super(broker, dataSourceConfig);
+    super(broker, dataSourceConfig, (network) => getContractData(network).sqrLaunchpadData);
   }
 
   getDataSource() {
@@ -31,44 +25,6 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
     this.accountRepostory = this.dataSource.getRepository(Account);
     this.transactionItemRepostory = this.dataSource.getRepository(TransactionItem);
     logInfo(this.broker, `Database was initialized`);
-
-    await this.dataSource.transaction(async (entityManager) => {
-      const networkRepository = entityManager.getRepository(Network);
-      const contractRepository = entityManager.getRepository(Contract);
-      for (const network of deployNetworks) {
-        const dbNetwork = await this.getOrSaveNetwork(network, networkRepository);
-
-        const { sqrLaunchpadData } = getContractData(network);
-
-        for (const sqrStakingItem of sqrLaunchpadData) {
-          const foundContract = await findContract(
-            contractRepository,
-            sqrStakingItem.address,
-            networkRepository,
-            network,
-          );
-
-          if (foundContract) {
-            if (typeof sqrStakingItem.disable !== 'undefined') {
-              foundContract.disable = sqrStakingItem.disable;
-              await contractRepository.save(foundContract);
-            }
-          } else {
-            const dbContract = new Contract();
-            dbContract.address = sqrStakingItem.address;
-            dbContract.syncBlockNumber = sqrStakingItem.blockNumber ?? 0;
-            dbContract.processBlockNumber = sqrStakingItem.blockNumber ?? 0;
-            dbContract.network = dbNetwork;
-            if (typeof sqrStakingItem.disable !== 'undefined') {
-              dbContract.disable = sqrStakingItem.disable;
-            }
-            await contractRepository.save(dbContract);
-          }
-        }
-      }
-
-      logInfo(this.broker, `Database was seeded`);
-    });
   }
 
   async getTableRowCounts(network?: DeployNetworkKey): Promise<DbWorkerStats> {

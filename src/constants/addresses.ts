@@ -1,5 +1,4 @@
-import { Web3ConfigContract } from 'msq-moleculer-core';
-import { DeployNetworkKey, config } from '~common-service';
+import { DeployNetworkKey, Web3ConfigContract, config } from '~common-service';
 
 export enum ContractList {
   SQRLaunchpad = 'SQRLaunchpad',
