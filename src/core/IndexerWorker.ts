@@ -85,7 +85,8 @@ export class IndexerWorker extends WorkerBase<IndexerWorkerStats> {
 
     if (analyzeResponse.status === 'error') {
       this.statsData.blockNumberFilter.errorCount++;
-      this.statsData.blockNumberFilter.lastError = new Date();
+      this.statsData.blockNumberFilter.lastError = String(analyzeResponse.value);
+      this.statsData.blockNumberFilter.lastErrorDate = new Date();
     }
 
     if (analyzeResponse.status !== 'success') {

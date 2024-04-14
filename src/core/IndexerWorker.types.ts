@@ -26,6 +26,7 @@ export interface IndexerWorkerStats extends WorkerBaseStats {
     history: number[];
     diffs: number[];
     errorCount: number;
-    lastError?: Date;
+    lastError?: string;
+    lastErrorDate?: Date;
   };
 }
