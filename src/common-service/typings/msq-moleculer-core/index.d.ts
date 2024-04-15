@@ -1,6 +1,6 @@
 import moleculer from 'moleculer';
+import { BaseConfig } from '~common-service';
 import { Broker } from './broker';
-import { BaseConfig } from './config';
 import { Logger } from './logger';
 
 declare module 'msq-moleculer-core' {

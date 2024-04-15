@@ -5,7 +5,7 @@ import path from 'path';
 import { parseError, parseStack } from '~common';
 import { cors } from '../api';
 import { config } from '../config';
-import { ServicesBase } from '../types';
+import { ServicesBase } from '../core';
 import { logConsoleError, logConsoleInfo } from '../utils';
 
 export async function bootstrapService<T extends ServicesBase>(

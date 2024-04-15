@@ -1,6 +1,6 @@
 import { CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
 import { C, NF2 } from "~common";
-import { processDbTable } from "~db/tableNames";
+import { processDbTable } from "../../tableNames";
 import { TransactionItem } from "./TransactionItem";
 
 @Entity({ name: processDbTable.accounts })

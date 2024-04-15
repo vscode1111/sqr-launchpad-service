@@ -1,5 +1,4 @@
-import { Provider, WorkerBaseConfig } from '~common-service';
-import { DbWorkerContractStat } from './DbWorker.types';
+import { DbWorkerContractStat, Provider, WorkerBaseConfig } from '~common-service';
 import { SyncWorkerControllers } from './SyncEngine.types';
 
 export interface MonitoringWorkerConfig extends WorkerBaseConfig {

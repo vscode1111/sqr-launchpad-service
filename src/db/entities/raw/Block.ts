@@ -10,7 +10,7 @@ import {
   UpdateDateColumn
 } from "typeorm";
 import { C, NF2, P } from "~common";
-import { rawDbTable } from "~db/tableNames";
+import { rawDbTable } from "../../tableNames";
 import { Network } from "./Network";
 import { Transaction } from "./Transaction";
 

@@ -1,12 +1,11 @@
 import { ServiceBroker } from 'moleculer';
-import { Initilized, Started, Stopped, parseError, parseStack } from '~common';
+import { Initilized, Started, Stopped } from '~common';
 import {
   DeployNetworkKey,
   JsonRpcProvider,
   KafkaNotifier,
   NetworkObject,
   Provider,
-  ServiceBrokerBase,
   ServicesBase,
   config,
   networkObjectFactory,
@@ -17,18 +16,10 @@ import { DataStorage } from '~db';
 import { Web3BusEvent } from '~types';
 import { SqrLaunchpadContext } from './types';
 
-export class Services
-  extends ServiceBrokerBase
-  implements Initilized, Started, Stopped, ServicesBase
-{
+export class Services extends ServicesBase implements Initilized, Started, Stopped {
   private started: boolean;
   private providers: NetworkObject<Provider>;
   private sqrLaunchpadContexts: NetworkObject<SqrLaunchpadContext> | null;
-
-  private lastError: string | undefined;
-  private lastErrorStack: string | undefined;
-  private lastErrorDate: Date | undefined;
-  private errorCount: number;
 
   public multiSyncEngine: MultiSyncEngine;
   public dataStorage!: DataStorage;
@@ -38,8 +29,6 @@ export class Services
     super(broker);
 
     this.started = false;
-    this.lastErrorDate = undefined;
-    this.errorCount = 0;
 
     this.providers = networkObjectFactory(
       (network) =>
@@ -88,24 +77,5 @@ export class Services
 
   getNetworkContext(network: DeployNetworkKey) {
     return this.sqrLaunchpadContexts?.[network];
-  }
-
-  saveProcessError(error: any) {
-    this.lastError = parseError(error);
-    this.lastErrorStack = parseStack(error);
-    this.lastErrorDate = new Date();
-    this.errorCount++;
-    return this.errorCount;
-  }
-
-  async getStats() {
-    return {
-      process: {
-        lastError: this.lastError,
-        lastErrorStack: this.lastErrorStack,
-        lastErrorDate: this.lastErrorDate,
-        errorCount: this.errorCount,
-      },
-    };
   }
 }

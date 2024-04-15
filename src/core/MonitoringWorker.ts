@@ -11,7 +11,6 @@ export class MonitoringWorker extends WorkerBase<MonitoringWorkerStats | null> {
   private workers: SyncWorkerControllers;
 
   private startDate: Date;
-
   private indexerStats: IndexerWorkerStats | null;
   private dbStats: DbWorkerStats | null;
 

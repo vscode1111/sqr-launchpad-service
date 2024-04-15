@@ -1,6 +1,5 @@
 import { N } from '~common';
 import { DbQuerable, truncateTables } from '~common-service';
-import { DbWorkerContractStat } from '~core';
 import { processDbTable, rawDbTable } from '~db/tableNames';
 import { Contract } from './entities';
 
@@ -21,14 +20,4 @@ export async function dbHardReset(queryRunner: DbQuerable): Promise<void> {
     rawDbTable._contracts,
     rawDbTable._networks,
   ]);
-}
-
-export function mapContract(contract: Contract): DbWorkerContractStat {
-  return {
-    address: contract.address,
-    name: contract.name || undefined,
-    syncBlockNumber: contract.syncBlockNumber,
-    processBlockNumber: contract.processBlockNumber,
-    disable: contract.disable || undefined,
-  };
 }

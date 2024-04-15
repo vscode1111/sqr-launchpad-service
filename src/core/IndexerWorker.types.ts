@@ -1,10 +1,11 @@
 import {
   AnalyzeResponseStatus,
   Provider,
+  StorageProcessor,
   WorkerBaseConfig,
   WorkerBaseStats,
 } from '~common-service';
-import { DataStorage, StorageProcessor } from '~db';
+import { DataStorage } from '~db';
 
 export interface IndexerWorkerConfig extends WorkerBaseConfig {
   provider: Provider;

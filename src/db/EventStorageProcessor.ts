@@ -17,6 +17,7 @@ import {
   DeployNetworkKey,
   INDEXER_CONCURRENCY_COUNT,
   ServiceBrokerBase,
+  StorageProcessor,
   findContracts,
 } from '~common-service';
 import sqrLaunchpadABI from '~contracts/abi/SQRLaunchpad.json';
@@ -40,7 +41,6 @@ import {
   TransactionItem,
   TransactionItemTypes,
 } from './entities';
-import { StorageProcessor } from './types';
 
 async function getTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>): Promise<string> {
   const topics = (await filter?.getTopicFilter()) as any as string[];

@@ -8,7 +8,7 @@ import {
   UpdateDateColumn
 } from "typeorm";
 import { C, NF, NF2 } from "~common";
-import { rawDbTable } from "~db/tableNames";
+import { rawDbTable } from "../../tableNames";
 import { TransactionItem } from "../process";
 import { Block } from "./Block";
 import { Contract } from "./Contract";

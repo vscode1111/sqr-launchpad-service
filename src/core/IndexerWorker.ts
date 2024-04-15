@@ -4,10 +4,11 @@ import {
   BlockNumberFilter,
   INDEXER_CONCURRENCY_COUNT,
   Provider,
+  StorageProcessor,
   WorkerBase,
   logInfo,
 } from '~common-service';
-import { DataStorage, StorageProcessor } from '~db';
+import { DataStorage } from '~db';
 import { IndexerWorkerConfig, IndexerWorkerStats } from './IndexerWorker.types';
 
 const LOG_RPC_REQUEST = true;
