@@ -1,4 +1,5 @@
 import { FindOptionsWhere, Repository } from 'typeorm';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 import { CContract, Contract, Network, PContract } from '~db/entities';
 import { DeployNetworkKey } from '../types';
 import { DbQuerable, DbWorkerContractStat } from './types';
@@ -66,4 +67,8 @@ export function mapContract(contract: Contract): DbWorkerContractStat {
     processBlockNumber: contract.processBlockNumber,
     disable: contract.disable || undefined,
   };
+}
+
+export function printDbConfig(dataSourceConfig: PostgresConnectionOptions) {
+  console.log(`DB: ${dataSourceConfig.host}:${dataSourceConfig.port} ${dataSourceConfig.database}`);
 }
