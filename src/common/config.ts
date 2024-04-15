@@ -11,7 +11,7 @@ export function checkVariable(key: any, name: string, print = false) {
     throw new Error(`Please set ${name} in ${global.ENV}/config.js`);
   }
   if (print) {
-    console.log(`${name}: ${key}`);
+    console.log(`${name}`, key);
   }
   return key;
 }

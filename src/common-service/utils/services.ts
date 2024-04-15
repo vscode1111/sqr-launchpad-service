@@ -38,8 +38,9 @@ export async function bootstrapService<T extends ServicesBase>(
     services = await startFn(broker);
     catchAllExceptions(broker, services);
     await broker.start();
-  } catch (e) {
-    broker.logger.error(`Start failed ${e}`);
+  } catch (err) {
+    console.error(err);
+    broker.logger.error(`Start failed ${err} in ${parseStack(err)}`);
     broker.stop();
   }
 

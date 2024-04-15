@@ -17,7 +17,6 @@
     "postbuild:dev": "nodemon src/common-service/scripts/postbuild.ts",
     "start": "cross-env BUILD=true node dist/index.js",
     "start:prod": "cross-env BUILD=true npm run db:sync && cross-env BUILD=true npm run db:migration && npm run start",
-    "start:prod2": "cross-env BUILD=true npm run db:migration && cross-env BUILD=true npm run db:sync && npm run start",
     "format": "prettier --config ./.prettierrc --write \"src/**/*.ts\"",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --fix --ext .ts",

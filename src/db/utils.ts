@@ -1,6 +1,6 @@
 import { N } from '~common';
 import { DbQuerable, truncateTables } from '~common-service';
-import { processDbTable, rawDbTable } from '~db/tableNames';
+import { processDbTable, rawDbTable } from '../db/tableNames';
 import { Contract } from './entities';
 
 export async function dbSoftReset(queryRunner: DbQuerable): Promise<void> {
