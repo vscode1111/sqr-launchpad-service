@@ -1,6 +1,6 @@
 {
   "name": "sqr-launchpad-service",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "sqr-launchpad-service",
   "repository": {
     "type": "git",
@@ -45,6 +45,7 @@
     "dayjs": "^1.11.10",
     "ethers": "^6.11.1",
     "joi": "^17.12.2",
+    "merkletreejs": "^0.3.11",
     "moleculer-web": "^0.10.7",
     "moment": "^2.30.1",
     "msq-common-lib": "0.1.0",
