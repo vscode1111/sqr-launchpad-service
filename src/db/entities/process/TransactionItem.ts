@@ -15,7 +15,7 @@ import { Contract, Network, Transaction } from "../raw";
 import { Account } from "./Account";
 
 export const transactionItemTypes = ['deposit'] as const;
-export type TransactionItemTypes = (typeof transactionItemTypes)[number];
+export type TransactionItemType = (typeof transactionItemTypes)[number];
 
 @Entity({ name: processDbTable.transaction_items })
 export class TransactionItem  {
@@ -52,7 +52,7 @@ export class TransactionItem  {
     type: "enum",
     enum: transactionItemTypes,
   })
-  type!: TransactionItemTypes;
+  type!: TransactionItemType;
 
   @ManyToOne(() => Account, (account) => account.accountTransactionItems)
   @JoinColumn({

@@ -15,6 +15,10 @@ import { TransactionItem } from "../process";
 import { Event } from "./Event";
 import { Network } from "./Network";
 
+export const contractTypes = ['fcfs', 'sqrp-gated', 'white-list'] as const;
+export type ContractType = (typeof contractTypes)[number];
+const DEFAULT_CONTRACT_TYPE: ContractType = 'fcfs';
+
 @Entity({ name: rawDbTable._contracts })
 @Index([P<Contract>((p) => p.networkId) as string, P<Contract>((p) => p.address) as string], {
   unique: true,
@@ -39,12 +43,19 @@ export class Contract {
   @Index()
   address!: string;
 
+  @Column({
+    type: "enum",
+    default: DEFAULT_CONTRACT_TYPE,
+    enum: contractTypes,
+  })
+  type!: ContractType;
+
   @Column({ nullable: true })
   name!: string;
 
   @Column({ nullable: true })
   disable!: boolean;
-
+  
   @Column()
   syncBlockNumber!: number;
 

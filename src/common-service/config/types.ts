@@ -33,6 +33,7 @@ export interface Web3ConfigContract {
   address: string;
   blockNumber: number;
   disable?: boolean;
+  type?: string;
 }
 
 export interface Web3Config {

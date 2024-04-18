@@ -4,7 +4,7 @@ import { DataSource, Repository } from 'typeorm';
 import { createDatabase } from 'typeorm-extension';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 import { IdLock, Promisable, Started, Stopped, toDate } from '~common';
-import { Block, Contract, Event, Network, Transaction } from '../../db/entities';
+import { Block, Contract, ContractType, Event, Network, Transaction } from '../../db/entities';
 import { GENESIS_BLOCK_NUMBER, INDEXER_CONCURRENCY_COUNT } from '../constants';
 import { ServiceBrokerBase } from '../core';
 import { DeployNetworkKey, GetBlockFn, GetTransactionByHashFn, Web3Event } from '../types';
@@ -84,8 +84,11 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
           if (foundContract) {
             if (typeof contractItem.disable !== 'undefined') {
               foundContract.disable = contractItem.disable;
-              await contractRepository.save(foundContract);
             }
+            if (typeof contractItem.type !== 'undefined') {
+              foundContract.type = contractItem.type as ContractType;
+            }
+            await contractRepository.save(foundContract);
           } else {
             const dbContract = new Contract();
             dbContract.address = contractItem.address;
@@ -94,6 +97,9 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
             dbContract.network = dbNetwork;
             if (typeof contractItem.disable !== 'undefined') {
               dbContract.disable = contractItem.disable;
+            }
+            if (typeof contractItem.type !== 'undefined') {
+              dbContract.type = contractItem.type as ContractType;
             }
             await contractRepository.save(dbContract);
           }

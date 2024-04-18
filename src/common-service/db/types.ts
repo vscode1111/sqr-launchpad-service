@@ -25,4 +25,5 @@ export interface DbWorkerContractStat {
   syncBlockNumber: number;
   processBlockNumber: number;
   disable?: boolean;
+  type?: string;
 }

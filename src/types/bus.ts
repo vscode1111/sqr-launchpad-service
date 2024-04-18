@@ -16,7 +16,7 @@ export interface TokenWeb3BusEventData {
   tx: string;
 }
 
-export type Web3BusEventType = 'FCFS_DEPOSIT';
+export type Web3BusEventType = 'FCFS_DEPOSIT' | `SQRP_GATED_DEPOSIT` | 'WHITE_LIST_DEPOSIT';
 
 export interface Web3BusEvent {
   event: Web3BusEventType;

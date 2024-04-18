@@ -38,10 +38,19 @@ module.exports = {
     contracts: {
       bsc: [
         {
-          // address: '0x258AF60a788fef0289994997c813D5933AcCd52A', //Test
-          // blockNumber: 37580092,
           address: '0x5D27C778759e078BBe6D11A6cd802E41459Fe852', //Main
           blockNumber: 37764772,
+          type: 'fcfs',
+        },
+        {
+          address: '0xe561e403093A19A770d5EE515aC1d5434275c026', //Main
+          blockNumber: 37966266,
+          type: 'sqrp-gated',
+        },
+        {
+          address: '0x8e6585Dd84c1cDc340727f66183992AaCe7Bfc18', //Main
+          blockNumber: 37966320,
+          type: 'white-list',
         },
       ],
     },

@@ -32,6 +32,7 @@ import {
   CEvent,
   CTransaction,
   Contract,
+  ContractType,
   Event,
   Network,
   PBlock,
@@ -39,7 +40,7 @@ import {
   PEvent,
   PTransaction,
   TransactionItem,
-  TransactionItemTypes,
+  TransactionItemType,
 } from './entities';
 
 async function getTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>): Promise<string> {
@@ -50,13 +51,18 @@ async function getTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>): 
   return topics[0];
 }
 
-const idLock = new IdLock();
+const contractTypeToEventTypeMap: Record<ContractType, Web3BusEventType> = {
+  fcfs: 'FCFS_DEPOSIT',
+  'sqrp-gated': 'SQRP_GATED_DEPOSIT',
+  'white-list': 'WHITE_LIST_DEPOSIT',
+};
 
 export class EventStorageProcessor extends ServiceBrokerBase implements StorageProcessor {
   private abiInterfaces!: Interface[];
   private currentAbiInterface!: Interface;
   private depositTopic0!: string;
   private topics0: string[];
+  private idLock;
 
   constructor(
     broker: ServiceBroker,
@@ -67,6 +73,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     super(broker);
 
     this.topics0 = [];
+    this.idLock = new IdLock();
   }
 
   async start() {
@@ -96,7 +103,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
   }
 
   async getOrSaveAccount(address: string, accountRepostory: Repository<Account>) {
-    return await idLock.tryInvoke<Account>(`account_${Account}`, async () => {
+    return await this.idLock.tryInvoke<Account>(`account_${Account}`, async () => {
       let dbAccount = await accountRepostory.findOneBy({ address });
       if (!dbAccount) {
         dbAccount = new Account();
@@ -141,7 +148,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
   }: {
     event: Event;
     dbNetwork: Network;
-    type: TransactionItemTypes;
+    type: TransactionItemType;
     eventType: Web3BusEventType;
     transactionItemRepostory: Repository<TransactionItem>;
     accountRepostory: Repository<Account>;
@@ -216,7 +223,8 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
         event,
         dbNetwork,
         type: 'deposit',
-        eventType: 'FCFS_DEPOSIT',
+        // eventType: 'FCFS_DEPOSIT',
+        eventType: contractTypeToEventTypeMap[event.contract.type],
         transactionItemRepostory,
         accountRepostory,
       });
@@ -261,6 +269,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
               PEvent('topic2'),
               PEvent('data'),
               PContract('address'),
+              PContract('type'),
               PTransaction('hash'),
               PTransaction('input'),
               PBlock('number'),
