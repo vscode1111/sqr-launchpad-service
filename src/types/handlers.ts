@@ -1,6 +1,7 @@
 //Do not move to 'handlers' folder. Moleculer was configured to read code from there, not types
 import { ActionParams } from 'moleculer';
 import { Web3Block, Web3ConfigContract } from '~common-service';
+import { ContractType } from '~db';
 
 export type StatusType = 'missing' | 'exists';
 
@@ -30,6 +31,7 @@ export interface GetBlockResponse extends Web3Block {
 }
 
 export interface GetTransactionItemsParams extends GetNetworkParams {
+  contractType: ContractType;
   transactionIds: string[];
 }
 

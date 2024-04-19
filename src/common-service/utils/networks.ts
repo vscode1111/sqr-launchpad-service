@@ -1,11 +1,12 @@
 import { Promisable } from '~common';
+import { NetworkObject } from '~common-service';
 import { DeployNetworkKey } from '../types';
 import { objectFactory } from './objects';
 
-export const deployNetworks: DeployNetworkKey[] = ['bsc'];
+export const deployNetworks: DeployNetworkKey[] = ['bsc'] as const;
 
 export function networkObjectFactory<T>(fn: (network: DeployNetworkKey) => T) {
-  return objectFactory(deployNetworks, fn);
+  return objectFactory(deployNetworks, fn) as NetworkObject<T>;
 }
 
 export async function processNetworkObject<T>(

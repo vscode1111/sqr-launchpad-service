@@ -1,8 +1,9 @@
-export function objectFactory<K extends string, T>(array: K[], fn: (key: K) => T) {
-  let result: Record<K, T> = {} as any;
+export function objectFactory<K, T>(array: K[], fn: (key: K) => T, keyFn?: (key: K) => string) {
+  let result: Record<string, T> = {} as any;
 
   for (const item of array) {
-    result[item] = fn(item as K);
+    const key = keyFn ? keyFn(item) : (item as string);
+    result[key] = fn(item);
   }
 
   return result;

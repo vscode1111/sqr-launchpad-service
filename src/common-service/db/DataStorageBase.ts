@@ -4,6 +4,7 @@ import { DataSource, Repository } from 'typeorm';
 import { createDatabase } from 'typeorm-extension';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 import { IdLock, Promisable, Started, Stopped, toDate } from '~common';
+//Do not change to '~db', otherwise "npm run start" doesn't work
 import { Block, Contract, ContractType, Event, Network, Transaction } from '../../db/entities';
 import { GENESIS_BLOCK_NUMBER, INDEXER_CONCURRENCY_COUNT } from '../constants';
 import { ServiceBrokerBase } from '../core';

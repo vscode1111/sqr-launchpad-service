@@ -6,9 +6,9 @@ import {
   HandlerFunc,
   MissingServicePrivateKey,
   ZERO,
+  checkIfContractType,
   checkIfNetwork,
   commonHandlers,
-  config,
   getChainConfig,
   web3Constants,
 } from '~common-service';
@@ -84,12 +84,14 @@ const handlerFunc: HandlerFunc = () => ({
     'network.transaction-items.transaction-ids': {
       params: {
         network: { type: 'string' },
+        contractType: { type: 'string' },
         transactionIds: { type: 'array', items: { type: 'string' } },
       } as HandlerParams<GetTransactionItemsParams>,
       async handler(
         ctx: Context<GetTransactionItemsParams>,
       ): Promise<GetTransactionItemsResponse[]> {
         const network = checkIfNetwork(ctx?.params?.network);
+        const contractType = checkIfContractType(ctx?.params?.contractType);
         const transactionIds = ctx?.params.transactionIds;
 
         const context = services.getNetworkContext(network);
@@ -97,10 +99,10 @@ const handlerFunc: HandlerFunc = () => ({
           throw new MissingServicePrivateKey();
         }
 
-        const { sqrLaunchpads } = context;
+        const { sqrLaunchpads, contractTypeMap } = context;
         const { sqrDecimals } = getChainConfig(network);
 
-        const contractAddress = config.web3.contracts[network][0].address;
+        const contractAddress = contractTypeMap[contractType][0];
         const sqrLaunchpad = sqrLaunchpads[contractAddress];
 
         return Bluebird.map(
