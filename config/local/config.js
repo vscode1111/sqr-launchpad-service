@@ -52,6 +52,11 @@ module.exports = {
           blockNumber: 37966320,
           type: 'white-list',
         },
+        {
+          address: '0x88fD85b2621b6C9548A404eA250376AC5BEFeC13', //Main
+          blockNumber: 38106957,
+          type: 'fcfs',
+        },
       ],
     },
     provider: {
