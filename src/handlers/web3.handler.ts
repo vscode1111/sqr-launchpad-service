@@ -108,22 +108,27 @@ const handlerFunc: HandlerFunc = () => ({
         return Bluebird.map(
           transactionIds,
           async (transactionId) => {
-            const [amount] = await sqrLaunchpad.fetchTransactionItem(transactionId);
+            const [transactionItem, dbTransactionItem] = await Promise.all([
+              sqrLaunchpad.fetchTransactionItem(transactionId),
+              services.dataStorage.getTransactionItemByTransactionId(transactionId),
+            ]);
 
+            const { amount } = transactionItem;
+
+            const tx = dbTransactionItem?.transactionHash;
             if (amount !== ZERO) {
-              const result: GetTransactionItemsResponse = {
+              return {
                 transactionId,
                 amount: toNumberDecimals(amount, sqrDecimals),
+                tx,
                 status: 'exists',
               };
-              return result;
             }
 
-            const result: GetTransactionItemsResponse = {
+            return {
               transactionId,
               status: 'missing',
             };
-            return result;
           },
           { concurrency: HANDLER_CONCURRENCY_COUNT },
         );

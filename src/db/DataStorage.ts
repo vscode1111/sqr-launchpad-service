@@ -63,6 +63,14 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
     };
   }
 
+  public async getTransactionItemByTransactionId(
+    transactionId: string,
+  ): Promise<TransactionItem | null> {
+    return this.transactionItemRepostory.findOneBy({
+      transactionId,
+    });
+  }
+
   public async getAccount(address: string): Promise<Account | null> {
     return this.accountRepostory.findOneBy({
       address,
