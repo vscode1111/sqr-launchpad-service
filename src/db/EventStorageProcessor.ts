@@ -87,11 +87,8 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
       throw MISSING_SERVICE_PRIVATE_KEY;
     }
 
-    const { sqrLaunchpads } = context;
-    const firstKey = Object.keys(sqrLaunchpads)[0];
-    const firstSqrStaking = sqrLaunchpads[firstKey];
-
-    this.depositTopic0 = await this.setTopic0(firstSqrStaking.filters.Deposit());
+    const { firstSqrLaunchpad } = context;
+    this.depositTopic0 = await this.setTopic0(firstSqrLaunchpad.filters.Deposit());
   }
 
   async setTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>) {
@@ -225,7 +222,6 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
         event,
         dbNetwork,
         type: 'deposit',
-        // eventType: 'FCFS_DEPOSIT',
         eventType: contractTypeToEventTypeMap[event.contract.type],
         transactionItemRepostory,
         accountRepostory,

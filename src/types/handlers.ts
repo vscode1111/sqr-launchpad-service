@@ -32,6 +32,7 @@ export interface GetBlockResponse extends Web3Block {
 
 export interface GetTransactionItemsParams extends GetNetworkParams {
   contractType: ContractType;
+  contractAddress: string;
   transactionIds: string[];
 }
 

@@ -1,6 +1,6 @@
 import Bluebird from 'bluebird';
 import { Context } from 'moleculer';
-import { checkIfNumber, toDate, toNumberDecimals } from '~common';
+import { checkIfAddress, checkIfNumber, toDate, toNumberDecimals } from '~common';
 import {
   HANDLER_CONCURRENCY_COUNT,
   HandlerFunc,
@@ -85,13 +85,15 @@ const handlerFunc: HandlerFunc = () => ({
       params: {
         network: { type: 'string' },
         contractType: { type: 'string' },
+        contractAddress: { type: 'string' },
         transactionIds: { type: 'array', items: { type: 'string' } },
       } as HandlerParams<GetTransactionItemsParams>,
       async handler(
         ctx: Context<GetTransactionItemsParams>,
       ): Promise<GetTransactionItemsResponse[]> {
         const network = checkIfNetwork(ctx?.params?.network);
-        const contractType = checkIfContractType(ctx?.params?.contractType);
+        checkIfContractType(ctx?.params?.contractType);
+        const contractAddress = checkIfAddress(ctx?.params?.contractAddress);
         const transactionIds = ctx?.params.transactionIds;
 
         const context = services.getNetworkContext(network);
@@ -99,11 +101,10 @@ const handlerFunc: HandlerFunc = () => ({
           throw new MissingServicePrivateKey();
         }
 
-        const { sqrLaunchpads, contractTypeMap } = context;
+        const { getSqrLaunchpad } = context;
         const { sqrDecimals } = getChainConfig(network);
 
-        const contractAddress = contractTypeMap[contractType][0];
-        const sqrLaunchpad = sqrLaunchpads[contractAddress];
+        const sqrLaunchpad = getSqrLaunchpad(contractAddress);
 
         return Bluebird.map(
           transactionIds,
