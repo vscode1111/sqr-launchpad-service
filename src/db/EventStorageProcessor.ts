@@ -43,6 +43,8 @@ import {
   TransactionItemType,
 } from './entities';
 
+const CONTRACT_EVENT_ENABLE = false;
+
 async function getTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>): Promise<string> {
   const topics = (await filter?.getTopicFilter()) as any as string[];
   if (topics.length === 0) {
@@ -292,7 +294,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
               await onProcessEvent(event);
             }
 
-            if (contractEvent) {
+            if (contractEvent && CONTRACT_EVENT_ENABLE) {
               await this.eventNotifier.send(contractEvent);
               if (onContractEvent) {
                 await onContractEvent(contractEvent);
