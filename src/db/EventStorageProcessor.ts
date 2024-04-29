@@ -43,7 +43,7 @@ import {
   TransactionItemType,
 } from './entities';
 
-const CONTRACT_EVENT_ENABLE = false;
+const CONTRACT_EVENT_ENABLE = true;
 
 async function getTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>): Promise<string> {
   const topics = (await filter?.getTopicFilter()) as any as string[];
