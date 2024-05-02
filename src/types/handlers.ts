@@ -40,5 +40,6 @@ export interface GetTransactionItemsResponse {
   transactionId: string;
   address?: string;
   amount?: number;
+  tx?: string;
   status: StatusType;
 }

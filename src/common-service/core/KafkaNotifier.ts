@@ -5,6 +5,8 @@ import { logInfo } from '../utils';
 
 const { sendToChannel } = channels;
 
+const LOG_ENABLE = false;
+
 export class KafkaNotifier<T> implements EventNotifier<T> {
   constructor(
     private broker: Moleculer.ServiceBroker,
@@ -19,6 +21,8 @@ export class KafkaNotifier<T> implements EventNotifier<T> {
 
     await sendToChannel(this.broker, this.topic, event as any, true);
 
-    logInfo(this.broker, `KafkaNotifier topic: ${this.topic}, payload: ${JSON.stringify(event)}`);
+    if (LOG_ENABLE) {
+      logInfo(this.broker, `KafkaNotifier topic: ${this.topic}, payload: ${JSON.stringify(event)}`);
+    }
   }
 }

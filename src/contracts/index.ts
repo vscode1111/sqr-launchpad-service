@@ -17,7 +17,7 @@ export function getSqrLaunchpadContext(network: DeployNetworkKey): SqrLaunchpadC
   );
 
   const { sqrLaunchpadData } = getContractData(network);
-  const owner = new ethers.Wallet(RANDOM_PRIVATE_KEY, rawProvider);
+  const owner = new ethers.Wallet(config.web3.ownerPrivateKey ?? RANDOM_PRIVATE_KEY, rawProvider);
   const firstSqrLaunchpad = SQRLaunchpad__factory.connect(sqrLaunchpadData[0].address, owner);
 
   return {

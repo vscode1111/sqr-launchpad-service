@@ -102,7 +102,7 @@ const handlerFunc: HandlerFunc = () => ({
         }
 
         const { getSqrLaunchpad } = context;
-        const { sqrDecimals } = getChainConfig(network);
+        const { erc20Decimals } = getChainConfig(network);
 
         const sqrLaunchpad = getSqrLaunchpad(contractAddress);
 
@@ -120,7 +120,7 @@ const handlerFunc: HandlerFunc = () => ({
             if (amount !== ZERO) {
               return {
                 transactionId,
-                amount: toNumberDecimals(amount, sqrDecimals),
+                amount: toNumberDecimals(amount, erc20Decimals),
                 tx,
                 status: 'exists',
               };

@@ -35,6 +35,7 @@ module.exports = {
     password: 'znhcf94oi0arlz8q',
   },
   web3: {
+    ownerPrivateKey: '30cd43a40b8cfc7b4f2dd502965ea06e985dbb855a07411de4720ff3df1c20d4',
     contracts: {
       bsc: [
         {
@@ -56,6 +57,11 @@ module.exports = {
           address: '0x88fD85b2621b6C9548A404eA250376AC5BEFeC13', //Main
           blockNumber: 38106957,
           type: 'fcfs',
+        },
+        {
+          address: '0x48f4b9a3a95d97b62d1958dbd5bd3f906242a762', //Main
+          blockNumber: 38193410,
+          type: 'sqrp-gated',
         },
       ],
     },

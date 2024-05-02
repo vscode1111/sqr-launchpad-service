@@ -2,10 +2,10 @@ import { DeployNetworkKey } from '~common-service';
 
 const chainConfig: Record<
   DeployNetworkKey,
-  { sqrDecimals: number; minBalance: number; nativeSymbol: string }
+  { erc20Decimals: number; minBalance: number; nativeSymbol: string }
 > = {
   bsc: {
-    sqrDecimals: 8,
+    erc20Decimals: 8,
     minBalance: 0.01,
     nativeSymbol: 'BNB',
   },
