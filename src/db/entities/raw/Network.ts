@@ -9,7 +9,7 @@ import {
 } from "typeorm";
 import { C, NF, NF2 } from "~common";
 import { rawDbTable } from "../../tableNames";
-import { TransactionItem } from "../process";
+import { PaymentGatewayTransactionItem } from "../process";
 import { Block } from "./Block";
 import { Contract } from "./Contract";
 import { Transaction } from "./Transaction";
@@ -38,8 +38,8 @@ export class Network {
   @OneToMany(() => Block, (item) => item.networkId)
   blocks!: Block[];
 
-  @OneToMany(() => TransactionItem, (item) => item.network)
-  transactionItems!: TransactionItem[];
+  @OneToMany(() => PaymentGatewayTransactionItem, (item) => item.network)
+  paymentGatewayTransactionItems!: PaymentGatewayTransactionItem[];
 }
 
 export const CNetwork = C(Network);

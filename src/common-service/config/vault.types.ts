@@ -40,11 +40,11 @@ export interface VaultRecord {
 }
 
 export interface VaultRecordData {
-  data: VaultRecordSubdata;
+  data: VaultRecordSubData;
   metadata: VaultRecordMetadata;
 }
 
-export interface VaultRecordSubdata {
+export interface VaultRecordSubData {
   [key: string]: string;
 }
 

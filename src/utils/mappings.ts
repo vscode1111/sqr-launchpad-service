@@ -1,8 +1,8 @@
-import { TransactionItem } from '~db';
+import { PaymentGatewayTransactionItem } from '~db';
 import { TransactionItemJoinNetwork, TransactionItemMap } from '~types';
 
 export function mapDbTransactionItem(
-  item: TransactionItem & TransactionItemJoinNetwork,
+  item: PaymentGatewayTransactionItem & TransactionItemJoinNetwork,
 ): TransactionItemMap {
   const { TransactionItem_createdAt, TransactionItem_updatedAt, Network_name, ...rest } = item;
   return {

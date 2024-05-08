@@ -8,5 +8,5 @@ export const rawDbTable = {
 
 export const processDbTable = {
   accounts: 'accounts',
-  transaction_items: 'transaction_items',
+  payment_gateway_transaction_items: 'payment_gateway_transaction_items',
 };

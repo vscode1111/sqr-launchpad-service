@@ -20,7 +20,7 @@ import {
   StorageProcessor,
   findContracts,
 } from '~common-service';
-import sqrLaunchpadABI from '~contracts/abi/SQRLaunchpad.json';
+import sqrPaymentGatewayABI from '~contracts/abi/SQRPaymentGateway.json';
 import { TypedContractEvent, TypedDeferredTopicFilter } from '~typechain-types/common';
 import { Web3BusEvent, Web3BusEventType } from '~types';
 import { DepositInput } from './EventStorageProcessor.types';
@@ -39,7 +39,7 @@ import {
   PContract,
   PEvent,
   PTransaction,
-  TransactionItem,
+  PaymentGatewayTransactionItem,
   TransactionItemType,
 } from './entities';
 
@@ -48,7 +48,7 @@ const CONTRACT_EVENT_ENABLE = true;
 async function getTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>): Promise<string> {
   const topics = (await filter?.getTopicFilter()) as any as string[];
   if (topics.length === 0) {
-    throw Error("Coundn't find filter for topic 0");
+    throw Error("Couldn't find filter for topic 0");
   }
   return topics[0];
 }
@@ -57,6 +57,7 @@ const contractTypeToEventTypeMap: Record<ContractType, Web3BusEventType> = {
   fcfs: 'FCFS_DEPOSIT',
   'sqrp-gated': 'SQRP_GATED_DEPOSIT',
   'white-list': 'WHITE_LIST_DEPOSIT',
+  vesting: 'VESTING_CLAIM',
 };
 
 export class EventStorageProcessor extends ServiceBrokerBase implements StorageProcessor {
@@ -79,7 +80,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
   }
 
   async start() {
-    this.abiInterfaces = [new Interface(sqrLaunchpadABI)];
+    this.abiInterfaces = [new Interface(sqrPaymentGatewayABI)];
     this.currentAbiInterface = this.abiInterfaces[0];
 
     const context = services.getNetworkContext(this.network);
@@ -101,13 +102,13 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     this.dataSource = dataSource;
   }
 
-  async getOrSaveAccount(address: string, accountRepostory: Repository<Account>) {
+  async getOrSaveAccount(address: string, accountRepository: Repository<Account>) {
     return await this.idLock.tryInvoke<Account>(`account_${Account}`, async () => {
-      let dbAccount = await accountRepostory.findOneBy({ address });
+      let dbAccount = await accountRepository.findOneBy({ address });
       if (!dbAccount) {
         dbAccount = new Account();
         dbAccount.address = address;
-        await accountRepostory.save(dbAccount);
+        await accountRepository.save(dbAccount);
       }
       return dbAccount;
     });
@@ -142,22 +143,22 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     dbNetwork,
     type,
     eventType,
-    transactionItemRepostory,
-    accountRepostory,
+    transactionItemRepository,
+    accountRepository,
   }: {
     event: Event;
     dbNetwork: Network;
     type: TransactionItemType;
     eventType: Web3BusEventType;
-    transactionItemRepostory: Repository<TransactionItem>;
-    accountRepostory: Repository<Account>;
+    transactionItemRepository: Repository<PaymentGatewayTransactionItem>;
+    accountRepository: Repository<Account>;
   }): Promise<Web3BusEvent | null> {
     const decodedDepositInput = this.tryDecode<DepositInput>(event.transactionHash.input);
     const userId = decodedDepositInput.userId;
     const transactionId = decodedDepositInput.transactionId;
     const isSig = decodedDepositInput.signature !== undefined;
 
-    const dbTransactionItem = new TransactionItem();
+    const dbTransactionItem = new PaymentGatewayTransactionItem();
     const networkId = dbNetwork.id;
     dbTransactionItem.networkId = networkId;
     dbTransactionItem.network = dbNetwork;
@@ -167,7 +168,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     dbTransactionItem.transaction = event.transactionHash;
     dbTransactionItem.transaction.networkId = networkId;
     const account = getAddressFromSlot(event.topic1);
-    const dbAccount = await this.getOrSaveAccount(account, accountRepostory);
+    const dbAccount = await this.getOrSaveAccount(account, accountRepository);
     dbTransactionItem.account = dbAccount;
     const eventData = decodeData(event.data!, ['uint256']);
     const { sqrDecimals } = getChainConfig(dbNetwork.name);
@@ -181,7 +182,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
 
     const contractAddress = dbTransactionItem.contract.address;
 
-    await transactionItemRepostory.save(dbTransactionItem);
+    await transactionItemRepository.save(dbTransactionItem);
     return {
       event: eventType,
       data: {
@@ -200,8 +201,8 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
 
   private async createTransactionItem(
     event: Event,
-    transactionItemRepostory: Repository<TransactionItem>,
-    accountRepostory: Repository<Account>,
+    transactionItemRepository: Repository<PaymentGatewayTransactionItem>,
+    accountRepository: Repository<Account>,
     networkRepository: Repository<Network>,
   ): Promise<Web3BusEvent | null> {
     if (!this.topics0.includes(event.topic0) || !event?.transactionHash?.input) {
@@ -223,8 +224,8 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
         dbNetwork,
         type: 'deposit',
         eventType: contractTypeToEventTypeMap[event.contract.type],
-        transactionItemRepostory,
-        accountRepostory,
+        transactionItemRepository: transactionItemRepository,
+        accountRepository: accountRepository,
       });
     }
 
@@ -239,8 +240,8 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
       const networkRepository = entityManager.getRepository(Network);
       const contractRepository = entityManager.getRepository(Contract);
       const eventRepository = entityManager.getRepository(Event);
-      const transactionItemRepostory = entityManager.getRepository(TransactionItem);
-      const accountRepostory = entityManager.getRepository(Account);
+      const transactionItemRepository = entityManager.getRepository(PaymentGatewayTransactionItem);
+      const accountRepository = entityManager.getRepository(Account);
 
       const contracts = await findContracts(contractRepository, networkRepository, this.network);
 
@@ -281,8 +282,8 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
           for (const event of events) {
             const contractEvent = await this.createTransactionItem(
               event,
-              transactionItemRepostory,
-              accountRepostory,
+              transactionItemRepository,
+              accountRepository,
               networkRepository,
             );
 

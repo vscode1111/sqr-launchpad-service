@@ -12,8 +12,8 @@ function getPostfix() {
 
 export const dataSourceConfigBase: PostgresConnectionOptions = {
   type: 'postgres',
-  synchronize: true,
   logging: false,
+  synchronize: true,
   migrationsTableName: '__migrations',
   migrations: [`${getPrefix()}/db/migrations/[1234567890]*.${getPostfix()}`],
   subscribers: [],

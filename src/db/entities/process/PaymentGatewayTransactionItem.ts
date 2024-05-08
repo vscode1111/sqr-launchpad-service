@@ -17,8 +17,8 @@ import { Account } from "./Account";
 export const transactionItemTypes = ['deposit'] as const;
 export type TransactionItemType = (typeof transactionItemTypes)[number];
 
-@Entity({ name: processDbTable.transaction_items })
-export class TransactionItem  {
+@Entity({ name: processDbTable.payment_gateway_transaction_items })
+export class PaymentGatewayTransactionItem  {
   @PrimaryGeneratedColumn()
   @Index()
   id!: number;
@@ -27,9 +27,9 @@ export class TransactionItem  {
   @Column({ type: "int" })
   networkId!: number;
 
-  @ManyToOne(() => Network, (network) => network.transactionItems)
+  @ManyToOne(() => Network, (network) => network.paymentGatewayTransactionItems)
   @JoinColumn({
-    name: P<TransactionItem>((p) => p.networkId),
+    name: P<PaymentGatewayTransactionItem>((p) => p.networkId),
     referencedColumnName: P<Network>((p) => p.id),
   })
   network!: Network;
@@ -37,11 +37,11 @@ export class TransactionItem  {
   @ManyToOne(() => Contract, (contract) => contract.contractTransactionItems)
   @JoinColumn([
     {
-      name: P<TransactionItem>((p) => p.networkId),
+      name: P<PaymentGatewayTransactionItem>((p) => p.networkId),
       referencedColumnName: P<Contract>((p) => p.networkId),
     },
     {
-      name: P<TransactionItem>((p) => p.contract),
+      name: P<PaymentGatewayTransactionItem>((p) => p.contract),
       referencedColumnName: P<Contract>((p) => p.address),
     }
   ])
@@ -56,12 +56,12 @@ export class TransactionItem  {
 
   @ManyToOne(() => Account, (account) => account.accountTransactionItems)
   @JoinColumn({
-    name: P<TransactionItem>((p) => p.account),
+    name: P<PaymentGatewayTransactionItem>((p) => p.account),
     referencedColumnName: P<Account>((p) => p.address),
   })
   account!: Account;
 
-  @RelationId((p: TransactionItem) => p.account)
+  @RelationId((p: PaymentGatewayTransactionItem) => p.account)
   accountAddress!: string;
 
   @Index()
@@ -85,11 +85,11 @@ export class TransactionItem  {
   @ManyToOne(() => Transaction)
   @JoinColumn([
     {
-      name: P<TransactionItem>((p) => p.networkId),
+      name: P<PaymentGatewayTransactionItem>((p) => p.networkId),
       referencedColumnName: P<Transaction>((p) => p.networkId),
     },
     {
-      name: P<TransactionItem>((p) => p.transactionHash),
+      name: P<PaymentGatewayTransactionItem>((p) => p.transactionHash),
       referencedColumnName: P<Transaction>((p) => p.hash),
     },
   ])
@@ -105,6 +105,6 @@ export class TransactionItem  {
   updatedAt!: Date;
 }
 
-export const CTransactionItem = C(TransactionItem);
-export const NTransactionItem = NF<TransactionItem>();
-export const PTransactionItem = NF2<TransactionItem>((name) => `${CTransactionItem}.${name}`);
+export const CTransactionItem = C(PaymentGatewayTransactionItem);
+export const NTransactionItem = NF<PaymentGatewayTransactionItem>();
+export const PTransactionItem = NF2<PaymentGatewayTransactionItem>((name) => `${CTransactionItem}.${name}`);

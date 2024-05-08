@@ -8,7 +8,7 @@ export interface PostReceiver {
   inform: (tx: TransactionResponse) => Promise<void>;
 }
 
-export interface Initilized {
+export interface Initialized {
   init: () => Promisable<any>;
 }
 

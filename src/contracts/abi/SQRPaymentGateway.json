@@ -48,6 +48,11 @@
   },
   {
     "inputs": [],
+    "name": "CloseDateMustBeGreaterThanStartDate",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "ColdWalletNotZeroAddress",
     "type": "error"
   },
@@ -384,6 +389,19 @@
   },
   {
     "inputs": [],
+    "name": "VERSION",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "balanceLimit",
     "outputs": [
       {
@@ -429,7 +447,7 @@
   },
   {
     "inputs": [],
-    "name": "calculateRemainWithraw",
+    "name": "calculateRemainWithdraw",
     "outputs": [
       {
         "internalType": "uint256",

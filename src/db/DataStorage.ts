@@ -5,12 +5,12 @@ import { DataStorageBase, DeployNetworkKey, logInfo, mapContract } from '~common
 import { DbWorkerStats } from '~core';
 import { getContractData } from '~utils';
 import { dataSourceConfig } from './dataSource';
-import { Account, Event, Transaction, TransactionItem } from './entities';
+import { Account, Event, PaymentGatewayTransactionItem, Transaction } from './entities';
 import { dbHardReset, dbSoftReset } from './utils';
 
 export class DataStorage extends DataStorageBase implements Started, Stopped {
-  private accountRepostory!: Repository<Account>;
-  private transactionItemRepostory!: Repository<TransactionItem>;
+  private accountRepository!: Repository<Account>;
+  private transactionItemRepository!: Repository<PaymentGatewayTransactionItem>;
 
   constructor(broker: ServiceBroker) {
     super(broker, dataSourceConfig, (network) => getContractData(network).sqrLaunchpadData);
@@ -22,15 +22,15 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
 
   async initialize(): Promise<void> {
     await super.initialize();
-    this.accountRepostory = this.dataSource.getRepository(Account);
-    this.transactionItemRepostory = this.dataSource.getRepository(TransactionItem);
+    this.accountRepository = this.dataSource.getRepository(Account);
+    this.transactionItemRepository = this.dataSource.getRepository(PaymentGatewayTransactionItem);
     logInfo(this.broker, `Database was initialized`);
   }
 
   async getTableRowCounts(network?: DeployNetworkKey): Promise<DbWorkerStats> {
     let transactionFindOption: FindOptionsWhere<Transaction> = {};
     let eventFindOption: FindOptionsWhere<Event> = {};
-    let transactionItemFindOption: FindOptionsWhere<TransactionItem> = {};
+    let transactionItemFindOption: FindOptionsWhere<PaymentGatewayTransactionItem> = {};
     if (network) {
       const dbNetwork = await this.getNetwork(network);
 
@@ -38,7 +38,7 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
         networkId: dbNetwork.id,
       };
 
-      eventFindOption.contract = {
+      eventFindOption = {
         networkId: dbNetwork.id,
       };
 
@@ -51,56 +51,59 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
         id: 'ASC',
       },
     });
-    const _transaction = await this.transactionRepostory.countBy(transactionFindOption);
+    const _transaction = await this.transactionRepository.countBy(transactionFindOption);
     const _events = await this.eventRepository.countBy(eventFindOption);
-    const transactionItems = await this.transactionItemRepostory.countBy(transactionItemFindOption);
+    const paymentGatewayTransactionItems =
+      await this.transactionItemRepository.countBy(transactionItemFindOption);
 
     return {
       contracts: contracts.map(mapContract),
       _transaction,
       _events,
-      transactionItems,
+      paymentGatewayTransactionItems,
     };
   }
 
   public async getTransactionItemByTransactionId(
     transactionId: string,
-  ): Promise<TransactionItem | null> {
-    return this.transactionItemRepostory.findOneBy({
+  ): Promise<PaymentGatewayTransactionItem | null> {
+    return this.transactionItemRepository.findOneBy({
       transactionId,
     });
   }
 
   public async getAccount(address: string): Promise<Account | null> {
-    return this.accountRepostory.findOneBy({
+    return this.accountRepository.findOneBy({
       address,
     });
   }
 
   public async getAccounts(): Promise<Account[]> {
-    return this.accountRepostory.find();
+    return this.accountRepository.find();
   }
 
   public async saveAccount(address: string): Promise<Account> {
     const dbAccount = new Account();
     dbAccount.address = address;
-    return this.accountRepostory.save(dbAccount);
+    return this.accountRepository.save(dbAccount);
   }
 
-  public async getTransactionItemsByAccount(address: string): Promise<TransactionItem[]> {
-    return this.transactionItemRepostory.findBy({
+  public async getTransactionItemsByAccount(
+    address: string,
+  ): Promise<PaymentGatewayTransactionItem[]> {
+    return this.transactionItemRepository.findBy({
       account: {
         address,
       },
     });
   }
 
-  public async getTransactionItems(): Promise<TransactionItem[]> {
-    return this.transactionItemRepostory.find();
+  public async getTransactionItems(): Promise<PaymentGatewayTransactionItem[]> {
+    return this.transactionItemRepository.find();
   }
 
   public async findAccount(address: string): Promise<Account | null> {
-    return this.accountRepostory.findOneBy({ address });
+    return this.accountRepository.findOneBy({ address });
   }
 
   async hardReset(): Promise<void> {

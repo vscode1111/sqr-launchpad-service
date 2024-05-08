@@ -32,7 +32,7 @@ export class IndexerWorker extends WorkerBase<IndexerWorkerStats> {
     tickDivider,
     blockNumberRange,
     blockNumberOffset,
-    blockNumberfilterSize,
+    blockNumberFilterSize,
   }: IndexerWorkerConfig) {
     super(broker, network, workerName, tickDivider);
 
@@ -41,7 +41,7 @@ export class IndexerWorker extends WorkerBase<IndexerWorkerStats> {
     this.storageProcessor = storageProcessor;
     this.blockNumberRange = blockNumberRange ?? 2000;
     this.blockNumberOffset = blockNumberOffset ?? 10;
-    this.blockNumberFilter = new BlockNumberFilter(blockNumberfilterSize);
+    this.blockNumberFilter = new BlockNumberFilter(blockNumberFilterSize);
     this.reset();
   }
 

@@ -1,7 +1,7 @@
 import { CreateDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from "typeorm";
 import { C, NF2 } from "~common";
 import { processDbTable } from "../../tableNames";
-import { TransactionItem } from "./TransactionItem";
+import { PaymentGatewayTransactionItem } from "./PaymentGatewayTransactionItem";
 
 @Entity({ name: processDbTable.accounts })
 export class Account {
@@ -14,8 +14,8 @@ export class Account {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @OneToMany(() => TransactionItem, (item) => item.account)
-  accountTransactionItems!: TransactionItem[];
+  @OneToMany(() => PaymentGatewayTransactionItem, (item) => item.account)
+  accountTransactionItems!: PaymentGatewayTransactionItem[];
 }
 
 export const CAccount = C(Account);

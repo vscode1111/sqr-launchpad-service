@@ -1,2 +1,2 @@
 export * from './Account';
-export * from './TransactionItem';
+export * from './PaymentGatewayTransactionItem';

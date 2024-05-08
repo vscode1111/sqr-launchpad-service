@@ -22,7 +22,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
   protected networkRepository!: Repository<Network>;
   protected contractRepository!: Repository<Contract>;
   protected eventRepository!: Repository<Event>;
-  protected transactionRepostory!: Repository<Transaction>;
+  protected transactionRepository!: Repository<Transaction>;
   protected isDestroyed: boolean;
   protected getBlockFn!: GetBlockFn;
   protected getTransactionByHashFn!: GetTransactionByHashFn;
@@ -59,7 +59,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
 
     this.networkRepository = this.dataSource.getRepository(Network);
     this.contractRepository = this.dataSource.getRepository(Contract);
-    this.transactionRepostory = this.dataSource.getRepository(Transaction);
+    this.transactionRepository = this.dataSource.getRepository(Transaction);
     this.eventRepository = this.dataSource.getRepository(Event);
 
     this.updateContracts(this.getContractDataFn);
@@ -244,6 +244,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
 
   private async saveEvent(
     event: Web3Event,
+    dbNetwork: Network,
     dbAddress: Contract,
     dbTransaction: Transaction,
     eventRepository: Repository<Event>,
@@ -252,6 +253,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     return this.idLock.tryInvoke(`event_${event.transactionHash}_${topic0}`, async () => {
       const dbEvent = new Event();
 
+      dbEvent.network = dbNetwork;
       dbEvent.transactionHash = dbTransaction;
       dbEvent.topic0 = event.topics[0];
       if (event.topics[1]) {
@@ -319,7 +321,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
             await onProcessEvent(event);
           }
 
-          await this.saveEvent(event, dbContract, dbTransaction, eventRepository);
+          await this.saveEvent(event, dbNetwork, dbContract, dbTransaction, eventRepository);
         },
         { concurrency: INDEXER_CONCURRENCY_COUNT },
       );

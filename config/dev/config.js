@@ -46,7 +46,7 @@ module.exports = {
     provider: {
       bsc: {
         http: 'https://rpc.ankr.com/bsc/0a92c9288ddd85181db59c48d2eae9d07873954be63e06893de5b4cbcb37842e',
-        blockNumberfilterSize: 0,
+        blockNumberFilterSize: 0,
         blockNumberRange: 2000,
         blockNumberOffset: 10,
       },

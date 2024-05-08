@@ -20,7 +20,7 @@ const root = appRoot.toString();
 // const SRV_URL = 'https://sqr.main.dev.msq.local/signature/api';
 const SIGNATURE_URL = 'https://sqr.stage.msq.local/signature/api';
 
-const LAUCHPAD_URL = 'https://sqr.main.dev.msq.local/launchpad/api';
+const LAUNCHPAD_URL = 'https://sqr.main.dev.msq.local/launchpad/api';
 
 const TEST_CASE_SEND = false;
 const txAmount = 1000;
@@ -58,7 +58,7 @@ async function getIndexerTransactionItems(
   };
 
   const response = await axios.post<GetTransactionItemsResponse[]>(
-    `${LAUCHPAD_URL}/bsc/transaction-items`,
+    `${LAUNCHPAD_URL}/bsc/transaction-items`,
     requestBody,
     { httpsAgent },
   );
@@ -94,7 +94,7 @@ describe('performance', () => {
     const { getSqrLaunchpad, rawProvider, owner } = context;
     const sqrLaunchpad = getSqrLaunchpad(CONTRACT_ADDRESS);
 
-    const transactionItems: TransactionStat[] = [];
+    const paymentGatewayTransactionItems: TransactionStat[] = [];
 
     const txCount = await rawProvider.getTransactionCount(owner);
 
@@ -137,21 +137,24 @@ describe('performance', () => {
           { skipWait: true },
         );
 
-        transactionItems.push({ transactionId: requestBody.transactionId, tx: tx?.hash ?? '' });
+        paymentGatewayTransactionItems.push({
+          transactionId: requestBody.transactionId,
+          tx: tx?.hash ?? '',
+        });
       },
       txAmount,
       100,
       100,
     );
 
-    if (transactionItems.length > 0) {
+    if (paymentGatewayTransactionItems.length > 0) {
       const fileName = new Date().getTime();
       const targetPath = `${root}/temp/${fileName}.txt`;
 
       writeFileSync(
         targetPath,
         convertArray2DToContent(
-          transactionItems.map((item) => [item.transactionId, item.tx ?? '']),
+          paymentGatewayTransactionItems.map((item) => [item.transactionId, item.tx ?? '']),
         ),
       );
     }

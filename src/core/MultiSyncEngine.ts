@@ -45,7 +45,7 @@ export class MultiSyncEngine extends ServiceBrokerBase implements Started {
         storageProcessor,
         network,
         workerName: 'SyncEngine',
-        blockNumberfilterSize: networkConfig?.blockNumberfilterSize,
+        blockNumberFilterSize: networkConfig?.blockNumberFilterSize,
         blockNumberRange: networkConfig?.blockNumberRange,
         blockNumberOffset: networkConfig?.blockNumberOffset,
       });

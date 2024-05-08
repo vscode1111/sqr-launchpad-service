@@ -11,11 +11,11 @@ import {
 } from "typeorm";
 import { C, NF2, P } from "~common";
 import { rawDbTable } from "../../tableNames";
-import { TransactionItem } from "../process";
+import { PaymentGatewayTransactionItem } from "../process";
 import { Event } from "./Event";
 import { Network } from "./Network";
 
-export const contractTypes = ['fcfs', 'sqrp-gated', 'white-list'] as const;
+export const contractTypes = ['fcfs', 'sqrp-gated', 'white-list', 'vesting'] as const;
 export type ContractType = (typeof contractTypes)[number];
 const DEFAULT_CONTRACT_TYPE: ContractType = 'fcfs';
 
@@ -74,8 +74,8 @@ export class Contract {
   @OneToMany(() => Event, (item) => item.contractId)
   events!: Event[];
 
-  @OneToMany(() => TransactionItem, (item) => item.account)
-  contractTransactionItems!: TransactionItem[];
+  @OneToMany(() => PaymentGatewayTransactionItem, (item) => item.account)
+  contractTransactionItems!: PaymentGatewayTransactionItem[];
 }
 
 export const  CContract = C(Contract);

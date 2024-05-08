@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import dayjs, { Dayjs } from 'dayjs';
 import { IdLock, Lock } from './Lock';
-import { commonTestValue } from './contants';
+import { commonTestValue } from './constants';
 import { sleep } from './misc';
 import { StringNumber } from './types';
 

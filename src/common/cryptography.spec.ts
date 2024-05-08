@@ -7,7 +7,7 @@ const ownerPrivateKey = 'a37c5a8cc63e7b54c933aff29692d653d87355578fdcb966d88f4dd
 describe('symmetric encrypt/decrypt', () => {
   it('positive way', () => {
     const encryptedPrivateKey = symmetricEncryptByPrivateKey(privateKey, ownerPrivateKey);
-    const decriptedPrivateKey = symmetricDecryptByPrivateKey(encryptedPrivateKey, ownerPrivateKey);
-    expect(decriptedPrivateKey).eq(privateKey);
+    const decryptedPrivateKey = symmetricDecryptByPrivateKey(encryptedPrivateKey, ownerPrivateKey);
+    expect(decryptedPrivateKey).eq(privateKey);
   });
 });

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { SpeedCounter } from './SpeedCounter';
-import { commonTestValue } from './contants';
+import { commonTestValue } from './constants';
 import { sleep } from './misc';
 
 describe('SpeedCounter', () => {

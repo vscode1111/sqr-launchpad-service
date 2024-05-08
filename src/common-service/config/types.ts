@@ -44,7 +44,7 @@ export interface Web3Config {
     {
       http: string;
       wss: string;
-      blockNumberfilterSize?: number;
+      blockNumberFilterSize?: number;
       blockNumberRange?: number;
       blockNumberOffset?: number;
     }

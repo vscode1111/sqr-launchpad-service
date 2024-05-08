@@ -10,13 +10,13 @@ export const MISSING_SERVICE_PRIVATE_KEY = `Service hasn't correct private key o
 //   gasPriceFactor = 1,
 //   gasLimit = 200000,
 // ): Promise<Overrides | null> {
-//   const constext = services.getNetworkContext(network);
+//   const context = services.getNetworkContext(network);
 
 //   if (!context) {
 //     throw MISSING_SERVICE_PRIVATE_KEY;
 //   }
 
-//   const rawProvider = constext?.rawProvider;
+//   const rawProvider = context?.rawProvider;
 
 //   if (!rawProvider) {
 //     return null;
@@ -71,11 +71,11 @@ export async function waitTxEx(
 
 export async function postInformTx(
   promise: Promise<TransactionResponse>,
-  reciever: PostReceiver,
+  receiver: PostReceiver,
   onFinish?: (tx: TransactionResponse) => Promisable<void>,
 ): Promise<TransactionResponse> {
   const tx = await promise;
-  reciever.inform(tx);
+  receiver.inform(tx);
   if (onFinish) {
     tx.wait()
       .then(() => onFinish(tx))

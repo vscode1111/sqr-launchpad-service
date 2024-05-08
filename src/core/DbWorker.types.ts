@@ -9,5 +9,5 @@ export interface DbWorkerStats {
   contracts: DbWorkerContractStat[];
   _transaction: number;
   _events: number;
-  transactionItems: number;
+  paymentGatewayTransactionItems: number;
 }

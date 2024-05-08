@@ -1,5 +1,5 @@
 import { ServiceBroker } from 'moleculer';
-import { Initilized, Started, Stopped } from '~common';
+import { Initialized, Started, Stopped } from '~common';
 import {
   DeployNetworkKey,
   JsonRpcProvider,
@@ -16,7 +16,7 @@ import { DataStorage } from '~db';
 import { Web3BusEvent } from '~types';
 import { SqrLaunchpadContext } from './types';
 
-export class Services extends ServicesBase implements Initilized, Started, Stopped {
+export class Services extends ServicesBase implements Initialized, Started, Stopped {
   private started: boolean;
   private providers: NetworkObject<Provider>;
   private sqrLaunchpadContexts: NetworkObject<SqrLaunchpadContext> | null;

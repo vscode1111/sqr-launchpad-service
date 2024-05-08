@@ -18,7 +18,7 @@ export class SyncEngine implements Started {
     network,
     blockNumberRange,
     blockNumberOffset,
-    blockNumberfilterSize,
+    blockNumberFilterSize,
   }: SyncEngineConfig) {
     this.tickId = 0;
 
@@ -33,7 +33,7 @@ export class SyncEngine implements Started {
         storageProcessor,
         blockNumberRange,
         blockNumberOffset,
-        blockNumberfilterSize,
+        blockNumberFilterSize: blockNumberFilterSize,
         tickDivider: isBuildRun ? 30 : 5,
       }),
       db: new DbWorker({ broker, network, workerName: 'TaskWorker', tickDivider: 1, dataStorage }),

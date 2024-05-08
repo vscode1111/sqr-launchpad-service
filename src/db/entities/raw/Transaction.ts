@@ -11,7 +11,7 @@ import {
 } from "typeorm";
 import { C, NF2, P } from "~common";
 import { rawDbTable } from "~db/tableNames";
-import { TransactionItem } from "../process";
+import { PaymentGatewayTransactionItem } from "../process";
 import { Block } from "./Block";
 import { Event } from "./Event";
 import { Network } from "./Network";
@@ -79,8 +79,8 @@ export class Transaction {
   @OneToMany(() => Event, (event) => event.transactionHash)
   events!: Event[];
 
-  @OneToMany(() => TransactionItem, (transactionItem) => transactionItem.transaction)
-  transactionItems!: TransactionItem[]; 
+  @OneToMany(() => PaymentGatewayTransactionItem, (transactionItem) => transactionItem.transaction)
+  paymentGatewayTransactionItems!: PaymentGatewayTransactionItem[]; 
 }
 
 export const CTransaction = C(Transaction);

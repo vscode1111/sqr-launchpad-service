@@ -1,4 +1,4 @@
-import { TransactionItem } from '~db';
+import { PaymentGatewayTransactionItem } from '~db';
 
 export interface TransactionItemJoinNetwork {
   TransactionItem_createdAt: Date;
@@ -7,7 +7,7 @@ export interface TransactionItemJoinNetwork {
 }
 
 export type TransactionItemMap =
-  | TransactionItem
+  | PaymentGatewayTransactionItem
   | {
       network: string;
     };

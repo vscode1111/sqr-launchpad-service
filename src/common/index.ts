@@ -1,9 +1,9 @@
-//VERSION 0.0.4;
+//VERSION 0.0.5;
 export * from './Lock';
 export * from './SpeedCounter';
 export * from './checks';
 export * from './config';
-export * from './contants';
+export * from './constants';
 export * from './converts';
 export * from './cryptography';
 export * from './files';

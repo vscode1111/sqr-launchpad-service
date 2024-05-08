@@ -1,7 +1,7 @@
 import { computeAddress } from 'ethers';
 import { ServiceBroker } from 'moleculer';
 import sss from 'shamirs-secret-sharing';
-import { Initilized, Stopped } from '~common';
+import { Initialized, Stopped } from '~common';
 import { SecurityStatusResponse, SecurityStatusType } from '../types';
 import { logConsoleError, logConsoleInfo } from '../utils';
 
@@ -15,7 +15,7 @@ interface SecurityBlockerConfig {
   onStop: () => Promise<void>;
 }
 
-export class SecurityBlocker implements Initilized, Stopped {
+export class SecurityBlocker implements Initialized, Stopped {
   private status: SecurityStatusType;
   private shares: string[];
 

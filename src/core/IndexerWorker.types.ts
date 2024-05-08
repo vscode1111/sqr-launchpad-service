@@ -11,7 +11,7 @@ export interface IndexerWorkerConfig extends WorkerBaseConfig {
   provider: Provider;
   dataStorage: DataStorage;
   storageProcessor: StorageProcessor;
-  blockNumberfilterSize?: number;
+  blockNumberFilterSize?: number;
   blockNumberRange?: number;
   blockNumberOffset?: number;
 }
