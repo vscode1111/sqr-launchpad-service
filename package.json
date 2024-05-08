@@ -1,6 +1,6 @@
 {
   "name": "sqr-launchpad-service",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "sqr-launchpad-service",
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
     "postbuild": "node dist/common-service/scripts/postbuild.js",
     "postbuild:dev": "nodemon src/common-service/scripts/postbuild.ts",
     "start": "cross-env BUILD=true node dist/index.js",
-    "start:prod": "cross-env BUILD=true npm run db:sync && cross-env BUILD=true npm run db:migration && npm run start",
+    "start:prod": "cross-env BUILD=true npm run db:migration && cross-env BUILD=true npm run db:sync && npm run start",
     "format": "prettier --config ./.prettierrc --write \"src/**/*.ts\"",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --fix --ext .ts",
