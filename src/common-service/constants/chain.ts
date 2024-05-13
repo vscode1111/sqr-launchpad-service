@@ -1,11 +1,7 @@
 import { DeployNetworkKey } from '~common-service';
 
-const chainConfig: Record<
-  DeployNetworkKey,
-  { erc20Decimals: number; minBalance: number; nativeSymbol: string }
-> = {
+const chainConfig: Record<DeployNetworkKey, { minBalance: number; nativeSymbol: string }> = {
   bsc: {
-    erc20Decimals: 8,
     minBalance: 0.01,
     nativeSymbol: 'BNB',
   },

@@ -3,11 +3,11 @@ import { Promisable } from '~common';
 export class CacheMachine {
   private map = new Map<string, any>();
 
-  public async call(
+  public async call<T = any>(
     keyFn: () => Promisable<string>,
     callbackFn: () => Promisable<any>,
     timeOut?: number,
-  ): Promise<any> {
+  ): Promise<T> {
     const key = await keyFn();
     if (this.map.has(key)) {
       return this.map.get(key);

@@ -2,6 +2,7 @@ import Bluebird from 'bluebird';
 import { Context } from 'moleculer';
 import { checkIfAddress, checkIfNumber, toDate, toNumberDecimals } from '~common';
 import {
+  CacheMachine,
   HANDLER_CONCURRENCY_COUNT,
   HandlerFunc,
   MissingServicePrivateKey,
@@ -9,7 +10,6 @@ import {
   checkIfContractType,
   checkIfNetwork,
   commonHandlers,
-  getChainConfig,
   web3Constants,
 } from '~common-service';
 import { StatsData } from '~core';
@@ -24,6 +24,8 @@ import {
   HandlerParams,
 } from '~types';
 import { getContractData } from '~utils';
+
+const cacheMachine = new CacheMachine();
 
 const handlerFunc: HandlerFunc = () => ({
   actions: {
@@ -101,16 +103,22 @@ const handlerFunc: HandlerFunc = () => ({
           throw new MissingServicePrivateKey();
         }
 
-        const { getSqrPaymentGateway: getSqrLaunchpad } = context;
-        const { erc20Decimals } = getChainConfig(network);
+        const { getSqrPaymentGateway, getErc20Token } = context;
 
-        const sqrLaunchpad = getSqrLaunchpad(contractAddress);
+        const sqrPaymentGateway = getSqrPaymentGateway(contractAddress);
 
         return Bluebird.map(
           transactionIds,
           async (transactionId) => {
-            const [transactionItem, dbTransactionItem] = await Promise.all([
-              sqrLaunchpad.fetchTransactionItem(transactionId),
+            const [transactionItem, erc20Decimals, dbTransactionItem] = await Promise.all([
+              sqrPaymentGateway.fetchTransactionItem(transactionId),
+              cacheMachine.call<number>(
+                () => `${contractAddress}-settings`,
+                async () => {
+                  const tokenAddress = await getSqrPaymentGateway(contractAddress).erc20Token();
+                  return Number(await getErc20Token(tokenAddress).decimals());
+                },
+              ),
               services.dataStorage.getTransactionItemByTransactionId(transactionId),
             ]);
 

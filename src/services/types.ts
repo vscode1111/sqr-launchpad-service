@@ -1,6 +1,6 @@
 import { JsonRpcProvider, Wallet } from 'ethers';
 import { ContractType } from '~db';
-import { SQRPaymentGateway, SQRVesting } from '~typechain-types';
+import { ERC20Token, SQRPaymentGateway, SQRVesting } from '~typechain-types';
 
 export type ContractTypeMap = Record<ContractType, string[]>;
 
@@ -10,4 +10,6 @@ export interface SqrLaunchpadContext {
   firstSqrPaymentGateway: SQRPaymentGateway;
   getSqrPaymentGateway: (address: string) => SQRPaymentGateway;
   firstSqrVesting: SQRVesting;
+  getSqrVesting: (address: string) => SQRVesting;
+  getErc20Token: (address: string) => ERC20Token;
 }

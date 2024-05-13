@@ -14,9 +14,6 @@ import { processDbTable } from "~db/tableNames";
 import { Contract, Network, Transaction } from "../raw";
 import { Account } from "./Account";
 
-export const paymentGatewayTransactionItemTypes = ['deposit'] as const;
-export type PaymentGatewayTransactionItemType = (typeof paymentGatewayTransactionItemTypes)[number];
-
 @Entity({ name: processDbTable.payment_gateway_transaction_items })
 export class PaymentGatewayTransactionItem  {
   @PrimaryGeneratedColumn()
@@ -46,13 +43,6 @@ export class PaymentGatewayTransactionItem  {
     }
   ])
   contract!: Contract;
-
-  @Column({
-    nullable: true,
-    type: "enum",
-    enum: paymentGatewayTransactionItemTypes,
-  })
-  type!: PaymentGatewayTransactionItemType;
 
   @ManyToOne(() => Account, (account) => account.accountTransactionItems)
   @JoinColumn({

@@ -91,8 +91,8 @@ describe('performance', () => {
       throw new MissingServicePrivateKey();
     }
 
-    const { getSqrPaymentGateway: getSqrLaunchpad, rawProvider, owner } = context;
-    const sqrLaunchpad = getSqrLaunchpad(CONTRACT_ADDRESS);
+    const { getSqrPaymentGateway, rawProvider, owner } = context;
+    const sqrLaunchpad = getSqrPaymentGateway(CONTRACT_ADDRESS);
 
     const paymentGatewayTransactionItems: TransactionStat[] = [];
 
@@ -177,8 +177,8 @@ describe('performance', () => {
       return;
     }
 
-    const { getSqrPaymentGateway: getSqrLaunchpad } = context;
-    const sqrLaunchpad = getSqrLaunchpad(CONTRACT_ADDRESS);
+    const { getSqrPaymentGateway } = context;
+    const sqrLaunchpad = getSqrPaymentGateway(CONTRACT_ADDRESS);
 
     let foundCountInDb = 0;
     const notFoundInDbList: TransactionStat[] = [];
