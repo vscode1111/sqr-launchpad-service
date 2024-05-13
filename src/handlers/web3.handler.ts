@@ -113,7 +113,7 @@ const handlerFunc: HandlerFunc = () => ({
             const [transactionItem, erc20Decimals, dbTransactionItem] = await Promise.all([
               sqrPaymentGateway.fetchTransactionItem(transactionId),
               cacheMachine.call<number>(
-                () => `${contractAddress}-settings`,
+                () => `${contractAddress}-contract-settings`,
                 async () => {
                   const tokenAddress = await getSqrPaymentGateway(contractAddress).erc20Token();
                   return Number(await getErc20Token(tokenAddress).decimals());
