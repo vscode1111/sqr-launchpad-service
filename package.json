@@ -1,6 +1,6 @@
 {
   "name": "sqr-launchpad-service",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "sqr-launchpad-service",
   "repository": {
     "type": "git",
@@ -79,7 +79,7 @@
     "commitizen": "^4.3.0",
     "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^9.2.0",
+    "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-node": "^4.1.0",
     "eslint-config-prettier": "^9.1.0",
