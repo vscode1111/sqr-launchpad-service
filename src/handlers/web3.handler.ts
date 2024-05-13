@@ -101,7 +101,7 @@ const handlerFunc: HandlerFunc = () => ({
           throw new MissingServicePrivateKey();
         }
 
-        const { getSqrLaunchpad } = context;
+        const { getSqrPaymentGateway: getSqrLaunchpad } = context;
         const { erc20Decimals } = getChainConfig(network);
 
         const sqrLaunchpad = getSqrLaunchpad(contractAddress);

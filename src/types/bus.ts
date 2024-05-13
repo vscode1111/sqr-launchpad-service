@@ -16,18 +16,37 @@ export interface TokenWeb3BusEventData {
   tx: string;
 }
 
-export type Web3BusEventType =
+export type Web3BusPaymentGatewayEventType =
   | 'FCFS_DEPOSIT'
   | `SQRP_GATED_DEPOSIT`
-  | 'WHITE_LIST_DEPOSIT'
-  | 'VESTING_CLAIM';
+  | 'WHITE_LIST_DEPOSIT';
 
-export interface Web3BusEvent {
-  event: Web3BusEventType;
-  data: Web3BusEventData;
-}
+export type Web3BusEventType = Web3BusPaymentGatewayEventType | 'VESTING_CLAIM';
 
-export type Web3BusEventDataBase = {
+// export interface Web3BusEvent {
+//   event: Web3BusEventType;
+//   data: Web3BusEventData;
+// }
+
+export type Web3BusEvent =
+  | {
+      event: Web3BusPaymentGatewayEventType;
+      data: Web3BusPaymentGatewayEventData;
+    }
+  | {
+      event: 'VESTING_CLAIM';
+      data: Web3BusVestingEventData;
+    };
+
+type Web3BusEventDataTx =
+  | {
+      tx: string;
+    }
+  | {
+      error: string;
+    };
+
+export type Web3BusPaymentGatewayEventData = {
   network: DeployNetworkKey;
   contractAddress: string;
   userId: string;
@@ -36,14 +55,12 @@ export type Web3BusEventDataBase = {
   amount: number;
   isSig: boolean;
   timestamp?: Date;
-};
+} & Web3BusEventDataTx;
 
-export type Web3BusEventData = Web3BusEventDataBase &
-  (
-    | {
-        tx: string;
-      }
-    | {
-        error: string;
-      }
-  );
+export type Web3BusVestingEventData = {
+  network: DeployNetworkKey;
+  contractAddress: string;
+  account: string;
+  amount: number;
+  timestamp?: Date;
+} & Web3BusEventDataTx;

@@ -3,7 +3,10 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { SQRLaunchpad, SQRLaunchpadInterface } from "../SQRLaunchpad";
+import type {
+  SQRPaymentGateway,
+  SQRPaymentGatewayInterface,
+} from "../SQRPaymentGateway";
 
 const _abi = [
   {
@@ -51,6 +54,11 @@ const _abi = [
   {
     inputs: [],
     name: "CloseDateMustBeGreaterThanCurrentTime",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "CloseDateMustBeGreaterThanStartDate",
     type: "error",
   },
   {
@@ -391,6 +399,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "VERSION",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "balanceLimit",
     outputs: [
       {
@@ -436,7 +457,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "calculateRemainWithraw",
+    name: "calculateRemainWithdraw",
     outputs: [
       {
         internalType: "uint256",
@@ -997,15 +1018,15 @@ const _abi = [
   },
 ] as const;
 
-export class SQRLaunchpad__factory {
+export class SQRPaymentGateway__factory {
   static readonly abi = _abi;
-  static createInterface(): SQRLaunchpadInterface {
-    return new Interface(_abi) as SQRLaunchpadInterface;
+  static createInterface(): SQRPaymentGatewayInterface {
+    return new Interface(_abi) as SQRPaymentGatewayInterface;
   }
   static connect(
     address: string,
     runner?: ContractRunner | null
-  ): SQRLaunchpad {
-    return new Contract(address, _abi, runner) as unknown as SQRLaunchpad;
+  ): SQRPaymentGateway {
+    return new Contract(address, _abi, runner) as unknown as SQRPaymentGateway;
   }
 }

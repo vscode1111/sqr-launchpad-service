@@ -28,6 +28,7 @@ export class DbWorker extends WorkerBase<DbWorkerStats> {
       _transaction: 0,
       _events: 0,
       paymentGatewayTransactionItems: 0,
+      vestingTransactionItems: 0,
     };
   }
 }

@@ -15,6 +15,7 @@ export async function dbSoftReset(queryRunner: DbQuerable): Promise<void> {
 
 export async function dbHardReset(queryRunner: DbQuerable): Promise<void> {
   await truncateTables(queryRunner, [
+    processDbTable.vesting_transaction_items,
     processDbTable.payment_gateway_transaction_items,
     processDbTable.accounts,
     rawDbTable._events,

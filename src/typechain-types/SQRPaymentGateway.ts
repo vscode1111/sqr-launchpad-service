@@ -41,15 +41,16 @@ export declare namespace SQRPaymentGateway {
   };
 }
 
-export interface SQRLaunchpadInterface extends Interface {
+export interface SQRPaymentGatewayInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "MAX_INT"
       | "UPGRADE_INTERFACE_VERSION"
+      | "VERSION"
       | "balanceLimit"
       | "balanceOf"
       | "calculateRemainDeposit"
-      | "calculateRemainWithraw"
+      | "calculateRemainWithdraw"
       | "changeBalanceLimit"
       | "closeDate"
       | "coldWallet"
@@ -95,6 +96,7 @@ export interface SQRLaunchpadInterface extends Interface {
     functionFragment: "UPGRADE_INTERFACE_VERSION",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "VERSION", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "balanceLimit",
     values?: undefined
@@ -105,7 +107,7 @@ export interface SQRLaunchpadInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "calculateRemainWithraw",
+    functionFragment: "calculateRemainWithdraw",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -238,6 +240,7 @@ export interface SQRLaunchpadInterface extends Interface {
     functionFragment: "UPGRADE_INTERFACE_VERSION",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "VERSION", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "balanceLimit",
     data: BytesLike
@@ -248,7 +251,7 @@ export interface SQRLaunchpadInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "calculateRemainWithraw",
+    functionFragment: "calculateRemainWithdraw",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -430,11 +433,11 @@ export namespace WithdrawEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface SQRLaunchpad extends BaseContract {
-  connect(runner?: ContractRunner | null): SQRLaunchpad;
+export interface SQRPaymentGateway extends BaseContract {
+  connect(runner?: ContractRunner | null): SQRPaymentGateway;
   waitForDeployment(): Promise<this>;
 
-  interface: SQRLaunchpadInterface;
+  interface: SQRPaymentGatewayInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -477,13 +480,15 @@ export interface SQRLaunchpad extends BaseContract {
 
   UPGRADE_INTERFACE_VERSION: TypedContractMethod<[], [string], "view">;
 
+  VERSION: TypedContractMethod<[], [string], "view">;
+
   balanceLimit: TypedContractMethod<[], [bigint], "view">;
 
   balanceOf: TypedContractMethod<[userId: string], [bigint], "view">;
 
   calculateRemainDeposit: TypedContractMethod<[], [bigint], "view">;
 
-  calculateRemainWithraw: TypedContractMethod<[], [bigint], "view">;
+  calculateRemainWithdraw: TypedContractMethod<[], [bigint], "view">;
 
   changeBalanceLimit: TypedContractMethod<
     [_balanceLimit: BigNumberish],
@@ -633,6 +638,9 @@ export interface SQRLaunchpad extends BaseContract {
     nameOrSignature: "UPGRADE_INTERFACE_VERSION"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "VERSION"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
     nameOrSignature: "balanceLimit"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
@@ -642,7 +650,7 @@ export interface SQRLaunchpad extends BaseContract {
     nameOrSignature: "calculateRemainDeposit"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "calculateRemainWithraw"
+    nameOrSignature: "calculateRemainWithdraw"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "changeBalanceLimit"

@@ -38,30 +38,35 @@ module.exports = {
     ownerPrivateKey: 'f3c17fde54d9923e81dcc9dd4742a217b33c9f3885def8557f8989d6da72bded',
     contracts: {
       bsc: [
-        {
-          address: '0x5D27C778759e078BBe6D11A6cd802E41459Fe852', //Main
-          blockNumber: 37764772,
-          type: 'fcfs',
-        },
-        {
-          address: '0xe561e403093A19A770d5EE515aC1d5434275c026', //Main
-          blockNumber: 37966266,
-          type: 'sqrp-gated',
-        },
-        {
-          address: '0x8e6585Dd84c1cDc340727f66183992AaCe7Bfc18', //Main
-          blockNumber: 37966320,
-          type: 'white-list',
-        },
-        {
-          address: '0x88fD85b2621b6C9548A404eA250376AC5BEFeC13', //Main
-          blockNumber: 38106957,
-          type: 'fcfs',
-        },
+        // {
+        //   address: '0x5D27C778759e078BBe6D11A6cd802E41459Fe852', //Main
+        //   blockNumber: 37764772,
+        //   type: 'fcfs',
+        // },
+        // {
+        //   address: '0xe561e403093A19A770d5EE515aC1d5434275c026', //Main
+        //   blockNumber: 37966266,
+        //   type: 'sqrp-gated',
+        // },
+        // {
+        //   address: '0x8e6585Dd84c1cDc340727f66183992AaCe7Bfc18', //Main
+        //   blockNumber: 37966320,
+        //   type: 'white-list',
+        // },
+        // {
+        //   address: '0x88fD85b2621b6C9548A404eA250376AC5BEFeC13', //Main
+        //   blockNumber: 38106957,
+        //   type: 'fcfs',
+        // },
         {
           address: '0x48f4b9a3a95d97b62d1958dbd5bd3f906242a762', //Main
           blockNumber: 38193410,
           type: 'sqrp-gated',
+        },
+        {
+          address: '0x4CfF5924b4B4C1cB6A02F1e1a542cc55A8bc6019', //Main
+          blockNumber: 38594496,
+          type: 'vesting',
         },
       ],
     },

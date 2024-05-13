@@ -6,3 +6,7 @@ export interface DepositInput {
   timestampLimit: number;
   signature: string;
 }
+
+export interface ContractSettings {
+  erc20Decimals: number;
+}

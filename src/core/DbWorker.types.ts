@@ -10,4 +10,5 @@ export interface DbWorkerStats {
   _transaction: number;
   _events: number;
   paymentGatewayTransactionItems: number;
+  vestingTransactionItems: number;
 }

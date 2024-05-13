@@ -14,11 +14,9 @@ import { processDbTable } from "~db/tableNames";
 import { Contract, Network, Transaction } from "../raw";
 import { Account } from "./Account";
 
-export const paymentGatewayTransactionItemTypes = ['deposit'] as const;
-export type PaymentGatewayTransactionItemType = (typeof paymentGatewayTransactionItemTypes)[number];
 
-@Entity({ name: processDbTable.payment_gateway_transaction_items })
-export class PaymentGatewayTransactionItem  {
+@Entity({ name: processDbTable.vesting_transaction_items })
+export class VestingTransactionItem  {
   @PrimaryGeneratedColumn()
   @Index()
   id!: number;
@@ -27,9 +25,9 @@ export class PaymentGatewayTransactionItem  {
   @Column({ type: "int" })
   networkId!: number;
 
-  @ManyToOne(() => Network, (network) => network.paymentGatewayTransactionItems)
+  @ManyToOne(() => Network, (network) => network.vestingTransactionItems)
   @JoinColumn({
-    name: P<PaymentGatewayTransactionItem>((p) => p.networkId),
+    name: P<VestingTransactionItem>((p) => p.networkId),
     referencedColumnName: P<Network>((p) => p.id),
   })
   network!: Network;
@@ -37,43 +35,25 @@ export class PaymentGatewayTransactionItem  {
   @ManyToOne(() => Contract, (contract) => contract.contractTransactionItems)
   @JoinColumn([
     {
-      name: P<PaymentGatewayTransactionItem>((p) => p.networkId),
+      name: P<VestingTransactionItem>((p) => p.networkId),
       referencedColumnName: P<Contract>((p) => p.networkId),
     },
     {
-      name: P<PaymentGatewayTransactionItem>((p) => p.contract),
+      name: P<VestingTransactionItem>((p) => p.contract),
       referencedColumnName: P<Contract>((p) => p.address),
     }
   ])
   contract!: Contract;
 
-  @Column({
-    nullable: true,
-    type: "enum",
-    enum: paymentGatewayTransactionItemTypes,
-  })
-  type!: PaymentGatewayTransactionItemType;
-
   @ManyToOne(() => Account, (account) => account.accountTransactionItems)
   @JoinColumn({
-    name: P<PaymentGatewayTransactionItem>((p) => p.account),
+    name: P<VestingTransactionItem>((p) => p.account),
     referencedColumnName: P<Account>((p) => p.address),
   })
   account!: Account;
 
-  @RelationId((p: PaymentGatewayTransactionItem) => p.account)
+  @RelationId((p: VestingTransactionItem) => p.account)
   accountAddress!: string;
-
-  @Index()
-  @Column()
-  userId!: string;
-
-  @Index()
-  @Column()
-  transactionId!: string;
-
-  @Column()
-  isSig!: boolean;
 
   @Column({ type: "float" })
   amount!: number;
@@ -85,11 +65,11 @@ export class PaymentGatewayTransactionItem  {
   @ManyToOne(() => Transaction)
   @JoinColumn([
     {
-      name: P<PaymentGatewayTransactionItem>((p) => p.networkId),
+      name: P<VestingTransactionItem>((p) => p.networkId),
       referencedColumnName: P<Transaction>((p) => p.networkId),
     },
     {
-      name: P<PaymentGatewayTransactionItem>((p) => p.transactionHash),
+      name: P<VestingTransactionItem>((p) => p.transactionHash),
       referencedColumnName: P<Transaction>((p) => p.hash),
     },
   ])
@@ -105,6 +85,6 @@ export class PaymentGatewayTransactionItem  {
   updatedAt!: Date;
 }
 
-export const CPaymentGatewayTransactionItem = C(PaymentGatewayTransactionItem);
-export const NPaymentGatewayTransactionItem = NF<PaymentGatewayTransactionItem>();
-export const PPaymentGatewayTransactionItem = NF2<PaymentGatewayTransactionItem>((name) => `${CPaymentGatewayTransactionItem}.${name}`);
+export const CVestingTransactionItem = C(VestingTransactionItem);
+export const NVestingTransactionItem = NF<VestingTransactionItem>();
+export const PVestingTransactionItem = NF2<VestingTransactionItem>((name) => `${CVestingTransactionItem}.${name}`);

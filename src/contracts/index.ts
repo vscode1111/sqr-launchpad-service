@@ -6,7 +6,7 @@ import {
   config,
 } from '~common-service';
 import { SqrLaunchpadContext } from '~services';
-import { SQRLaunchpad__factory } from '~typechain-types';
+import { SQRPaymentGateway__factory, SQRVesting__factory } from '~typechain-types';
 import { getContractData } from '~utils';
 
 export function getSqrLaunchpadContext(network: DeployNetworkKey): SqrLaunchpadContext {
@@ -18,12 +18,17 @@ export function getSqrLaunchpadContext(network: DeployNetworkKey): SqrLaunchpadC
 
   const { sqrLaunchpadData } = getContractData(network);
   const owner = new ethers.Wallet(config.web3.ownerPrivateKey ?? RANDOM_PRIVATE_KEY, rawProvider);
-  const firstSqrLaunchpad = SQRLaunchpad__factory.connect(sqrLaunchpadData[0].address, owner);
+  const firstSqrPaymentGateway = SQRPaymentGateway__factory.connect(
+    sqrLaunchpadData[0].address,
+    owner,
+  );
+  const firstSqrVesting = SQRVesting__factory.connect(sqrLaunchpadData[0].address, owner);
 
   return {
     owner,
     rawProvider,
-    firstSqrLaunchpad,
-    getSqrLaunchpad: (address: string) => SQRLaunchpad__factory.connect(address, owner),
+    firstSqrPaymentGateway,
+    getSqrPaymentGateway: (address: string) => SQRPaymentGateway__factory.connect(address, owner),
+    firstSqrVesting,
   };
 }

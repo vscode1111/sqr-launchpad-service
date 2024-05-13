@@ -5,12 +5,19 @@ import { DataStorageBase, DeployNetworkKey, logInfo, mapContract } from '~common
 import { DbWorkerStats } from '~core';
 import { getContractData } from '~utils';
 import { dataSourceConfig } from './dataSource';
-import { Account, Event, PaymentGatewayTransactionItem, Transaction } from './entities';
+import {
+  Account,
+  Event,
+  PaymentGatewayTransactionItem,
+  Transaction,
+  VestingTransactionItem,
+} from './entities';
 import { dbHardReset, dbSoftReset } from './utils';
 
 export class DataStorage extends DataStorageBase implements Started, Stopped {
   private accountRepository!: Repository<Account>;
-  private transactionItemRepository!: Repository<PaymentGatewayTransactionItem>;
+  private paymentGatewayTransactionItemRepository!: Repository<PaymentGatewayTransactionItem>;
+  private vestingTransactionItemRepository!: Repository<VestingTransactionItem>;
 
   constructor(broker: ServiceBroker) {
     super(broker, dataSourceConfig, (network) => getContractData(network).sqrLaunchpadData);
@@ -23,14 +30,20 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
   async initialize(): Promise<void> {
     await super.initialize();
     this.accountRepository = this.dataSource.getRepository(Account);
-    this.transactionItemRepository = this.dataSource.getRepository(PaymentGatewayTransactionItem);
+    this.paymentGatewayTransactionItemRepository = this.dataSource.getRepository(
+      PaymentGatewayTransactionItem,
+    );
+    this.vestingTransactionItemRepository = this.dataSource.getRepository(VestingTransactionItem);
     logInfo(this.broker, `Database was initialized`);
   }
 
   async getTableRowCounts(network?: DeployNetworkKey): Promise<DbWorkerStats> {
     let transactionFindOption: FindOptionsWhere<Transaction> = {};
     let eventFindOption: FindOptionsWhere<Event> = {};
-    let transactionItemFindOption: FindOptionsWhere<PaymentGatewayTransactionItem> = {};
+    let paymentGatewayTransactionItemFindOption: FindOptionsWhere<PaymentGatewayTransactionItem> =
+      {};
+    let vestingTransactionItemFindOption: FindOptionsWhere<VestingTransactionItem> = {};
+
     if (network) {
       const dbNetwork = await this.getNetwork(network);
 
@@ -42,32 +55,44 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
         networkId: dbNetwork.id,
       };
 
-      transactionItemFindOption = {
+      paymentGatewayTransactionItemFindOption = {
+        networkId: dbNetwork.id,
+      };
+
+      vestingTransactionItemFindOption = {
         networkId: dbNetwork.id,
       };
     }
+
     const contracts = await this.contractRepository.find({
       order: {
         id: 'ASC',
       },
     });
+
     const _transaction = await this.transactionRepository.countBy(transactionFindOption);
     const _events = await this.eventRepository.countBy(eventFindOption);
     const paymentGatewayTransactionItems =
-      await this.transactionItemRepository.countBy(transactionItemFindOption);
+      await this.paymentGatewayTransactionItemRepository.countBy(
+        paymentGatewayTransactionItemFindOption,
+      );
+    const vestingTransactionItems = await this.vestingTransactionItemRepository.countBy(
+      vestingTransactionItemFindOption,
+    );
 
     return {
       contracts: contracts.map(mapContract),
       _transaction,
       _events,
       paymentGatewayTransactionItems,
+      vestingTransactionItems,
     };
   }
 
   public async getTransactionItemByTransactionId(
     transactionId: string,
   ): Promise<PaymentGatewayTransactionItem | null> {
-    return this.transactionItemRepository.findOneBy({
+    return this.paymentGatewayTransactionItemRepository.findOneBy({
       transactionId,
     });
   }
@@ -91,7 +116,7 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
   public async getTransactionItemsByAccount(
     address: string,
   ): Promise<PaymentGatewayTransactionItem[]> {
-    return this.transactionItemRepository.findBy({
+    return this.paymentGatewayTransactionItemRepository.findBy({
       account: {
         address,
       },
@@ -99,7 +124,7 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
   }
 
   public async getTransactionItems(): Promise<PaymentGatewayTransactionItem[]> {
-    return this.transactionItemRepository.find();
+    return this.paymentGatewayTransactionItemRepository.find();
   }
 
   public async findAccount(address: string): Promise<Account | null> {
