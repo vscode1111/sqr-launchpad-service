@@ -68,6 +68,11 @@ module.exports = {
           blockNumber: 38594496,
           type: 'vesting',
         },
+        {
+          address: '0xFbAD518E930E6BBc723067D4C8aF9392FF63fE98', //Main
+          blockNumber: 38686885,
+          type: 'fcfs',
+        },
       ],
     },
     provider: {
