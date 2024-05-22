@@ -64,14 +64,19 @@ module.exports = {
           type: 'sqrp-gated',
         },
         {
-          address: '0x4CfF5924b4B4C1cB6A02F1e1a542cc55A8bc6019', //Main
-          blockNumber: 38594496,
-          type: 'vesting',
-        },
-        {
           address: '0xFbAD518E930E6BBc723067D4C8aF9392FF63fE98', //Main
           blockNumber: 38686885,
           type: 'fcfs',
+        },
+        // {
+        //   address: '0x4CfF5924b4B4C1cB6A02F1e1a542cc55A8bc6019', //Main
+        //   blockNumber: 38594496,
+        //   type: 'vesting',
+        // },
+        {
+          address: '0x3554A27F8e0869fE568DcF3ebE922Ce9200e16BE', //Main
+          blockNumber: 38801527,
+          type: 'vesting',
         },
       ],
     },

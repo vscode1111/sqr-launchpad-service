@@ -1,3 +1,4 @@
+import Decimal from 'decimal.js';
 import { BigNumberish, formatEther, formatUnits, parseUnits } from 'ethers';
 import { StringNumber } from './types';
 
@@ -10,7 +11,7 @@ export function toWei(value: BigNumberish, unitName?: BigNumberish): bigint {
 export function toWeiWithFixed(value: BigNumberish, unitName?: BigNumberish): bigint {
   let newValue = value;
   if (typeof value === 'number' && typeof unitName === 'number') {
-    newValue = value.toFixed(unitName);
+    newValue = new Decimal(value).toFixed(unitName);
   }
 
   return BigInt(parseUnits(String(newValue), unitName));

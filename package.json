@@ -1,6 +1,6 @@
 {
   "name": "sqr-launchpad-service",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "sqr-launchpad-service",
   "repository": {
     "type": "git",
@@ -44,6 +44,7 @@
     "bluebird": "^3.7.2",
     "cron": "3.1.7",
     "dayjs": "^1.11.11",
+    "decimal.js": "^10.4.3",
     "ethers": "^6.12.1",
     "joi": "^17.13.1",
     "merkletreejs": "^0.3.11",

@@ -6,16 +6,6 @@ export function getEnv(key: string) {
   return envKey;
 }
 
-export function checkVariable(key: any, name: string, print = false) {
-  if (!key) {
-    throw new Error(`Please set ${name} in ${global.ENV}/config.js`);
-  }
-  if (print) {
-    console.log(`${name}`, key);
-  }
-  return key;
-}
-
 export function checkConfig(config: object) {
   const entries = Object.entries(config);
   for (const entry of entries) {

@@ -1,4 +1,4 @@
-import { TransactionReceipt, TransactionResponse } from 'ethers';
+import { TransactionResponse } from 'ethers';
 // import { DeployNetworkKey } from '~common-service';
 import { PostReceiver, Promisable } from './types';
 
@@ -30,13 +30,6 @@ export const MISSING_SERVICE_PRIVATE_KEY = `Service hasn't correct private key o
 //     gasLimit,
 //   };
 // }
-
-export async function waitTx(
-  promise: Promise<TransactionResponse>,
-): Promise<TransactionReceipt | null> {
-  const tx = await promise;
-  return tx.wait();
-}
 
 export async function waitTxEx(
   promise: Promise<TransactionResponse>,

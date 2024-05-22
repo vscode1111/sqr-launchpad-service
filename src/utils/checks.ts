@@ -1,5 +1,4 @@
-import { checkVariable } from '~common';
-import { BaseConfig } from '~common-service';
+import { BaseConfig, checkVariable } from '~common-service';
 
 export function checkBaseConfig(config: BaseConfig) {
   checkVariable(config.web3.contracts, 'config.web3.contracts', true);

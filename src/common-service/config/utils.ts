@@ -20,3 +20,13 @@ export async function modifyConfig(config: BaseConfig) {
 
   // config.web3.ownerPrivateKey = ownerPrivateKey;
 }
+
+export function checkVariable(key: any, name: string, print = false) {
+  if (!key) {
+    throw new Error(`Please set ${name} in ${global.ENV}/config.js`);
+  }
+  if (print) {
+    console.log(`${name}`, key);
+  }
+  return key;
+}

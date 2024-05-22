@@ -1,5 +1,5 @@
 import { HDNodeWallet, Wallet, ethers } from 'ethers';
-import { Errors } from 'moleculer';
+import { ApiError } from './checks';
 import { keccak256FromStr } from './cryptography';
 
 export async function generateRandomWallet(): Promise<HDNodeWallet> {
@@ -15,7 +15,7 @@ export function generateRandomWalletByPrivateKey(
   const wallet = new ethers.Wallet(newPrivateKey, rawProvider);
   const isAddress = ethers.isAddress(wallet.address);
   if (!isAddress) {
-    throw new Errors.MoleculerError('Not valid EVM address was generated', 500, 'INTERNAL_ERROR');
+    throw new ApiError('Not valid EVM address was generated', 500);
   }
   return wallet;
 }
