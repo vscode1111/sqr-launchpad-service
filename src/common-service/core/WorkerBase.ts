@@ -1,6 +1,6 @@
 import BPromise from 'bluebird';
 import { ServiceBroker } from 'moleculer';
-import { Promisable, parseError, parseStack } from '~common';
+import { MINUTES, MS_IN_SEC, Promisable, parseError, parseStack } from '~common';
 import { DeployNetworkKey, WorkerController } from '../types';
 import { logError } from '../utils';
 import { ServiceBrokerBase } from './ServiceBrokerBase';
@@ -19,8 +19,7 @@ export class WorkerBase<T = any> extends ServiceBrokerBase implements WorkerCont
     network: DeployNetworkKey,
     workerName: string,
     tickDivider = 30,
-    // timeOut = MINUTES * MS_IN_SEC,
-    timeOut = 100,
+    timeOut = MINUTES * MS_IN_SEC,
   ) {
     super(broker);
     this.network = network;
