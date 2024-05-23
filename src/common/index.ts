@@ -1,4 +1,4 @@
-//VERSION 0.0.8;
+//VERSION 0.0.9;
 export * from './DiffArray';
 export * from './Lock';
 export * from './SpeedCounter';

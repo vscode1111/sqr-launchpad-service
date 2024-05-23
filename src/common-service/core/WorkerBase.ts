@@ -1,3 +1,4 @@
+import BPromise from 'bluebird';
 import { ServiceBroker } from 'moleculer';
 import { Promisable, parseError, parseStack } from '~common';
 import { DeployNetworkKey, WorkerController } from '../types';
@@ -11,18 +12,22 @@ export class WorkerBase<T = any> extends ServiceBrokerBase implements WorkerCont
   protected statsDataBase!: WorkerBaseStats;
   protected tickDivider: number;
   protected started: boolean;
+  protected timeOut: number;
 
   constructor(
     broker: ServiceBroker,
     network: DeployNetworkKey,
     workerName: string,
     tickDivider = 30,
+    // timeOut = MINUTES * MS_IN_SEC,
+    timeOut = 100,
   ) {
     super(broker);
     this.network = network;
     this.workerName = workerName;
     this.tickDivider = tickDivider;
     this.started = false;
+    this.timeOut = timeOut;
     this.statsDataBase = {
       executing: false,
       successCount: 0,
@@ -50,7 +55,10 @@ export class WorkerBase<T = any> extends ServiceBrokerBase implements WorkerCont
     const t0 = new Date().getTime();
 
     try {
-      await this.work(tickId);
+      // await this.work(tickId);
+      const bPromise = new BPromise((resolve) => this.work(tickId).then(() => resolve()));
+      await bPromise.timeout(this.timeOut);
+
       this.statsDataBase.successCount++;
       this.statsDataBase.lastSuccessDate = new Date();
       this.statsDataBase.lastError = undefined;
