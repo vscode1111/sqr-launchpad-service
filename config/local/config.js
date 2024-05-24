@@ -42,6 +42,7 @@ module.exports = {
           address: '0x5D27C778759e078BBe6D11A6cd802E41459Fe852',
           blockNumber: 37764772,
           type: 'fcfs',
+          disable: true,
         },
         {
           address: '0xe561e403093A19A770d5EE515aC1d5434275c026',
@@ -138,7 +139,7 @@ module.exports = {
     provider: {
       bsc: {
         http: 'https://rpc.ankr.com/bsc/0a92c9288ddd85181db59c48d2eae9d07873954be63e06893de5b4cbcb37842e',
-        // blockNumberFilterSize: 0,
+        blockNumberFilterSize: 0,
         blockNumberRange: 2000,
         blockNumberOffset: 10,
       },

@@ -32,8 +32,8 @@ export interface ApiConfig {
 export interface Web3ConfigContract {
   address: string;
   blockNumber: number;
-  disable?: boolean;
   type?: string;
+  disable?: boolean;
 }
 
 export interface Web3Config {
