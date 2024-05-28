@@ -1,4 +1,9 @@
-//VERSION 0.0.10;
+//VERSION 0.0.12;
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
+
 export * from './DiffArray';
 export * from './Lock';
 export * from './SpeedCounter';
