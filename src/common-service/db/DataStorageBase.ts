@@ -18,15 +18,15 @@ const CREATED_DATABASE = false;
 export class DataStorageBase extends ServiceBrokerBase implements Started, Stopped {
   protected dataSourceOptions: PostgresConnectionOptions;
   protected dataSource!: DataSource;
-  protected getContractDataFn: GetContractDataFn;
   protected networkRepository!: Repository<Network>;
   protected contractRepository!: Repository<Contract>;
   protected eventRepository!: Repository<Event>;
   protected transactionRepository!: Repository<Transaction>;
   protected isDestroyed: boolean;
+  protected idLock: IdLock;
+  protected getContractDataFn: GetContractDataFn;
   protected getBlockFn!: GetBlockFn;
   protected getTransactionByHashFn!: GetTransactionByHashFn;
-  protected idLock: IdLock;
 
   constructor(
     broker: ServiceBroker,
