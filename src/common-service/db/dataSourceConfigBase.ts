@@ -24,4 +24,10 @@ export const dataSourceConfigBase: PostgresConnectionOptions = {
   username: config.connections?.pg?.user,
   password: config.connections?.pg?.password,
   database: config.connections?.pg?.database,
+  extra: {
+    poolSize: 20,
+    connectionTimeoutMillis: 2000,
+    query_timeout: 1000,
+    statement_timeout: 1000,
+  },
 };
