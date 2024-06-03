@@ -42,7 +42,7 @@ module.exports = {
           address: '0x5D27C778759e078BBe6D11A6cd802E41459Fe852',
           blockNumber: 37764772,
           type: 'fcfs',
-          disable: true,
+          disable: false,
         },
         {
           address: '0xe561e403093A19A770d5EE515aC1d5434275c026',

@@ -2,7 +2,7 @@ import Bluebird from 'bluebird';
 import { toHex } from '~common';
 import {
   BlockNumberFilter,
-  INDEXER_CONCURRENCY_COUNT,
+  DB_CONCURRENCY_COUNT,
   Provider,
   StorageProcessor,
   WorkerBase,
@@ -147,7 +147,7 @@ export class IndexerWorker extends WorkerBase<IndexerWorkerStats> {
           });
         }
       },
-      { concurrency: INDEXER_CONCURRENCY_COUNT },
+      { concurrency: DB_CONCURRENCY_COUNT },
     );
   }
 

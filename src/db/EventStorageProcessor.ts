@@ -14,8 +14,8 @@ import {
   toNumberDecimals,
 } from '~common';
 import {
+  DB_CONCURRENCY_COUNT,
   DeployNetworkKey,
-  INDEXER_CONCURRENCY_COUNT,
   ServiceBrokerBase,
   StorageProcessor,
   findContracts,
@@ -151,7 +151,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
           }
         },
         {
-          concurrency: INDEXER_CONCURRENCY_COUNT,
+          concurrency: DB_CONCURRENCY_COUNT,
         },
       );
 
@@ -444,7 +444,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
           contract.processBlockNumber = to + 1;
           await contractRepository.save(contract);
         },
-        { concurrency: INDEXER_CONCURRENCY_COUNT },
+        { concurrency: DB_CONCURRENCY_COUNT },
       );
     });
   }
