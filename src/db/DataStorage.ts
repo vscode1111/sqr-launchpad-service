@@ -50,25 +50,26 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
 
     if (network) {
       const dbNetwork = await this.getNetwork(network);
+      const networkId = dbNetwork.id;
 
       transactionFindOption = {
-        networkId: dbNetwork.id,
+        networkId,
       };
 
       eventFindOption = {
-        networkId: dbNetwork.id,
+        networkId,
       };
 
       paymentGatewayTransactionItemFindOption = {
-        networkId: dbNetwork.id,
+        networkId,
       };
 
       vestingTransactionItemFindOption = {
-        networkId: dbNetwork.id,
+        networkId,
       };
 
       proRataTransactionItemFindOption = {
-        networkId: dbNetwork.id,
+        networkId,
       };
     }
 

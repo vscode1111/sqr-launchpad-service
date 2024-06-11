@@ -251,7 +251,6 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
   ) {
     const topic0 = event.topics.length > 0 ? event.topics[0] : 'topic0';
     return this.idLock.tryInvoke(
-      // `event_${event.transactionHash}_${topic0}`,
       `event_${event.transactionHash}_${topic0}_${event.logIndex}`,
       async () => {
         const dbEvent = new Event();
