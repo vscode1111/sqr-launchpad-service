@@ -1,4 +1,4 @@
-export interface DepositInput {
+export interface PaymentGatewayDepositInput {
   userId: string;
   transactionId: string;
   account: string;
@@ -7,6 +7,10 @@ export interface DepositInput {
   signature: string;
 }
 
-export interface ContractSettings {
-  erc20Decimals: number;
+export interface ProRataDepositInput {
+  account: string;
+  amount: bigint;
+  transactionId: string;
+  timestampLimit: number;
+  signature: string;
 }

@@ -7,7 +7,6 @@ import {
   HandlerFunc,
   MissingServicePrivateKey,
   ZERO,
-  checkIfContractType,
   checkIfNetwork,
   commonHandlers,
   web3Constants,
@@ -19,8 +18,10 @@ import {
   GetBlockResponse,
   GetNetworkAddressesResponse,
   GetNetworkParams,
-  GetTransactionItemsParams,
-  GetTransactionItemsResponse,
+  GetPaymentGatewayTransactionItemsParams,
+  GetPaymentGatewayTransactionItemsResponse,
+  GetProRataTransactionItemsParams,
+  GetProRataTransactionItemsResponse,
   HandlerParams,
 } from '~types';
 import { getContractData } from '~utils';
@@ -83,18 +84,16 @@ const handlerFunc: HandlerFunc = () => ({
       },
     },
 
-    'network.transaction-items.transaction-ids': {
+    'network.payment-gateway-contract.transaction-ids': {
       params: {
         network: { type: 'string' },
-        contractType: { type: 'string' },
         contractAddress: { type: 'string' },
         transactionIds: { type: 'array', items: { type: 'string' } },
-      } as HandlerParams<GetTransactionItemsParams>,
+      } as HandlerParams<GetPaymentGatewayTransactionItemsParams>,
       async handler(
-        ctx: Context<GetTransactionItemsParams>,
-      ): Promise<GetTransactionItemsResponse[]> {
+        ctx: Context<GetPaymentGatewayTransactionItemsParams>,
+      ): Promise<GetPaymentGatewayTransactionItemsResponse[]> {
         const network = checkIfNetwork(ctx?.params?.network);
-        checkIfContractType(ctx?.params?.contractType);
         const contractAddress = checkIfAddress(ctx?.params?.contractAddress);
         const transactionIds = ctx?.params.transactionIds;
 
@@ -110,21 +109,81 @@ const handlerFunc: HandlerFunc = () => ({
         return Bluebird.map(
           transactionIds,
           async (transactionId) => {
-            const [transactionItem, erc20Decimals, dbTransactionItem] = await Promise.all([
+            const [transactionItem, erc20Decimals, dbPaymentGatewayTransactionItem] =
+              await Promise.all([
+                sqrPaymentGateway.fetchTransactionItem(transactionId),
+                cacheMachine.call<number>(
+                  () => `${contractAddress}-contract-settings`,
+                  async () => {
+                    const tokenAddress = await getSqrPaymentGateway(contractAddress).erc20Token();
+                    return Number(await getErc20Token(tokenAddress).decimals());
+                  },
+                ),
+                services.dataStorage.getPaymentGatewayTransactionItemByTransactionId(transactionId),
+              ]);
+
+            const { amount } = transactionItem;
+
+            const tx = dbPaymentGatewayTransactionItem?.transactionHash;
+            if (amount !== ZERO) {
+              return {
+                transactionId,
+                amount: toNumberDecimals(amount, erc20Decimals),
+                tx,
+                status: 'exists',
+              };
+            }
+
+            return {
+              transactionId,
+              status: 'missing',
+            };
+          },
+          { concurrency: HANDLER_CONCURRENCY_COUNT },
+        );
+      },
+    },
+
+    'network.pro-rata-contract.transaction-ids': {
+      params: {
+        network: { type: 'string' },
+        contractAddress: { type: 'string' },
+        transactionIds: { type: 'array', items: { type: 'string' } },
+      } as HandlerParams<GetProRataTransactionItemsParams>,
+      async handler(
+        ctx: Context<GetProRataTransactionItemsParams>,
+      ): Promise<GetProRataTransactionItemsResponse[]> {
+        const network = checkIfNetwork(ctx?.params?.network);
+        const contractAddress = checkIfAddress(ctx?.params?.contractAddress);
+        const transactionIds = ctx?.params.transactionIds;
+
+        const context = services.getNetworkContext(network);
+        if (!context) {
+          throw new MissingServicePrivateKey();
+        }
+
+        const { getSqrpProRata, getErc20Token } = context;
+
+        const sqrPaymentGateway = getSqrpProRata(contractAddress);
+
+        return Bluebird.map(
+          transactionIds,
+          async (transactionId) => {
+            const [transactionItem, erc20Decimals, dbProRataTransactionItem] = await Promise.all([
               sqrPaymentGateway.fetchTransactionItem(transactionId),
               cacheMachine.call<number>(
                 () => `${contractAddress}-contract-settings`,
                 async () => {
-                  const tokenAddress = await getSqrPaymentGateway(contractAddress).erc20Token();
+                  const tokenAddress = await getSqrpProRata(contractAddress).baseToken();
                   return Number(await getErc20Token(tokenAddress).decimals());
                 },
               ),
-              services.dataStorage.getTransactionItemByTransactionId(transactionId),
+              services.dataStorage.getProRataTransactionItemByTransactionId(transactionId),
             ]);
 
             const { amount } = transactionItem;
 
-            const tx = dbTransactionItem?.transactionHash;
+            const tx = dbProRataTransactionItem?.transactionHash;
             if (amount !== ZERO) {
               return {
                 transactionId,

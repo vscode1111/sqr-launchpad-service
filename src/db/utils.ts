@@ -25,3 +25,7 @@ export async function dbHardReset(queryRunner: DbQuerable): Promise<void> {
     rawDbTable._networks,
   ]);
 }
+
+export function getCacheContractSettingKey(networkName: string, contractAddress: string) {
+  return `CONTRACT-SETTINGS-${networkName}-${contractAddress}`;
+}

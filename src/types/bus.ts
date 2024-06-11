@@ -1,4 +1,5 @@
 import { DeployNetworkKey } from '~common-service';
+import { ContractType } from '~db';
 
 export type TokenWeb3BusEventType = 'TRANSFER_TX_SUCCESS';
 
@@ -16,27 +17,27 @@ export interface TokenWeb3BusEventData {
   tx: string;
 }
 
-export type Web3BusPaymentGatewayEventType =
-  | 'FCFS_DEPOSIT'
-  | `SQRP_GATED_DEPOSIT`
-  | 'WHITE_LIST_DEPOSIT';
-
-export type Web3BusEventType = Web3BusPaymentGatewayEventType | 'VESTING_CLAIM';
-
-// export interface Web3BusEvent {
-//   event: Web3BusEventType;
-//   data: Web3BusEventData;
-// }
+export type Web3BusEventType = 'PAYMENT_GATEWAY' | 'VESTING' | 'PRO_RATA';
 
 export type Web3BusEvent =
   | {
-      event: Web3BusPaymentGatewayEventType;
-      data: Web3BusPaymentGatewayEventData;
+      event: 'PAYMENT_GATEWAY_CONTACT_DEPOSIT';
+      data: Web3BusPaymentGatewayDepositEventData;
     }
   | {
-      event: 'VESTING_CLAIM';
-      data: Web3BusVestingEventData;
+      event: 'VESTING_CONTACT_CLAIM';
+      data: Web3BusVestingClaimEventData;
+    }
+  | {
+      event: 'PRO_RATA_CONTACT_DEPOSIT';
+      data: Web3BusProRataDepositEventData;
+    }
+  | {
+      event: 'PRO_RATA_CONTACT_REFUND';
+      data: Web3BusProRataRefundEventData;
     };
+
+//SQR_P_PRO_RATA_CONTRACT_DEPOSIT
 
 type Web3BusEventDataTx =
   | {
@@ -46,8 +47,9 @@ type Web3BusEventDataTx =
       error: string;
     };
 
-export type Web3BusPaymentGatewayEventData = {
+export type Web3BusPaymentGatewayDepositEventData = {
   network: DeployNetworkKey;
+  contractType: ContractType;
   contractAddress: string;
   userId: string;
   transactionId: string;
@@ -57,8 +59,28 @@ export type Web3BusPaymentGatewayEventData = {
   timestamp?: Date;
 } & Web3BusEventDataTx;
 
-export type Web3BusVestingEventData = {
+export type Web3BusVestingClaimEventData = {
   network: DeployNetworkKey;
+  contractAddress: string;
+  account: string;
+  amount: number;
+  timestamp?: Date;
+} & Web3BusEventDataTx;
+
+export type Web3BusProRataDepositEventData = {
+  network: DeployNetworkKey;
+  contractType: ContractType;
+  contractAddress: string;
+  account: string;
+  amount: number;
+  transactionId?: string;
+  isSig?: boolean;
+  timestamp?: Date;
+} & Web3BusEventDataTx;
+
+export type Web3BusProRataRefundEventData = {
+  network: DeployNetworkKey;
+  contractType: ContractType;
   contractAddress: string;
   account: string;
   amount: number;

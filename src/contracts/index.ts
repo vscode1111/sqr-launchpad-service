@@ -10,6 +10,7 @@ import {
   ERC20Token__factory,
   SQRPaymentGateway__factory,
   SQRVesting__factory,
+  SQRpProRata__factory,
 } from '~typechain-types';
 import { getContractData } from '~utils';
 
@@ -28,14 +29,17 @@ export function getSqrLaunchpadContext(network: DeployNetworkKey): SqrLaunchpadC
     owner,
   );
   const firstSqrVesting = SQRVesting__factory.connect(sqrLaunchpadData[0].address, owner);
+  const firstSqrpProRata = SQRpProRata__factory.connect(sqrLaunchpadData[0].address, owner);
 
   return {
     owner,
     rawProvider,
+    getErc20Token: (address: string) => ERC20Token__factory.connect(address, owner),
     firstSqrPaymentGateway,
     getSqrPaymentGateway: (address: string) => SQRPaymentGateway__factory.connect(address, owner),
     firstSqrVesting,
     getSqrVesting: (address: string) => SQRVesting__factory.connect(address, owner),
-    getErc20Token: (address: string) => ERC20Token__factory.connect(address, owner),
+    firstSqrpProRata,
+    getSqrpProRata: (address: string) => SQRpProRata__factory.connect(address, owner),
   };
 }

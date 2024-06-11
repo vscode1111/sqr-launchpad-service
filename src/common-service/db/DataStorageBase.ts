@@ -250,29 +250,33 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     eventRepository: Repository<Event>,
   ) {
     const topic0 = event.topics.length > 0 ? event.topics[0] : 'topic0';
-    return this.idLock.tryInvoke(`event_${event.transactionHash}_${topic0}`, async () => {
-      const dbEvent = new Event();
+    return this.idLock.tryInvoke(
+      // `event_${event.transactionHash}_${topic0}`,
+      `event_${event.transactionHash}_${topic0}_${event.logIndex}`,
+      async () => {
+        const dbEvent = new Event();
 
-      dbEvent.network = dbNetwork;
-      dbEvent.transactionHash = dbTransaction;
-      dbEvent.topic0 = event.topics[0];
-      if (event.topics[1]) {
-        dbEvent.topic1 = event.topics[1];
-      }
-      if (event.topics[2]) {
-        dbEvent.topic2 = event.topics[2];
-      }
-      if (event.topics[3]) {
-        dbEvent.topic3 = event.topics[3];
-      }
-      dbEvent.data = event.data;
-      dbEvent.transactionIndex = event.transactionIndex;
-      dbEvent.contract = dbAddress;
-      dbEvent.logIndex = event.logIndex;
-      dbEvent.removed = event.removed;
+        dbEvent.network = dbNetwork;
+        dbEvent.transactionHash = dbTransaction;
+        dbEvent.topic0 = event.topics[0];
+        if (event.topics[1]) {
+          dbEvent.topic1 = event.topics[1];
+        }
+        if (event.topics[2]) {
+          dbEvent.topic2 = event.topics[2];
+        }
+        if (event.topics[3]) {
+          dbEvent.topic3 = event.topics[3];
+        }
+        dbEvent.data = event.data;
+        dbEvent.transactionIndex = event.transactionIndex;
+        dbEvent.contract = dbAddress;
+        dbEvent.logIndex = event.logIndex;
+        dbEvent.removed = event.removed;
 
-      await eventRepository.save(dbEvent);
-    });
+        await eventRepository.save(dbEvent);
+      },
+    );
   }
 
   async saveEvents({

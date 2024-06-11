@@ -14,8 +14,11 @@ import { processDbTable } from "~db/tableNames";
 import { Contract, Network, Transaction } from "../raw";
 import { Account } from "./Account";
 
-@Entity({ name: processDbTable.vesting_transaction_items })
-export class VestingTransactionItem  {
+export const proRataTransactionItemType = ['deposit', 'refund'] as const;
+export type ProRataTransactionItemType = (typeof proRataTransactionItemType)[number];
+
+@Entity({ name: processDbTable.pro_rata_transaction_items })
+export class ProRataTransactionItem  {
   @PrimaryGeneratedColumn()
   @Index()
   id!: number;
@@ -24,9 +27,9 @@ export class VestingTransactionItem  {
   @Column({ type: "int" })
   networkId!: number;
 
-  @ManyToOne(() => Network, (network) => network.vestingTransactionItems)
+  @ManyToOne(() => Network, (network) => network.proRataTransactionItems)
   @JoinColumn({
-    name: P<VestingTransactionItem>((p) => p.networkId),
+    name: P<ProRataTransactionItem>((p) => p.networkId),
     referencedColumnName: P<Network>((p) => p.id),
   })
   network!: Network;
@@ -34,25 +37,38 @@ export class VestingTransactionItem  {
   @ManyToOne(() => Contract, (contract) => contract.contractTransactionItems)
   @JoinColumn([
     {
-      name: P<VestingTransactionItem>((p) => p.networkId),
+      name: P<ProRataTransactionItem>((p) => p.networkId),
       referencedColumnName: P<Contract>((p) => p.networkId),
     },
     {
-      name: P<VestingTransactionItem>((p) => p.contract),
+      name: P<ProRataTransactionItem>((p) => p.contract),
       referencedColumnName: P<Contract>((p) => p.address),
     }
   ])
   contract!: Contract;
 
+  @Column({
+    type: "enum",
+    enum: proRataTransactionItemType,
+  })
+  type!: ProRataTransactionItemType;
+
   @ManyToOne(() => Account, (account) => account.accountTransactionItems)
   @JoinColumn({
-    name: P<VestingTransactionItem>((p) => p.account),
+    name: P<ProRataTransactionItem>((p) => p.account),
     referencedColumnName: P<Account>((p) => p.address),
   })
   account!: Account;
 
-  @RelationId((p: VestingTransactionItem) => p.account)
+  @RelationId((p: ProRataTransactionItem) => p.account)
   accountAddress!: string;
+
+  @Index()
+  @Column({nullable: true})
+  transactionId!: string;
+
+  @Column({nullable: true})
+  isSig!: boolean;
 
   @Column({ type: "float" })
   amount!: number;
@@ -64,11 +80,11 @@ export class VestingTransactionItem  {
   @ManyToOne(() => Transaction)
   @JoinColumn([
     {
-      name: P<VestingTransactionItem>((p) => p.networkId),
+      name: P<ProRataTransactionItem>((p) => p.networkId),
       referencedColumnName: P<Transaction>((p) => p.networkId),
     },
     {
-      name: P<VestingTransactionItem>((p) => p.transactionHash),
+      name: P<ProRataTransactionItem>((p) => p.transactionHash),
       referencedColumnName: P<Transaction>((p) => p.hash),
     },
   ])
@@ -84,6 +100,6 @@ export class VestingTransactionItem  {
   updatedAt!: Date;
 }
 
-export const CVestingTransactionItem = C(VestingTransactionItem);
-export const NVestingTransactionItem = NF<VestingTransactionItem>();
-export const PVestingTransactionItem = NF2<VestingTransactionItem>((name) => `${CVestingTransactionItem}.${name}`);
+export const CProRataTransactionItem = C(ProRataTransactionItem);
+export const NProRataTransactionItem = NF<ProRataTransactionItem>();
+export const PProRataTransactionItem = NF2<ProRataTransactionItem>((name) => `${CProRataTransactionItem}.${name}`);

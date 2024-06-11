@@ -10,6 +10,7 @@ import {
 import { C, NF, NF2 } from "~common";
 import { rawDbTable } from "../../tableNames";
 import { PaymentGatewayTransactionItem } from "../process";
+import { ProRataTransactionItem } from "../process/ProRataTransactionItem";
 import { VestingTransactionItem } from "../process/VestingTransactionItem";
 import { Block } from "./Block";
 import { Contract } from "./Contract";
@@ -44,6 +45,9 @@ export class Network {
   
   @OneToMany(() => VestingTransactionItem, (item) => item.network)
   vestingTransactionItems!: VestingTransactionItem[];
+
+  @OneToMany(() => ProRataTransactionItem, (item) => item.network)
+  proRataTransactionItems!: ProRataTransactionItem[];
 }
 
 export const CNetwork = C(Network);

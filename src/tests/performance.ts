@@ -52,7 +52,6 @@ async function getIndexerTransactionItems(
   transactionIds: string[],
 ): Promise<GetTransactionItemsResponse> {
   const requestBody: Omit<GetTransactionItemsParams, 'network'> = {
-    contractType: 'fcfs',
     contractAddress: CONTRACT_ADDRESS,
     transactionIds,
   };

@@ -15,7 +15,7 @@ import { PaymentGatewayTransactionItem } from "../process";
 import { Event } from "./Event";
 import { Network } from "./Network";
 
-export const contractTypes = ['fcfs', 'sqrp-gated', 'white-list', 'vesting'] as const;
+export const contractTypes = ['fcfs', 'sqrp-gated', 'white-list', 'vesting', 'pro-rata', 'pro-rata-sqrp-gated'] as const;
 export type ContractType = (typeof contractTypes)[number];
 const DEFAULT_CONTRACT_TYPE: ContractType = 'fcfs';
 

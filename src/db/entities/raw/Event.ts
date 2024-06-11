@@ -40,6 +40,9 @@ export class Event {
   @Index()
   topic0!: string;
 
+  @PrimaryColumn()
+  logIndex!: number;
+
   @Column({ nullable: true })
   @Index()
   topic1!: string;
@@ -69,8 +72,6 @@ export class Event {
   })
   contract!: Contract;
 
-  @Column()
-  logIndex!: number;
 
   @Column()
   removed!: boolean;

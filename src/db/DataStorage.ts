@@ -12,12 +12,14 @@ import {
   Transaction,
   VestingTransactionItem,
 } from './entities';
+import { ProRataTransactionItem } from './entities/process/ProRataTransactionItem';
 import { dbHardReset, dbSoftReset } from './utils';
 
 export class DataStorage extends DataStorageBase implements Started, Stopped {
   private accountRepository!: Repository<Account>;
   private paymentGatewayTransactionItemRepository!: Repository<PaymentGatewayTransactionItem>;
   private vestingTransactionItemRepository!: Repository<VestingTransactionItem>;
+  private proRataTransactionItemRepository!: Repository<ProRataTransactionItem>;
 
   constructor(broker: ServiceBroker) {
     super(broker, dataSourceConfig, (network) => getContractData(network).sqrLaunchpadData);
@@ -34,6 +36,7 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
       PaymentGatewayTransactionItem,
     );
     this.vestingTransactionItemRepository = this.dataSource.getRepository(VestingTransactionItem);
+    this.proRataTransactionItemRepository = this.dataSource.getRepository(ProRataTransactionItem);
     logInfo(this.broker, `Database was initialized`);
   }
 
@@ -43,6 +46,7 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
     let paymentGatewayTransactionItemFindOption: FindOptionsWhere<PaymentGatewayTransactionItem> =
       {};
     let vestingTransactionItemFindOption: FindOptionsWhere<VestingTransactionItem> = {};
+    let proRataTransactionItemFindOption: FindOptionsWhere<ProRataTransactionItem> = {};
 
     if (network) {
       const dbNetwork = await this.getNetwork(network);
@@ -62,6 +66,10 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
       vestingTransactionItemFindOption = {
         networkId: dbNetwork.id,
       };
+
+      proRataTransactionItemFindOption = {
+        networkId: dbNetwork.id,
+      };
     }
 
     const contracts = await this.contractRepository.find({
@@ -79,6 +87,9 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
     const vestingTransactionItems = await this.vestingTransactionItemRepository.countBy(
       vestingTransactionItemFindOption,
     );
+    const proRataTransactionItems = await this.proRataTransactionItemRepository.countBy(
+      proRataTransactionItemFindOption,
+    );
 
     return {
       contracts: contracts.map(mapContract),
@@ -86,13 +97,22 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
       _events,
       paymentGatewayTransactionItems,
       vestingTransactionItems,
+      proRataTransactionItems,
     };
   }
 
-  public async getTransactionItemByTransactionId(
+  public async getPaymentGatewayTransactionItemByTransactionId(
     transactionId: string,
   ): Promise<PaymentGatewayTransactionItem | null> {
     return this.paymentGatewayTransactionItemRepository.findOneBy({
+      transactionId,
+    });
+  }
+
+  public async getProRataTransactionItemByTransactionId(
+    transactionId: string,
+  ): Promise<ProRataTransactionItem | null> {
+    return this.proRataTransactionItemRepository.findOneBy({
       transactionId,
     });
   }

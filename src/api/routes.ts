@@ -10,7 +10,8 @@ export const routes: ApiRouteSchema[] = modifyRoutes([
     aliases: {
       'GET addresses': `${apiPrefix}network.addresses`,
       'GET blocks/:id': `${apiPrefix}network.blocks.id`,
-      'POST transaction-items': `${apiPrefix}network.transaction-items.transaction-ids`,
+      'POST payment-gateway-contract/transaction-items': `${apiPrefix}network.payment-gateway-contract.transaction-ids`,
+      'POST pro-rata-contract/transaction-items': `${apiPrefix}network.pro-rata-contract.transaction-ids`,
     },
   },
   {

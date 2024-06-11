@@ -14,7 +14,7 @@ const path = require('path');
 const environmentConfig = require(path.join(__dirname, global.ENV, 'config'));
 
 const commonConfig = {
-  version: 'sqr-test',
+  version: 'sqr',
   serviceName: 'sqr-launchpad-service',
   applicationUpload: 'application-uploader',
   taskListUrl: 'profile/validation-tasks/',

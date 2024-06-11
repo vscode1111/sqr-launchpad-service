@@ -4,7 +4,9 @@
 export type { ERC20Token } from "./ERC20Token";
 export type { SQRPaymentGateway } from "./SQRPaymentGateway";
 export type { SQRVesting } from "./SQRVesting";
+export type { SQRpProRata } from "./SQRpProRata";
 export * as factories from "./factories";
 export { ERC20Token__factory } from "./factories/ERC20Token__factory";
 export { SQRPaymentGateway__factory } from "./factories/SQRPaymentGateway__factory";
+export { SQRpProRata__factory } from "./factories/SQRpProRata__factory";
 export { SQRVesting__factory } from "./factories/SQRVesting__factory";

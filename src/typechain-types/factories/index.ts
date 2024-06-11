@@ -4,3 +4,4 @@
 export { ERC20Token__factory } from "./ERC20Token__factory";
 export { SQRPaymentGateway__factory } from "./SQRPaymentGateway__factory";
 export { SQRVesting__factory } from "./SQRVesting__factory";
+export { SQRpProRata__factory } from "./SQRpProRata__factory";

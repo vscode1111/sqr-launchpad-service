@@ -10,4 +10,5 @@ export const processDbTable = {
   accounts: 'accounts',
   payment_gateway_transaction_items: 'payment_gateway_transaction_items',
   vesting_transaction_items: 'vesting_transaction_items',
+  pro_rata_transaction_items: 'pro_rata_transaction_items',
 };
