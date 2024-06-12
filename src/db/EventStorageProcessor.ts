@@ -230,7 +230,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
 
     await paymentGatewayTransactionItemRepository.save(dbPaymentGatewayTransactionItem);
     return {
-      event: 'PAYMENT_GATEWAY_CONTACT_DEPOSIT',
+      event: 'PAYMENT_GATEWAY_CONTRACT_DEPOSIT',
       data: {
         network,
         contractType,
@@ -289,7 +289,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
 
     await vestingTransactionItemRepository.save(dbVestingTransactionItem);
     return {
-      event: 'VESTING_CONTACT_CLAIM',
+      event: 'VESTING_CONTRACT_CLAIM',
       data: {
         network,
         contractAddress,
@@ -372,7 +372,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
 
     if (proRataTransactionItemType === 'deposit') {
       return {
-        event: 'PRO_RATA_CONTACT_DEPOSIT',
+        event: 'PRO_RATA_CONTRACT_DEPOSIT',
         data: {
           network,
           contractType,
@@ -387,7 +387,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
       };
     } else {
       return {
-        event: 'PRO_RATA_CONTACT_REFUND',
+        event: 'PRO_RATA_CONTRACT_REFUND',
         data: {
           network,
           contractType,

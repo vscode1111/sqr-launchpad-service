@@ -3,7 +3,7 @@ import { commonTestValue, toDate } from '~common';
 import { testData } from './testData';
 import { Provider } from './types';
 
-export const TEST_CONTACT = {
+export const TEST_CONTRACT = {
   address: '0xCE3B34160D2D2Dc391963D392AF2808df0ad6c44', //bsc
   blockNumber: 41364055,
   blockNumberMax: 40536829,
@@ -27,7 +27,7 @@ export function providerTests(provider: Provider) {
   }).timeout(commonTestValue.timeout);
 
   it.skip('check getEvents', async function () {
-    const events = await provider.getEvents(TEST_CONTACT.address, 40676528, 40677529);
+    const events = await provider.getEvents(TEST_CONTRACT.address, 40676528, 40677529);
     expect(events.length).eq(7);
     const firstEvent = events[0];
     expect(firstEvent.blockNumber).eq(40677177);

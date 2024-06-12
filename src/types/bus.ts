@@ -21,23 +21,21 @@ export type Web3BusEventType = 'PAYMENT_GATEWAY' | 'VESTING' | 'PRO_RATA';
 
 export type Web3BusEvent =
   | {
-      event: 'PAYMENT_GATEWAY_CONTACT_DEPOSIT';
+      event: 'PAYMENT_GATEWAY_CONTRACT_DEPOSIT';
       data: Web3BusPaymentGatewayDepositEventData;
     }
   | {
-      event: 'VESTING_CONTACT_CLAIM';
+      event: 'VESTING_CONTRACT_CLAIM';
       data: Web3BusVestingClaimEventData;
     }
   | {
-      event: 'PRO_RATA_CONTACT_DEPOSIT';
+      event: 'PRO_RATA_CONTRACT_DEPOSIT';
       data: Web3BusProRataDepositEventData;
     }
   | {
-      event: 'PRO_RATA_CONTACT_REFUND';
+      event: 'PRO_RATA_CONTRACT_REFUND';
       data: Web3BusProRataRefundEventData;
     };
-
-//SQR_P_PRO_RATA_CONTRACT_DEPOSIT
 
 type Web3BusEventDataTx =
   | {
