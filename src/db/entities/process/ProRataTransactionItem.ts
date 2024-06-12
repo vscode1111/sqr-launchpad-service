@@ -47,6 +47,7 @@ export class ProRataTransactionItem  {
   ])
   contract!: Contract;
 
+  @Index()
   @Column({
     type: "enum",
     enum: proRataTransactionItemType,
