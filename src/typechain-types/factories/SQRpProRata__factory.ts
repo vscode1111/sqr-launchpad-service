@@ -118,11 +118,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "GoalUnreached",
-    type: "error",
-  },
-  {
-    inputs: [],
     name: "InvalidInitialization",
     type: "error",
   },
@@ -213,6 +208,11 @@ const _abi = [
       },
     ],
     name: "UUPSUnsupportedProxiableUUID",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "UnreachedGoal",
     type: "error",
   },
   {
@@ -669,7 +669,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getProcessedUserIndex",
+    name: "getProcessedAccountIndex",
     outputs: [
       {
         internalType: "uint32",
@@ -765,6 +765,19 @@ const _abi = [
   {
     inputs: [],
     name: "isBeforeStartDate",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "isReachedGoal",
     outputs: [
       {
         internalType: "bool",

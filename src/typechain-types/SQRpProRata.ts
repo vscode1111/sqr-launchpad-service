@@ -74,12 +74,13 @@ export interface SQRpProRataInterface extends Interface {
       | "getAccountDepositAmount"
       | "getAccountDepositNonce"
       | "getBaseBalance"
-      | "getProcessedUserIndex"
+      | "getProcessedAccountIndex"
       | "getTotalDeposited"
       | "goal"
       | "initialize"
       | "isAfterCloseDate"
       | "isBeforeStartDate"
+      | "isReachedGoal"
       | "isReady"
       | "owner"
       | "proxiableUUID"
@@ -170,7 +171,7 @@ export interface SQRpProRataInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getProcessedUserIndex",
+    functionFragment: "getProcessedAccountIndex",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -196,6 +197,10 @@ export interface SQRpProRataInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "isBeforeStartDate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isReachedGoal",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "isReady", values?: undefined): string;
@@ -295,7 +300,7 @@ export interface SQRpProRataInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getProcessedUserIndex",
+    functionFragment: "getProcessedAccountIndex",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -310,6 +315,10 @@ export interface SQRpProRataInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "isBeforeStartDate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isReachedGoal",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "isReady", data: BytesLike): Result;
@@ -541,7 +550,7 @@ export interface SQRpProRata extends BaseContract {
 
   getBaseBalance: TypedContractMethod<[], [bigint], "view">;
 
-  getProcessedUserIndex: TypedContractMethod<[], [bigint], "view">;
+  getProcessedAccountIndex: TypedContractMethod<[], [bigint], "view">;
 
   getTotalDeposited: TypedContractMethod<[], [bigint], "view">;
 
@@ -564,6 +573,8 @@ export interface SQRpProRata extends BaseContract {
   isAfterCloseDate: TypedContractMethod<[], [boolean], "view">;
 
   isBeforeStartDate: TypedContractMethod<[], [boolean], "view">;
+
+  isReachedGoal: TypedContractMethod<[], [boolean], "view">;
 
   isReady: TypedContractMethod<[], [boolean], "view">;
 
@@ -678,7 +689,7 @@ export interface SQRpProRata extends BaseContract {
     nameOrSignature: "getBaseBalance"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "getProcessedUserIndex"
+    nameOrSignature: "getProcessedAccountIndex"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getTotalDeposited"
@@ -706,6 +717,9 @@ export interface SQRpProRata extends BaseContract {
   ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "isBeforeStartDate"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isReachedGoal"
   ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "isReady"
