@@ -24,20 +24,32 @@ import type {
 } from "./common";
 
 export declare namespace SQRpProRata {
+  export type AccountInfoStruct = {
+    deposited: BigNumberish;
+    depositAmount: BigNumberish;
+    refunded: BigNumberish;
+    refundAmount: BigNumberish;
+    nonce: BigNumberish;
+  };
+
+  export type AccountInfoStructOutput = [
+    deposited: bigint,
+    depositAmount: bigint,
+    refunded: bigint,
+    refundAmount: bigint,
+    nonce: bigint
+  ] & {
+    deposited: bigint;
+    depositAmount: bigint;
+    refunded: bigint;
+    refundAmount: bigint;
+    nonce: bigint;
+  };
+
   export type TransactionItemStruct = { amount: BigNumberish };
 
   export type TransactionItemStructOutput = [amount: bigint] & {
     amount: bigint;
-  };
-
-  export type UserStruct = {
-    depositedAmount: BigNumberish;
-    nonce: BigNumberish;
-  };
-
-  export type UserStructOutput = [depositedAmount: bigint, nonce: bigint] & {
-    depositedAmount: bigint;
-    nonce: bigint;
   };
 }
 
@@ -49,20 +61,21 @@ export interface SQRpProRataInterface extends Interface {
       | "balanceOf"
       | "baseToken"
       | "boostToken"
+      | "calculateAccidentAmount"
       | "calculateAccountRefundAmount"
       | "calculateOverfundAmount"
       | "calculateRemainDeposit"
       | "closeDate"
       | "depositSig"
+      | "fetchAccountInfo"
       | "fetchTransactionItem"
-      | "fetchUser"
-      | "getBalance"
-      | "getDepositNonce"
-      | "getDepositedAmount"
+      | "getAccountByIndex"
+      | "getAccountCount"
+      | "getAccountDepositAmount"
+      | "getAccountDepositNonce"
+      | "getBaseBalance"
       | "getProcessedUserIndex"
       | "getTotalDeposited"
-      | "getUserAddress"
-      | "getUserCount"
       | "goal"
       | "initialize"
       | "isAfterCloseDate"
@@ -75,6 +88,7 @@ export interface SQRpProRataInterface extends Interface {
       | "renounceOwnership"
       | "startDate"
       | "totalDeposited"
+      | "totalRefunded"
       | "totalWithdrew"
       | "transferOwnership"
       | "upgradeToAndCall"
@@ -107,6 +121,10 @@ export interface SQRpProRataInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "calculateAccidentAmount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "calculateAccountRefundAmount",
     values: [AddressLike]
   ): string;
@@ -124,24 +142,32 @@ export interface SQRpProRataInterface extends Interface {
     values: [BigNumberish, boolean, string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "fetchAccountInfo",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "fetchTransactionItem",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "fetchUser",
-    values: [AddressLike]
+    functionFragment: "getAccountByIndex",
+    values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getBalance",
+    functionFragment: "getAccountCount",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getDepositNonce",
+    functionFragment: "getAccountDepositAmount",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "getDepositedAmount",
+    functionFragment: "getAccountDepositNonce",
     values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBaseBalance",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "getProcessedUserIndex",
@@ -149,14 +175,6 @@ export interface SQRpProRataInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getTotalDeposited",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getUserAddress",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getUserCount",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "goal", values?: undefined): string;
@@ -201,6 +219,10 @@ export interface SQRpProRataInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "totalRefunded",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "totalWithdrew",
     values?: undefined
   ): string;
@@ -227,6 +249,10 @@ export interface SQRpProRataInterface extends Interface {
   decodeFunctionResult(functionFragment: "baseToken", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "boostToken", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "calculateAccidentAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "calculateAccountRefundAmount",
     data: BytesLike
   ): Result;
@@ -241,17 +267,31 @@ export interface SQRpProRataInterface extends Interface {
   decodeFunctionResult(functionFragment: "closeDate", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "depositSig", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "fetchAccountInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "fetchTransactionItem",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "fetchUser", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getDepositNonce",
+    functionFragment: "getAccountByIndex",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getDepositedAmount",
+    functionFragment: "getAccountCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAccountDepositAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAccountDepositNonce",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getBaseBalance",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -260,14 +300,6 @@ export interface SQRpProRataInterface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getTotalDeposited",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getUserAddress",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getUserCount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "goal", data: BytesLike): Result;
@@ -295,6 +327,10 @@ export interface SQRpProRataInterface extends Interface {
   decodeFunctionResult(functionFragment: "startDate", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalDeposited",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalRefunded",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -380,10 +416,10 @@ export namespace UpgradedEvent {
 }
 
 export namespace WithdrawGoalEvent {
-  export type InputTuple = [to: AddressLike, amount: BigNumberish];
-  export type OutputTuple = [to: string, amount: bigint];
+  export type InputTuple = [account: AddressLike, amount: BigNumberish];
+  export type OutputTuple = [account: string, amount: bigint];
   export interface OutputObject {
-    to: string;
+    account: string;
     amount: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
@@ -445,6 +481,8 @@ export interface SQRpProRata extends BaseContract {
 
   boostToken: TypedContractMethod<[], [string], "view">;
 
+  calculateAccidentAmount: TypedContractMethod<[], [bigint], "view">;
+
   calculateAccountRefundAmount: TypedContractMethod<
     [account: AddressLike],
     [bigint],
@@ -469,39 +507,43 @@ export interface SQRpProRata extends BaseContract {
     "nonpayable"
   >;
 
+  fetchAccountInfo: TypedContractMethod<
+    [account: AddressLike],
+    [SQRpProRata.AccountInfoStructOutput],
+    "view"
+  >;
+
   fetchTransactionItem: TypedContractMethod<
     [transactionId: string],
     [SQRpProRata.TransactionItemStructOutput],
     "view"
   >;
 
-  fetchUser: TypedContractMethod<
-    [account: AddressLike],
-    [SQRpProRata.UserStructOutput],
+  getAccountByIndex: TypedContractMethod<
+    [index: BigNumberish],
+    [string],
     "view"
   >;
 
-  getBalance: TypedContractMethod<[], [bigint], "view">;
+  getAccountCount: TypedContractMethod<[], [bigint], "view">;
 
-  getDepositNonce: TypedContractMethod<
+  getAccountDepositAmount: TypedContractMethod<
+    [account: AddressLike],
+    [bigint],
+    "view"
+  >;
+
+  getAccountDepositNonce: TypedContractMethod<
     [account: AddressLike],
     [bigint],
     "view"
   >;
 
-  getDepositedAmount: TypedContractMethod<
-    [account: AddressLike],
-    [bigint],
-    "view"
-  >;
+  getBaseBalance: TypedContractMethod<[], [bigint], "view">;
 
   getProcessedUserIndex: TypedContractMethod<[], [bigint], "view">;
 
   getTotalDeposited: TypedContractMethod<[], [bigint], "view">;
-
-  getUserAddress: TypedContractMethod<[index: BigNumberish], [string], "view">;
-
-  getUserCount: TypedContractMethod<[], [bigint], "view">;
 
   goal: TypedContractMethod<[], [bigint], "view">;
 
@@ -538,6 +580,8 @@ export interface SQRpProRata extends BaseContract {
   startDate: TypedContractMethod<[], [bigint], "view">;
 
   totalDeposited: TypedContractMethod<[], [bigint], "view">;
+
+  totalRefunded: TypedContractMethod<[], [bigint], "view">;
 
   totalWithdrew: TypedContractMethod<[], [bigint], "view">;
 
@@ -577,6 +621,9 @@ export interface SQRpProRata extends BaseContract {
     nameOrSignature: "boostToken"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "calculateAccidentAmount"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "calculateAccountRefundAmount"
   ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
@@ -602,6 +649,13 @@ export interface SQRpProRata extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "fetchAccountInfo"
+  ): TypedContractMethod<
+    [account: AddressLike],
+    [SQRpProRata.AccountInfoStructOutput],
+    "view"
+  >;
+  getFunction(
     nameOrSignature: "fetchTransactionItem"
   ): TypedContractMethod<
     [transactionId: string],
@@ -609,32 +663,25 @@ export interface SQRpProRata extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "fetchUser"
-  ): TypedContractMethod<
-    [account: AddressLike],
-    [SQRpProRata.UserStructOutput],
-    "view"
-  >;
+    nameOrSignature: "getAccountByIndex"
+  ): TypedContractMethod<[index: BigNumberish], [string], "view">;
   getFunction(
-    nameOrSignature: "getBalance"
+    nameOrSignature: "getAccountCount"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "getDepositNonce"
+    nameOrSignature: "getAccountDepositAmount"
   ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
-    nameOrSignature: "getDepositedAmount"
+    nameOrSignature: "getAccountDepositNonce"
   ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getBaseBalance"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getProcessedUserIndex"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getTotalDeposited"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "getUserAddress"
-  ): TypedContractMethod<[index: BigNumberish], [string], "view">;
-  getFunction(
-    nameOrSignature: "getUserCount"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "goal"
@@ -683,6 +730,9 @@ export interface SQRpProRata extends BaseContract {
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "totalDeposited"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "totalRefunded"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "totalWithdrew"

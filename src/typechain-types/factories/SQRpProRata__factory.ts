@@ -290,7 +290,7 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "account",
         type: "address",
@@ -324,7 +324,7 @@ const _abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "to",
+        name: "account",
         type: "address",
       },
       {
@@ -403,6 +403,19 @@ const _abi = [
         internalType: "contract IERC20",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "calculateAccidentAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -502,6 +515,52 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "fetchAccountInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "deposited",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "depositAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "refunded",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "refundAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint32",
+            name: "nonce",
+            type: "uint32",
+          },
+        ],
+        internalType: "struct SQRpProRata.AccountInfo",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "string",
         name: "transactionId",
         type: "string",
@@ -528,29 +587,17 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "account",
-        type: "address",
+        internalType: "uint32",
+        name: "index",
+        type: "uint32",
       },
     ],
-    name: "fetchUser",
+    name: "getAccountByIndex",
     outputs: [
       {
-        components: [
-          {
-            internalType: "uint256",
-            name: "depositedAmount",
-            type: "uint256",
-          },
-          {
-            internalType: "uint32",
-            name: "nonce",
-            type: "uint32",
-          },
-        ],
-        internalType: "struct SQRpProRata.User",
+        internalType: "address",
         name: "",
-        type: "tuple",
+        type: "address",
       },
     ],
     stateMutability: "view",
@@ -558,26 +605,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getBalance",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-    ],
-    name: "getDepositNonce",
+    name: "getAccountCount",
     outputs: [
       {
         internalType: "uint32",
@@ -596,7 +624,39 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "getDepositedAmount",
+    name: "getAccountDepositAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "getAccountDepositNonce",
+    outputs: [
+      {
+        internalType: "uint32",
+        name: "",
+        type: "uint32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getBaseBalance",
     outputs: [
       {
         internalType: "uint256",
@@ -628,38 +688,6 @@ const _abi = [
         internalType: "uint256",
         name: "",
         type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint32",
-        name: "index",
-        type: "uint32",
-      },
-    ],
-    name: "getUserAddress",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "getUserCount",
-    outputs: [
-      {
-        internalType: "uint32",
-        name: "",
-        type: "uint32",
       },
     ],
     stateMutability: "view",
@@ -829,6 +857,19 @@ const _abi = [
   {
     inputs: [],
     name: "totalDeposited",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalRefunded",
     outputs: [
       {
         internalType: "uint256",
