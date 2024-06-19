@@ -235,21 +235,23 @@ const handlerFunc: HandlerFunc = () => ({
           ),
         ]);
 
-        if (accountCount == ZERO) {
+        if (accountCount === ZERO) {
           return [];
         }
 
         return Bluebird.map(
-          Array(Number(accountCount)).fill(0).map((_, i) => i),
+          Array(Number(accountCount))
+            .fill(0)
+            .map((_, i) => i),
           async (idx: number) => {
             const account = await proRata.getAccountByIndex(idx);
             const accountInfo = await proRata.fetchAccountInfo(account);
             return {
               account,
               amount: toNumberDecimals(accountInfo.depositAmount, erc20Decimals),
-            }
+            };
           },
-        )
+        );
       },
     },
 
