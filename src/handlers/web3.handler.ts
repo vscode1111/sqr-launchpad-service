@@ -251,6 +251,7 @@ const handlerFunc: HandlerFunc = () => ({
               amount: toNumberDecimals(accountInfo.depositAmount, erc20Decimals),
             };
           },
+          { concurrency: HANDLER_CONCURRENCY_COUNT },
         );
       },
     },
