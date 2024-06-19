@@ -20,6 +20,8 @@ import {
   GetNetworkParams,
   GetPaymentGatewayTransactionItemsParams,
   GetPaymentGatewayTransactionItemsResponse,
+  GetProRataNetDepositsParams,
+  GetProRataNetDepositsResponse,
   GetProRataTransactionItemsParams,
   GetProRataTransactionItemsResponse,
   HandlerParams,
@@ -200,6 +202,54 @@ const handlerFunc: HandlerFunc = () => ({
           },
           { concurrency: HANDLER_CONCURRENCY_COUNT },
         );
+      },
+    },
+
+    'network.pro-rata-contract.net-deposits': {
+      params: {
+        network: { type: 'string' },
+        contractAddress: { type: 'string' },
+      } as HandlerParams<GetProRataNetDepositsParams>,
+      async handler(
+        ctx: Context<GetProRataNetDepositsParams>,
+      ): Promise<GetProRataNetDepositsResponse[]> {
+        const network = checkIfNetwork(ctx?.params?.network);
+        const contractAddress = checkIfAddress(ctx?.params?.contractAddress);
+
+        const context = services.getNetworkContext(network);
+        if (!context) {
+          throw new MissingServicePrivateKey();
+        }
+
+        const { getSqrpProRata, getErc20Token } = context;
+
+        const proRata = getSqrpProRata(contractAddress);
+        const [accountCount, erc20Decimals] = await Promise.all([
+          proRata.getAccountCount(),
+          cacheMachine.call<number>(
+            () => `${contractAddress}-contract-settings`,
+            async () => {
+              const tokenAddress = await proRata.baseToken();
+              return Number(await getErc20Token(tokenAddress).decimals());
+            },
+          ),
+        ]);
+
+        if (accountCount == ZERO) {
+          return [];
+        }
+
+        return Bluebird.map(
+          Array(Number(accountCount)).fill(0).map((_, i) => i),
+          async (idx: number) => {
+            const account = await proRata.getAccountByIndex(idx);
+            const accountInfo = await proRata.fetchAccountInfo(account);
+            return {
+              account,
+              amount: toNumberDecimals(accountInfo.depositAmount, erc20Decimals),
+            }
+          },
+        )
       },
     },
 
