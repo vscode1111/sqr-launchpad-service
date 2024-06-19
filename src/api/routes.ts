@@ -12,6 +12,7 @@ export const routes: ApiRouteSchema[] = modifyRoutes([
       'GET blocks/:id': `${apiPrefix}network.blocks.id`,
       'POST payment-gateway-contract/transaction-items': `${apiPrefix}network.payment-gateway-contract.transaction-ids`,
       'POST pro-rata-contract/transaction-items': `${apiPrefix}network.pro-rata-contract.transaction-ids`,
+      'POST pro-rata-contract/net-deposits': `${apiPrefix}network.pro-rata-contract.net-deposits`,
     },
   },
   {
