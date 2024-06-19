@@ -118,7 +118,7 @@ const handlerFunc: HandlerFunc = () => ({
                   () => getCacheContractSettingKey(network, contractAddress),
                   async () => {
                     const tokenAddress = await getSqrPaymentGateway(contractAddress).erc20Token();
-                    return Number(await getErc20Token(tokenAddress).decimals());
+                    return getErc20Token(tokenAddress).decimals();
                   },
                 ),
                 services.dataStorage.getPaymentGatewayTransactionItemByTransactionId(transactionId),
@@ -177,7 +177,7 @@ const handlerFunc: HandlerFunc = () => ({
                 () => getCacheContractSettingKey(network, contractAddress),
                 async () => {
                   const tokenAddress = await getSqrpProRata(contractAddress).baseToken();
-                  return Number(await getErc20Token(tokenAddress).decimals());
+                  return getErc20Token(tokenAddress).decimals();
                 },
               ),
               services.dataStorage.getProRataTransactionItemByTransactionId(transactionId),
@@ -230,7 +230,7 @@ const handlerFunc: HandlerFunc = () => ({
             () => getCacheContractSettingKey(network, contractAddress),
             async () => {
               const tokenAddress = await proRata.baseToken();
-              return Number(await getErc20Token(tokenAddress).decimals());
+              return getErc20Token(tokenAddress).decimals();
             },
           ),
         ]);

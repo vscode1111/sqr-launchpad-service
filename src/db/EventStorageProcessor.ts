@@ -223,7 +223,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     dbPaymentGatewayTransactionItem.userId = userId;
     dbPaymentGatewayTransactionItem.transactionId = transactionId;
     dbPaymentGatewayTransactionItem.isSig = isSig;
-    const amount = toNumberDecimals(BigInt(eventData[0]), Number(decimals));
+    const amount = toNumberDecimals(BigInt(eventData[0]), decimals);
     dbPaymentGatewayTransactionItem.amount = amount;
     const timestamp = event.transactionHash.block.timestamp;
     dbPaymentGatewayTransactionItem.timestamp = timestamp;
@@ -278,7 +278,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
       () => getCacheContractSettingKey(network, contractAddress),
       async () => {
         const tokenAddress = await getSqrVesting(contractAddress).erc20Token();
-        return Number(await getErc20Token(tokenAddress).decimals());
+        return getErc20Token(tokenAddress).decimals();
       },
     );
 
@@ -357,7 +357,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
       () => getCacheContractSettingKey(network, contractAddress),
       async () => {
         const tokenAddress = await getSqrpProRata(contractAddress).baseToken();
-        return Number(await getErc20Token(tokenAddress).decimals());
+        return getErc20Token(tokenAddress).decimals();
       },
     );
 

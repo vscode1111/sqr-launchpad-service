@@ -25,7 +25,7 @@ export function toNumber(value: bigint, factor = 1): number {
   return Number(formatEther(value)) * factor;
 }
 
-export function toNumberDecimals(value: BigNumberish, decimals = 18): number {
+export function toNumberDecimals(value: BigNumberish, decimals: BigNumberish = 18): number {
   return Number(formatUnits(value, decimals));
 }
 
