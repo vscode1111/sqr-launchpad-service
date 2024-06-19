@@ -17,7 +17,7 @@ export interface GetNetworkParams {
   network: string;
 }
 
-export interface GetNetworkAddressesParams extends GetNetworkParams {}
+export interface GetNetworkAddressesParams extends GetNetworkParams { }
 
 export type GetNetworkAddressesResponse = Web3ConfigContract[];
 
@@ -42,10 +42,24 @@ export interface GetTransactionItemsResponse {
   status: StatusType;
 }
 
-export interface GetPaymentGatewayTransactionItemsParams extends GetTransactionItemsParams {}
+export interface GetProRataNetDepositsResponse {
+  account: string;
+  amount: number;
+}
 
-export interface GetPaymentGatewayTransactionItemsResponse extends GetTransactionItemsResponse {}
+export interface GetPaymentGatewayTransactionItemsParams extends GetTransactionItemsParams { }
 
-export interface GetProRataTransactionItemsParams extends GetTransactionItemsParams {}
+export interface GetPaymentGatewayTransactionItemsResponse extends GetTransactionItemsResponse { }
 
-export interface GetProRataTransactionItemsResponse extends GetTransactionItemsResponse {}
+export interface GetProRataTransactionItemsParams extends GetTransactionItemsParams { }
+
+export interface GetProRataTransactionItemsResponse extends GetTransactionItemsResponse { }
+
+export interface GetProRataNetDepositsParams extends GetNetworkParams {
+  contractAddress: string;
+}
+
+export interface GetProRataNetDepositsResponse {
+  account: string;
+  amount: number;
+}
