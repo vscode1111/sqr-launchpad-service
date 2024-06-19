@@ -26,7 +26,7 @@ import {
   GetProRataTransactionItemsResponse,
   HandlerParams,
 } from '~types';
-import { getContractData } from '~utils';
+import { getCacheContractSettingKey, getContractData } from '~utils';
 
 const cacheMachine = new CacheMachine();
 
@@ -114,8 +114,8 @@ const handlerFunc: HandlerFunc = () => ({
             const [transactionItem, erc20Decimals, dbPaymentGatewayTransactionItem] =
               await Promise.all([
                 sqrPaymentGateway.fetchTransactionItem(transactionId),
-                cacheMachine.call<number>(
-                  () => `${contractAddress}-contract-settings`,
+                cacheMachine.call(
+                  () => getCacheContractSettingKey(network, contractAddress),
                   async () => {
                     const tokenAddress = await getSqrPaymentGateway(contractAddress).erc20Token();
                     return Number(await getErc20Token(tokenAddress).decimals());
@@ -173,8 +173,8 @@ const handlerFunc: HandlerFunc = () => ({
           async (transactionId) => {
             const [transactionItem, erc20Decimals, dbProRataTransactionItem] = await Promise.all([
               sqrPaymentGateway.fetchTransactionItem(transactionId),
-              cacheMachine.call<number>(
-                () => `${contractAddress}-contract-settings`,
+              cacheMachine.call(
+                () => getCacheContractSettingKey(network, contractAddress),
                 async () => {
                   const tokenAddress = await getSqrpProRata(contractAddress).baseToken();
                   return Number(await getErc20Token(tokenAddress).decimals());
@@ -226,8 +226,8 @@ const handlerFunc: HandlerFunc = () => ({
         const proRata = getSqrpProRata(contractAddress);
         const [accountCount, erc20Decimals] = await Promise.all([
           proRata.getAccountCount(),
-          cacheMachine.call<number>(
-            () => `${contractAddress}-contract-settings`,
+          cacheMachine.call(
+            () => getCacheContractSettingKey(network, contractAddress),
             async () => {
               const tokenAddress = await proRata.baseToken();
               return Number(await getErc20Token(tokenAddress).decimals());

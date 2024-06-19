@@ -3,9 +3,9 @@ import { Promisable } from '~common';
 export class CacheMachine {
   private map = new Map<string, any>();
 
-  public async call<T = any>(
+  public async call<T>(
     keyFn: () => Promisable<string>,
-    callbackFn: () => Promisable<any>,
+    callbackFn: () => Promisable<T>,
     timeOut?: number,
   ): Promise<T> {
     const key = await keyFn();

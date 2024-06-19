@@ -26,6 +26,7 @@ import sqrpProRataABI from '~contracts/abi/SQRpProRata.json';
 import { SqrLaunchpadContext } from '~services';
 import { TypedContractEvent, TypedDeferredTopicFilter } from '~typechain-types/common';
 import { Web3BusEvent, Web3BusEventType } from '~types';
+import { getCacheContractSettingKey } from '~utils';
 import { PaymentGatewayDepositInput, ProRataDepositInput } from './EventStorageProcessor.types';
 import {
   Account,
@@ -46,7 +47,6 @@ import {
   VestingTransactionItem,
 } from './entities';
 import { ProRataTransactionItem } from './entities/process/ProRataTransactionItem';
-import { getCacheContractSettingKey } from './utils';
 
 const CONTRACT_EVENT_ENABLE = true;
 
@@ -212,7 +212,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     const eventData = decodeData(event.data!, ['uint256']);
 
     const { getSqrPaymentGateway, getErc20Token } = this.context;
-    const decimals = await this.cacheMachine.call<number>(
+    const decimals = await this.cacheMachine.call(
       () => getCacheContractSettingKey(network, contractAddress),
       async () => {
         const tokenAddress = await getSqrPaymentGateway(contractAddress).erc20Token();
@@ -223,7 +223,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     dbPaymentGatewayTransactionItem.userId = userId;
     dbPaymentGatewayTransactionItem.transactionId = transactionId;
     dbPaymentGatewayTransactionItem.isSig = isSig;
-    const amount = toNumberDecimals(BigInt(eventData[0]), decimals);
+    const amount = toNumberDecimals(BigInt(eventData[0]), Number(decimals));
     dbPaymentGatewayTransactionItem.amount = amount;
     const timestamp = event.transactionHash.block.timestamp;
     dbPaymentGatewayTransactionItem.timestamp = timestamp;
@@ -274,11 +274,11 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     const eventData = decodeData(event.data!, ['uint256']);
 
     const { getSqrVesting, getErc20Token } = this.context;
-    const decimals = await this.cacheMachine.call<number>(
+    const decimals = await this.cacheMachine.call(
       () => getCacheContractSettingKey(network, contractAddress),
       async () => {
         const tokenAddress = await getSqrVesting(contractAddress).erc20Token();
-        return getErc20Token(tokenAddress).decimals();
+        return Number(await getErc20Token(tokenAddress).decimals());
       },
     );
 
@@ -353,11 +353,11 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     const eventData = decodeData(event.data!, ['uint256']);
 
     const { getSqrpProRata, getErc20Token } = this.context;
-    const decimals = await this.cacheMachine.call<number>(
+    const decimals = await this.cacheMachine.call(
       () => getCacheContractSettingKey(network, contractAddress),
       async () => {
         const tokenAddress = await getSqrpProRata(contractAddress).baseToken();
-        return getErc20Token(tokenAddress).decimals();
+        return Number(await getErc20Token(tokenAddress).decimals());
       },
     );
 
