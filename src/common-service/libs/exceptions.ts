@@ -1,7 +1,6 @@
 //@ts-nocheck
 import { MoleculerErrors as Errors } from 'msq-moleculer-core';
 import { MISSING_SERVICE_PRIVATE_KEY } from '~common';
-import { MISSING_USER_USER_ID_OR_PRIVATE_KEY } from '~constants';
 
 /**
  * Unhandled exception.
@@ -24,8 +23,8 @@ export class MissingServicePrivateKey extends Errors.MoleculerError {
   }
 }
 
-export class MissingUserIdOrPrivateKey extends Errors.MoleculerError {
+export class NotFound extends Errors.MoleculerError {
   constructor() {
-    super(MISSING_USER_USER_ID_OR_PRIVATE_KEY, 500, 'INTERNAL_ERROR');
+    super(`Not found`, 404, 'NOT_FOUND');
   }
 }

@@ -1,5 +1,5 @@
 import Decimal from 'decimal.js';
-import { BigNumberish, formatEther, formatUnits, parseUnits } from 'ethers';
+import { BigNumberish, Numeric, formatEther, formatUnits, parseUnits } from 'ethers';
 import { StringNumber } from './types';
 
 export const DECIMAL_FACTOR = 1e18;
@@ -17,16 +17,24 @@ export function toWeiWithFixed(value: BigNumberish, unitName?: BigNumberish): bi
   return BigInt(parseUnits(String(newValue), unitName));
 }
 
-export function toNumberFixed(value: StringNumber, decimals: number): number {
-  return Number(Number(value).toFixed(decimals));
+export function toNumberFixed(value: StringNumber, fractionDigits = 3): number {
+  return Number(Number(value).toFixed(fractionDigits));
 }
 
 export function toNumber(value: bigint, factor = 1): number {
   return Number(formatEther(value)) * factor;
 }
 
-export function toNumberDecimals(value: BigNumberish, decimals: BigNumberish = 18): number {
+export function toNumberDecimals(value: BigNumberish, decimals: Numeric = 18): number {
   return Number(formatUnits(value, decimals));
+}
+
+export function toNumberDecimalsFixed(
+  value: BigNumberish,
+  decimals: Numeric = 18,
+  fractionDigits = 3,
+): number {
+  return toNumberFixed(toNumberDecimals(value, decimals), fractionDigits);
 }
 
 export function toDec(value: string | undefined): number {

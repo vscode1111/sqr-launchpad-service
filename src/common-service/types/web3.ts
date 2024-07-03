@@ -28,6 +28,8 @@ export interface Web3Event {
   removed: boolean;
 }
 
+export type Web3ReceiptStatus = 'success' | 'failure';
+
 export interface Web3Receipt {
   blockHash: string;
   blockNumber: string;
@@ -36,7 +38,7 @@ export interface Web3Receipt {
   effectiveGasPrice: number;
   from: string;
   gasUsed: number;
-  status: 'success' | 'failure';
+  status: Web3ReceiptStatus;
   to: string;
   transactionHash: string;
   transactionIndex: number;

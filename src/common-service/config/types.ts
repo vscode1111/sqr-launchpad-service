@@ -38,6 +38,9 @@ export interface Web3ConfigContract {
 
 export interface Web3Config {
   ownerPrivateKey?: string;
+  apiKey?: {
+    bscScan?: string;
+  };
   contracts: Record<string, Web3ConfigContract[]>;
   provider: Record<
     string,
