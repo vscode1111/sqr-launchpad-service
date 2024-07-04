@@ -24,26 +24,72 @@ import type {
 } from "./common";
 
 export declare namespace SQRpProRata {
+  export type DepositSigParamsStruct = {
+    baseAmount: BigNumberish;
+    boost: boolean;
+    boostExchangeRate: BigNumberish;
+    transactionId: string;
+    timestampLimit: BigNumberish;
+    signature: BytesLike;
+  };
+
+  export type DepositSigParamsStructOutput = [
+    baseAmount: bigint,
+    boost: boolean,
+    boostExchangeRate: bigint,
+    transactionId: string,
+    timestampLimit: bigint,
+    signature: string
+  ] & {
+    baseAmount: bigint;
+    boost: boolean;
+    boostExchangeRate: bigint;
+    transactionId: string;
+    timestampLimit: bigint;
+    signature: string;
+  };
+
   export type AccountInfoStruct = {
-    deposited: BigNumberish;
-    depositAmount: BigNumberish;
-    refunded: BigNumberish;
-    refundAmount: BigNumberish;
+    baseDeposited: BigNumberish;
+    boosted: boolean;
+    baseAllocation: BigNumberish;
+    baseDeposit: BigNumberish;
+    baseRefund: BigNumberish;
+    baseRefunded: BigNumberish;
+    boostDeposit: BigNumberish;
+    boostRefund: BigNumberish;
+    boostRefunded: BigNumberish;
     nonce: BigNumberish;
+    boostAverageRate: BigNumberish;
+    share: BigNumberish;
   };
 
   export type AccountInfoStructOutput = [
-    deposited: bigint,
-    depositAmount: bigint,
-    refunded: bigint,
-    refundAmount: bigint,
-    nonce: bigint
+    baseDeposited: bigint,
+    boosted: boolean,
+    baseAllocation: bigint,
+    baseDeposit: bigint,
+    baseRefund: bigint,
+    baseRefunded: bigint,
+    boostDeposit: bigint,
+    boostRefund: bigint,
+    boostRefunded: bigint,
+    nonce: bigint,
+    boostAverageRate: bigint,
+    share: bigint
   ] & {
-    deposited: bigint;
-    depositAmount: bigint;
-    refunded: bigint;
-    refundAmount: bigint;
+    baseDeposited: bigint;
+    boosted: boolean;
+    baseAllocation: bigint;
+    baseDeposit: bigint;
+    baseRefund: bigint;
+    baseRefunded: bigint;
+    boostDeposit: bigint;
+    boostRefund: bigint;
+    boostRefunded: bigint;
     nonce: bigint;
+    boostAverageRate: bigint;
+    share: bigint;
   };
 
   export type TransactionItemStruct = { amount: BigNumberish };
@@ -51,22 +97,73 @@ export declare namespace SQRpProRata {
   export type TransactionItemStructOutput = [amount: bigint] & {
     amount: bigint;
   };
+
+  export type ContractParamsStruct = {
+    newOwner: AddressLike;
+    baseToken: AddressLike;
+    baseDecimals: BigNumberish;
+    boostToken: AddressLike;
+    boostDecimals: BigNumberish;
+    depositVerifier: AddressLike;
+    baseGoal: BigNumberish;
+    startDate: BigNumberish;
+    closeDate: BigNumberish;
+  };
+
+  export type ContractParamsStructOutput = [
+    newOwner: string,
+    baseToken: string,
+    baseDecimals: bigint,
+    boostToken: string,
+    boostDecimals: bigint,
+    depositVerifier: string,
+    baseGoal: bigint,
+    startDate: bigint,
+    closeDate: bigint
+  ] & {
+    newOwner: string;
+    baseToken: string;
+    baseDecimals: bigint;
+    boostToken: string;
+    boostDecimals: bigint;
+    depositVerifier: string;
+    baseGoal: bigint;
+    startDate: bigint;
+    closeDate: bigint;
+  };
 }
 
 export interface SQRpProRataInterface extends Interface {
   getFunction(
     nameOrSignature:
+      | "PRECISION_FACTOR"
       | "UPGRADE_INTERFACE_VERSION"
       | "VERSION"
       | "balanceOf"
+      | "baseDecimals"
+      | "baseGoal"
       | "baseToken"
+      | "boostDecimals"
       | "boostToken"
       | "calculateAccidentAmount"
-      | "calculateAccountRefundAmount"
+      | "calculateAccountBaseAllocation"
+      | "calculateAccountBaseRefund"
+      | "calculateAccountBoostAverageRate"
+      | "calculateAccountBoostRefund"
+      | "calculateAccountShare"
+      | "calculateDecimalsFactors"
+      | "calculateExcessBoostAmount"
       | "calculateOverfundAmount"
       | "calculateRemainDeposit"
+      | "calculateRemainProcessedAccountAmount"
+      | "calculatedBaseSwappedAmount"
+      | "calculatedRequiredBoostAmount"
+      | "calculatedTotalBoostRefundAmount"
       | "closeDate"
+      | "decimalsFactor1"
+      | "decimalsFactor2"
       | "depositSig"
+      | "depositVerifier"
       | "fetchAccountInfo"
       | "fetchTransactionItem"
       | "getAccountByIndex"
@@ -74,27 +171,33 @@ export interface SQRpProRataInterface extends Interface {
       | "getAccountDepositAmount"
       | "getAccountDepositNonce"
       | "getBaseBalance"
+      | "getBoostBalance"
       | "getProcessedAccountIndex"
       | "getTotalDeposited"
-      | "goal"
       | "initialize"
       | "isAfterCloseDate"
       | "isBeforeStartDate"
-      | "isReachedGoal"
-      | "isReady"
+      | "isDepositReady"
+      | "isReachedBaseGoal"
       | "owner"
       | "proxiableUUID"
       | "refund"
       | "refundAll"
       | "renounceOwnership"
       | "startDate"
-      | "totalDeposited"
-      | "totalRefunded"
-      | "totalWithdrew"
+      | "totalBaseBoostDeposited"
+      | "totalBaseDeposited"
+      | "totalBaseNonBoostDeposited"
+      | "totalBaseRefunded"
+      | "totalBaseWithdrew"
+      | "totalBoostRefunded"
+      | "totalBoostSwapped"
+      | "totalBoostWithdrew"
       | "transferOwnership"
       | "upgradeToAndCall"
-      | "verifier"
-      | "withdrawGoal"
+      | "withdrawBaseGoal"
+      | "withdrawBaseSwappedAmount"
+      | "withdrawExcessTokens"
   ): FunctionFragment;
 
   getEvent(
@@ -104,9 +207,15 @@ export interface SQRpProRataInterface extends Interface {
       | "OwnershipTransferred"
       | "Refund"
       | "Upgraded"
-      | "WithdrawGoal"
+      | "WithdrawBaseGoal"
+      | "WithdrawExcessTokens"
+      | "WithdrawSwappedAmount"
   ): EventFragment;
 
+  encodeFunctionData(
+    functionFragment: "PRECISION_FACTOR",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "UPGRADE_INTERFACE_VERSION",
     values?: undefined
@@ -116,7 +225,16 @@ export interface SQRpProRataInterface extends Interface {
     functionFragment: "balanceOf",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "baseDecimals",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "baseGoal", values?: undefined): string;
   encodeFunctionData(functionFragment: "baseToken", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "boostDecimals",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "boostToken",
     values?: undefined
@@ -126,8 +244,32 @@ export interface SQRpProRataInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "calculateAccountRefundAmount",
+    functionFragment: "calculateAccountBaseAllocation",
     values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateAccountBaseRefund",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateAccountBoostAverageRate",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateAccountBoostRefund",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateAccountShare",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateDecimalsFactors",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateExcessBoostAmount",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "calculateOverfundAmount",
@@ -137,10 +279,38 @@ export interface SQRpProRataInterface extends Interface {
     functionFragment: "calculateRemainDeposit",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "calculateRemainProcessedAccountAmount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculatedBaseSwappedAmount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculatedRequiredBoostAmount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculatedTotalBoostRefundAmount",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "closeDate", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "decimalsFactor1",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "decimalsFactor2",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "depositSig",
-    values: [BigNumberish, boolean, string, BigNumberish, BytesLike]
+    values: [SQRpProRata.DepositSigParamsStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "depositVerifier",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "fetchAccountInfo",
@@ -171,6 +341,10 @@ export interface SQRpProRataInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getBoostBalance",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getProcessedAccountIndex",
     values?: undefined
   ): string;
@@ -178,18 +352,9 @@ export interface SQRpProRataInterface extends Interface {
     functionFragment: "getTotalDeposited",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "goal", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [
-      AddressLike,
-      AddressLike,
-      AddressLike,
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish
-    ]
+    values: [SQRpProRata.ContractParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "isAfterCloseDate",
@@ -200,10 +365,13 @@ export interface SQRpProRataInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "isReachedGoal",
+    functionFragment: "isDepositReady",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "isReady", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "isReachedBaseGoal",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "proxiableUUID",
@@ -220,15 +388,35 @@ export interface SQRpProRataInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "startDate", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "totalDeposited",
+    functionFragment: "totalBaseBoostDeposited",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "totalRefunded",
+    functionFragment: "totalBaseDeposited",
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "totalWithdrew",
+    functionFragment: "totalBaseNonBoostDeposited",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalBaseRefunded",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalBaseWithdrew",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalBoostRefunded",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalBoostSwapped",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalBoostWithdrew",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -239,26 +427,70 @@ export interface SQRpProRataInterface extends Interface {
     functionFragment: "upgradeToAndCall",
     values: [AddressLike, BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "verifier", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "withdrawGoal",
+    functionFragment: "withdrawBaseGoal",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawBaseSwappedAmount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawExcessTokens",
     values?: undefined
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "PRECISION_FACTOR",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "UPGRADE_INTERFACE_VERSION",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "VERSION", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "baseDecimals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "baseGoal", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "baseToken", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "boostDecimals",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "boostToken", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "calculateAccidentAmount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "calculateAccountRefundAmount",
+    functionFragment: "calculateAccountBaseAllocation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateAccountBaseRefund",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateAccountBoostAverageRate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateAccountBoostRefund",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateAccountShare",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateDecimalsFactors",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateExcessBoostAmount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -269,8 +501,36 @@ export interface SQRpProRataInterface extends Interface {
     functionFragment: "calculateRemainDeposit",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateRemainProcessedAccountAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculatedBaseSwappedAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculatedRequiredBoostAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculatedTotalBoostRefundAmount",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "closeDate", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "decimalsFactor1",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "decimalsFactor2",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "depositSig", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "depositVerifier",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "fetchAccountInfo",
     data: BytesLike
@@ -300,6 +560,10 @@ export interface SQRpProRataInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getBoostBalance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getProcessedAccountIndex",
     data: BytesLike
   ): Result;
@@ -307,7 +571,6 @@ export interface SQRpProRataInterface extends Interface {
     functionFragment: "getTotalDeposited",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "goal", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isAfterCloseDate",
@@ -318,10 +581,13 @@ export interface SQRpProRataInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isReachedGoal",
+    functionFragment: "isDepositReady",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "isReady", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isReachedBaseGoal",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "proxiableUUID",
@@ -335,15 +601,35 @@ export interface SQRpProRataInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "startDate", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "totalDeposited",
+    functionFragment: "totalBaseBoostDeposited",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "totalRefunded",
+    functionFragment: "totalBaseDeposited",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "totalWithdrew",
+    functionFragment: "totalBaseNonBoostDeposited",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalBaseRefunded",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalBaseWithdrew",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalBoostRefunded",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalBoostSwapped",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalBoostWithdrew",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -354,19 +640,26 @@ export interface SQRpProRataInterface extends Interface {
     functionFragment: "upgradeToAndCall",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "verifier", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "withdrawGoal",
+    functionFragment: "withdrawBaseGoal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawBaseSwappedAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawExcessTokens",
     data: BytesLike
   ): Result;
 }
 
 export namespace DepositEvent {
-  export type InputTuple = [account: AddressLike, amount: BigNumberish];
-  export type OutputTuple = [account: string, amount: bigint];
+  export type InputTuple = [account: AddressLike, baseAmount: BigNumberish];
+  export type OutputTuple = [account: string, baseAmount: bigint];
   export interface OutputObject {
     account: string;
-    amount: bigint;
+    baseAmount: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -400,11 +693,20 @@ export namespace OwnershipTransferredEvent {
 }
 
 export namespace RefundEvent {
-  export type InputTuple = [account: AddressLike, amount: BigNumberish];
-  export type OutputTuple = [account: string, amount: bigint];
+  export type InputTuple = [
+    account: AddressLike,
+    baseAmount: BigNumberish,
+    boostAmount: BigNumberish
+  ];
+  export type OutputTuple = [
+    account: string,
+    baseAmount: bigint,
+    boostAmount: bigint
+  ];
   export interface OutputObject {
     account: string;
-    amount: bigint;
+    baseAmount: bigint;
+    boostAmount: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -424,12 +726,47 @@ export namespace UpgradedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace WithdrawGoalEvent {
-  export type InputTuple = [account: AddressLike, amount: BigNumberish];
-  export type OutputTuple = [account: string, amount: bigint];
+export namespace WithdrawBaseGoalEvent {
+  export type InputTuple = [account: AddressLike, baseAmount: BigNumberish];
+  export type OutputTuple = [account: string, baseAmount: bigint];
   export interface OutputObject {
     account: string;
-    amount: bigint;
+    baseAmount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace WithdrawExcessTokensEvent {
+  export type InputTuple = [
+    account: AddressLike,
+    baseAmount: BigNumberish,
+    boostAmount: BigNumberish
+  ];
+  export type OutputTuple = [
+    account: string,
+    baseAmount: bigint,
+    boostAmount: bigint
+  ];
+  export interface OutputObject {
+    account: string;
+    baseAmount: bigint;
+    boostAmount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace WithdrawSwappedAmountEvent {
+  export type InputTuple = [account: AddressLike, baseAmount: BigNumberish];
+  export type OutputTuple = [account: string, baseAmount: bigint];
+  export interface OutputObject {
+    account: string;
+    baseAmount: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -480,41 +817,97 @@ export interface SQRpProRata extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
+  PRECISION_FACTOR: TypedContractMethod<[], [bigint], "view">;
+
   UPGRADE_INTERFACE_VERSION: TypedContractMethod<[], [string], "view">;
 
   VERSION: TypedContractMethod<[], [string], "view">;
 
-  balanceOf: TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  balanceOf: TypedContractMethod<
+    [account: AddressLike],
+    [[bigint, bigint] & { baseDeposited: bigint; boostDeposited: bigint }],
+    "view"
+  >;
+
+  baseDecimals: TypedContractMethod<[], [bigint], "view">;
+
+  baseGoal: TypedContractMethod<[], [bigint], "view">;
 
   baseToken: TypedContractMethod<[], [string], "view">;
+
+  boostDecimals: TypedContractMethod<[], [bigint], "view">;
 
   boostToken: TypedContractMethod<[], [string], "view">;
 
   calculateAccidentAmount: TypedContractMethod<[], [bigint], "view">;
 
-  calculateAccountRefundAmount: TypedContractMethod<
+  calculateAccountBaseAllocation: TypedContractMethod<
     [account: AddressLike],
     [bigint],
     "view"
   >;
 
+  calculateAccountBaseRefund: TypedContractMethod<
+    [account: AddressLike],
+    [bigint],
+    "view"
+  >;
+
+  calculateAccountBoostAverageRate: TypedContractMethod<
+    [account: AddressLike],
+    [bigint],
+    "view"
+  >;
+
+  calculateAccountBoostRefund: TypedContractMethod<
+    [account: AddressLike],
+    [bigint],
+    "view"
+  >;
+
+  calculateAccountShare: TypedContractMethod<
+    [account: AddressLike],
+    [bigint],
+    "view"
+  >;
+
+  calculateDecimalsFactors: TypedContractMethod<
+    [_baseDecimals: BigNumberish, _boostDecimals: BigNumberish],
+    [[bigint, bigint] & { factor1: bigint; factor2: bigint }],
+    "view"
+  >;
+
+  calculateExcessBoostAmount: TypedContractMethod<[], [bigint], "view">;
+
   calculateOverfundAmount: TypedContractMethod<[], [bigint], "view">;
 
   calculateRemainDeposit: TypedContractMethod<[], [bigint], "view">;
 
+  calculateRemainProcessedAccountAmount: TypedContractMethod<
+    [],
+    [bigint],
+    "view"
+  >;
+
+  calculatedBaseSwappedAmount: TypedContractMethod<[], [bigint], "view">;
+
+  calculatedRequiredBoostAmount: TypedContractMethod<[], [bigint], "view">;
+
+  calculatedTotalBoostRefundAmount: TypedContractMethod<[], [bigint], "view">;
+
   closeDate: TypedContractMethod<[], [bigint], "view">;
 
+  decimalsFactor1: TypedContractMethod<[], [bigint], "view">;
+
+  decimalsFactor2: TypedContractMethod<[], [bigint], "view">;
+
   depositSig: TypedContractMethod<
-    [
-      amount: BigNumberish,
-      boost: boolean,
-      transactionId: string,
-      timestampLimit: BigNumberish,
-      signature: BytesLike
-    ],
+    [depositSigParams: SQRpProRata.DepositSigParamsStruct],
     [void],
     "nonpayable"
   >;
+
+  depositVerifier: TypedContractMethod<[], [string], "view">;
 
   fetchAccountInfo: TypedContractMethod<
     [account: AddressLike],
@@ -550,22 +943,14 @@ export interface SQRpProRata extends BaseContract {
 
   getBaseBalance: TypedContractMethod<[], [bigint], "view">;
 
+  getBoostBalance: TypedContractMethod<[], [bigint], "view">;
+
   getProcessedAccountIndex: TypedContractMethod<[], [bigint], "view">;
 
   getTotalDeposited: TypedContractMethod<[], [bigint], "view">;
 
-  goal: TypedContractMethod<[], [bigint], "view">;
-
   initialize: TypedContractMethod<
-    [
-      _newOwner: AddressLike,
-      _baseToken: AddressLike,
-      _boostToken: AddressLike,
-      _verifier: AddressLike,
-      _goal: BigNumberish,
-      _startDate: BigNumberish,
-      _closeDate: BigNumberish
-    ],
+    [contractParams: SQRpProRata.ContractParamsStruct],
     [void],
     "nonpayable"
   >;
@@ -574,9 +959,9 @@ export interface SQRpProRata extends BaseContract {
 
   isBeforeStartDate: TypedContractMethod<[], [boolean], "view">;
 
-  isReachedGoal: TypedContractMethod<[], [boolean], "view">;
+  isDepositReady: TypedContractMethod<[], [boolean], "view">;
 
-  isReady: TypedContractMethod<[], [boolean], "view">;
+  isReachedBaseGoal: TypedContractMethod<[], [boolean], "view">;
 
   owner: TypedContractMethod<[], [string], "view">;
 
@@ -590,11 +975,21 @@ export interface SQRpProRata extends BaseContract {
 
   startDate: TypedContractMethod<[], [bigint], "view">;
 
-  totalDeposited: TypedContractMethod<[], [bigint], "view">;
+  totalBaseBoostDeposited: TypedContractMethod<[], [bigint], "view">;
 
-  totalRefunded: TypedContractMethod<[], [bigint], "view">;
+  totalBaseDeposited: TypedContractMethod<[], [bigint], "view">;
 
-  totalWithdrew: TypedContractMethod<[], [bigint], "view">;
+  totalBaseNonBoostDeposited: TypedContractMethod<[], [bigint], "view">;
+
+  totalBaseRefunded: TypedContractMethod<[], [bigint], "view">;
+
+  totalBaseWithdrew: TypedContractMethod<[], [bigint], "view">;
+
+  totalBoostRefunded: TypedContractMethod<[], [bigint], "view">;
+
+  totalBoostSwapped: TypedContractMethod<[], [bigint], "view">;
+
+  totalBoostWithdrew: TypedContractMethod<[], [bigint], "view">;
 
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
@@ -608,14 +1003,19 @@ export interface SQRpProRata extends BaseContract {
     "payable"
   >;
 
-  verifier: TypedContractMethod<[], [string], "view">;
+  withdrawBaseGoal: TypedContractMethod<[], [void], "nonpayable">;
 
-  withdrawGoal: TypedContractMethod<[], [void], "nonpayable">;
+  withdrawBaseSwappedAmount: TypedContractMethod<[], [void], "nonpayable">;
+
+  withdrawExcessTokens: TypedContractMethod<[], [void], "nonpayable">;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
+  getFunction(
+    nameOrSignature: "PRECISION_FACTOR"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "UPGRADE_INTERFACE_VERSION"
   ): TypedContractMethod<[], [string], "view">;
@@ -624,10 +1024,23 @@ export interface SQRpProRata extends BaseContract {
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "balanceOf"
-  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [account: AddressLike],
+    [[bigint, bigint] & { baseDeposited: bigint; boostDeposited: bigint }],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "baseDecimals"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "baseGoal"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "baseToken"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "boostDecimals"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "boostToken"
   ): TypedContractMethod<[], [string], "view">;
@@ -635,8 +1048,30 @@ export interface SQRpProRata extends BaseContract {
     nameOrSignature: "calculateAccidentAmount"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "calculateAccountRefundAmount"
+    nameOrSignature: "calculateAccountBaseAllocation"
   ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "calculateAccountBaseRefund"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "calculateAccountBoostAverageRate"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "calculateAccountBoostRefund"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "calculateAccountShare"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "calculateDecimalsFactors"
+  ): TypedContractMethod<
+    [_baseDecimals: BigNumberish, _boostDecimals: BigNumberish],
+    [[bigint, bigint] & { factor1: bigint; factor2: bigint }],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "calculateExcessBoostAmount"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "calculateOverfundAmount"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -644,21 +1079,36 @@ export interface SQRpProRata extends BaseContract {
     nameOrSignature: "calculateRemainDeposit"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "calculateRemainProcessedAccountAmount"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "calculatedBaseSwappedAmount"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "calculatedRequiredBoostAmount"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "calculatedTotalBoostRefundAmount"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "closeDate"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "decimalsFactor1"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "decimalsFactor2"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "depositSig"
   ): TypedContractMethod<
-    [
-      amount: BigNumberish,
-      boost: boolean,
-      transactionId: string,
-      timestampLimit: BigNumberish,
-      signature: BytesLike
-    ],
+    [depositSigParams: SQRpProRata.DepositSigParamsStruct],
     [void],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "depositVerifier"
+  ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "fetchAccountInfo"
   ): TypedContractMethod<
@@ -689,26 +1139,18 @@ export interface SQRpProRata extends BaseContract {
     nameOrSignature: "getBaseBalance"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "getBoostBalance"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "getProcessedAccountIndex"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getTotalDeposited"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "goal"
-  ): TypedContractMethod<[], [bigint], "view">;
-  getFunction(
     nameOrSignature: "initialize"
   ): TypedContractMethod<
-    [
-      _newOwner: AddressLike,
-      _baseToken: AddressLike,
-      _boostToken: AddressLike,
-      _verifier: AddressLike,
-      _goal: BigNumberish,
-      _startDate: BigNumberish,
-      _closeDate: BigNumberish
-    ],
+    [contractParams: SQRpProRata.ContractParamsStruct],
     [void],
     "nonpayable"
   >;
@@ -719,10 +1161,10 @@ export interface SQRpProRata extends BaseContract {
     nameOrSignature: "isBeforeStartDate"
   ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
-    nameOrSignature: "isReachedGoal"
+    nameOrSignature: "isDepositReady"
   ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
-    nameOrSignature: "isReady"
+    nameOrSignature: "isReachedBaseGoal"
   ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "owner"
@@ -743,13 +1185,28 @@ export interface SQRpProRata extends BaseContract {
     nameOrSignature: "startDate"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "totalDeposited"
+    nameOrSignature: "totalBaseBoostDeposited"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "totalRefunded"
+    nameOrSignature: "totalBaseDeposited"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "totalWithdrew"
+    nameOrSignature: "totalBaseNonBoostDeposited"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "totalBaseRefunded"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "totalBaseWithdrew"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "totalBoostRefunded"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "totalBoostSwapped"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "totalBoostWithdrew"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "transferOwnership"
@@ -762,10 +1219,13 @@ export interface SQRpProRata extends BaseContract {
     "payable"
   >;
   getFunction(
-    nameOrSignature: "verifier"
-  ): TypedContractMethod<[], [string], "view">;
+    nameOrSignature: "withdrawBaseGoal"
+  ): TypedContractMethod<[], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "withdrawGoal"
+    nameOrSignature: "withdrawBaseSwappedAmount"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "withdrawExcessTokens"
   ): TypedContractMethod<[], [void], "nonpayable">;
 
   getEvent(
@@ -804,11 +1264,25 @@ export interface SQRpProRata extends BaseContract {
     UpgradedEvent.OutputObject
   >;
   getEvent(
-    key: "WithdrawGoal"
+    key: "WithdrawBaseGoal"
   ): TypedContractEvent<
-    WithdrawGoalEvent.InputTuple,
-    WithdrawGoalEvent.OutputTuple,
-    WithdrawGoalEvent.OutputObject
+    WithdrawBaseGoalEvent.InputTuple,
+    WithdrawBaseGoalEvent.OutputTuple,
+    WithdrawBaseGoalEvent.OutputObject
+  >;
+  getEvent(
+    key: "WithdrawExcessTokens"
+  ): TypedContractEvent<
+    WithdrawExcessTokensEvent.InputTuple,
+    WithdrawExcessTokensEvent.OutputTuple,
+    WithdrawExcessTokensEvent.OutputObject
+  >;
+  getEvent(
+    key: "WithdrawSwappedAmount"
+  ): TypedContractEvent<
+    WithdrawSwappedAmountEvent.InputTuple,
+    WithdrawSwappedAmountEvent.OutputTuple,
+    WithdrawSwappedAmountEvent.OutputObject
   >;
 
   filters: {
@@ -845,7 +1319,7 @@ export interface SQRpProRata extends BaseContract {
       OwnershipTransferredEvent.OutputObject
     >;
 
-    "Refund(address,uint256)": TypedContractEvent<
+    "Refund(address,uint256,uint256)": TypedContractEvent<
       RefundEvent.InputTuple,
       RefundEvent.OutputTuple,
       RefundEvent.OutputObject
@@ -867,15 +1341,37 @@ export interface SQRpProRata extends BaseContract {
       UpgradedEvent.OutputObject
     >;
 
-    "WithdrawGoal(address,uint256)": TypedContractEvent<
-      WithdrawGoalEvent.InputTuple,
-      WithdrawGoalEvent.OutputTuple,
-      WithdrawGoalEvent.OutputObject
+    "WithdrawBaseGoal(address,uint256)": TypedContractEvent<
+      WithdrawBaseGoalEvent.InputTuple,
+      WithdrawBaseGoalEvent.OutputTuple,
+      WithdrawBaseGoalEvent.OutputObject
     >;
-    WithdrawGoal: TypedContractEvent<
-      WithdrawGoalEvent.InputTuple,
-      WithdrawGoalEvent.OutputTuple,
-      WithdrawGoalEvent.OutputObject
+    WithdrawBaseGoal: TypedContractEvent<
+      WithdrawBaseGoalEvent.InputTuple,
+      WithdrawBaseGoalEvent.OutputTuple,
+      WithdrawBaseGoalEvent.OutputObject
+    >;
+
+    "WithdrawExcessTokens(address,uint256,uint256)": TypedContractEvent<
+      WithdrawExcessTokensEvent.InputTuple,
+      WithdrawExcessTokensEvent.OutputTuple,
+      WithdrawExcessTokensEvent.OutputObject
+    >;
+    WithdrawExcessTokens: TypedContractEvent<
+      WithdrawExcessTokensEvent.InputTuple,
+      WithdrawExcessTokensEvent.OutputTuple,
+      WithdrawExcessTokensEvent.OutputObject
+    >;
+
+    "WithdrawSwappedAmount(address,uint256)": TypedContractEvent<
+      WithdrawSwappedAmountEvent.InputTuple,
+      WithdrawSwappedAmountEvent.OutputTuple,
+      WithdrawSwappedAmountEvent.OutputObject
+    >;
+    WithdrawSwappedAmount: TypedContractEvent<
+      WithdrawSwappedAmountEvent.InputTuple,
+      WithdrawSwappedAmountEvent.OutputTuple,
+      WithdrawSwappedAmountEvent.OutputObject
     >;
   };
 }

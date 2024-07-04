@@ -248,7 +248,7 @@ const handlerFunc: HandlerFunc = () => ({
             const accountInfo = await proRata.fetchAccountInfo(account);
             return {
               account,
-              amount: toNumberDecimals(accountInfo.depositAmount, erc20Decimals),
+              amount: toNumberDecimals(accountInfo.baseAllocation, erc20Decimals),
             };
           },
           { concurrency: HANDLER_CONCURRENCY_COUNT },

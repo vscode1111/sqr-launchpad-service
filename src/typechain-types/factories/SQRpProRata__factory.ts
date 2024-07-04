@@ -40,12 +40,17 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "AmountNotZero",
+    name: "BaseAmountNotZero",
     type: "error",
   },
   {
     inputs: [],
     name: "BaseTokenNotZeroAddress",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "BoostExchangeRateNotZero",
     type: "error",
   },
   {
@@ -61,6 +66,11 @@ const _abi = [
   {
     inputs: [],
     name: "CloseDateMustBeGreaterThanStartDate",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "DepositVerifierNotZeroAddress",
     type: "error",
   },
   {
@@ -134,6 +144,16 @@ const _abi = [
   {
     inputs: [],
     name: "NotInitializing",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotRefunded",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotWithdrawBaseGoal",
     type: "error",
   },
   {
@@ -222,17 +242,17 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "UserHasBoostedDeposit",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "UserMustAllowToUseFunds",
     type: "error",
   },
   {
     inputs: [],
     name: "UserMustHaveFunds",
-    type: "error",
-  },
-  {
-    inputs: [],
-    name: "VerifierNotZeroAddress",
     type: "error",
   },
   {
@@ -247,7 +267,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "amount",
+        name: "baseAmount",
         type: "uint256",
       },
     ],
@@ -298,7 +318,13 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "amount",
+        name: "baseAmount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "boostAmount",
         type: "uint256",
       },
     ],
@@ -330,12 +356,69 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "amount",
+        name: "baseAmount",
         type: "uint256",
       },
     ],
-    name: "WithdrawGoal",
+    name: "WithdrawBaseGoal",
     type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "baseAmount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "boostAmount",
+        type: "uint256",
+      },
+    ],
+    name: "WithdrawExcessTokens",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "baseAmount",
+        type: "uint256",
+      },
+    ],
+    name: "WithdrawSwappedAmount",
+    type: "event",
+  },
+  {
+    inputs: [],
+    name: "PRECISION_FACTOR",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
   },
   {
     inputs: [],
@@ -375,6 +458,37 @@ const _abi = [
     outputs: [
       {
         internalType: "uint256",
+        name: "baseDeposited",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "boostDeposited",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "baseDecimals",
+    outputs: [
+      {
+        internalType: "uint8",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "baseGoal",
+    outputs: [
+      {
+        internalType: "uint256",
         name: "",
         type: "uint256",
       },
@@ -390,6 +504,19 @@ const _abi = [
         internalType: "contract IERC20",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "boostDecimals",
+    outputs: [
+      {
+        internalType: "uint8",
+        name: "",
+        type: "uint8",
       },
     ],
     stateMutability: "view",
@@ -429,7 +556,125 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "calculateAccountRefundAmount",
+    name: "calculateAccountBaseAllocation",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "calculateAccountBaseRefund",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "calculateAccountBoostAverageRate",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "calculateAccountBoostRefund",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "calculateAccountShare",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint8",
+        name: "_baseDecimals",
+        type: "uint8",
+      },
+      {
+        internalType: "uint8",
+        name: "_boostDecimals",
+        type: "uint8",
+      },
+    ],
+    name: "calculateDecimalsFactors",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "factor1",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "factor2",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "calculateExcessBoostAmount",
     outputs: [
       {
         internalType: "uint256",
@@ -468,6 +713,58 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "calculateRemainProcessedAccountAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "calculatedBaseSwappedAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "calculatedRequiredBoostAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "calculatedTotalBoostRefundAmount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "closeDate",
     outputs: [
       {
@@ -480,36 +777,87 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "decimalsFactor1",
+    outputs: [
       {
         internalType: "uint256",
-        name: "amount",
+        name: "",
         type: "uint256",
       },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "decimalsFactor2",
+    outputs: [
       {
-        internalType: "bool",
-        name: "boost",
-        type: "bool",
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
       {
-        internalType: "string",
-        name: "transactionId",
-        type: "string",
-      },
-      {
-        internalType: "uint32",
-        name: "timestampLimit",
-        type: "uint32",
-      },
-      {
-        internalType: "bytes",
-        name: "signature",
-        type: "bytes",
+        components: [
+          {
+            internalType: "uint256",
+            name: "baseAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "boost",
+            type: "bool",
+          },
+          {
+            internalType: "uint256",
+            name: "boostExchangeRate",
+            type: "uint256",
+          },
+          {
+            internalType: "string",
+            name: "transactionId",
+            type: "string",
+          },
+          {
+            internalType: "uint32",
+            name: "timestampLimit",
+            type: "uint32",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct SQRpProRata.DepositSigParams",
+        name: "depositSigParams",
+        type: "tuple",
       },
     ],
     name: "depositSig",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "depositVerifier",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -526,28 +874,63 @@ const _abi = [
         components: [
           {
             internalType: "uint256",
-            name: "deposited",
+            name: "baseDeposited",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "boosted",
+            type: "bool",
+          },
+          {
+            internalType: "uint256",
+            name: "baseAllocation",
             type: "uint256",
           },
           {
             internalType: "uint256",
-            name: "depositAmount",
+            name: "baseDeposit",
             type: "uint256",
           },
           {
             internalType: "uint256",
-            name: "refunded",
+            name: "baseRefund",
             type: "uint256",
           },
           {
             internalType: "uint256",
-            name: "refundAmount",
+            name: "baseRefunded",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "boostDeposit",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "boostRefund",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "boostRefunded",
             type: "uint256",
           },
           {
             internalType: "uint32",
             name: "nonce",
             type: "uint32",
+          },
+          {
+            internalType: "uint256",
+            name: "boostAverageRate",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "share",
+            type: "uint256",
           },
         ],
         internalType: "struct SQRpProRata.AccountInfo",
@@ -669,6 +1052,19 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "getBoostBalance",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "getProcessedAccountIndex",
     outputs: [
       {
@@ -694,54 +1090,58 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "goal",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
-        internalType: "address",
-        name: "_newOwner",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_baseToken",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_boostToken",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_verifier",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_goal",
-        type: "uint256",
-      },
-      {
-        internalType: "uint32",
-        name: "_startDate",
-        type: "uint32",
-      },
-      {
-        internalType: "uint32",
-        name: "_closeDate",
-        type: "uint32",
+        components: [
+          {
+            internalType: "address",
+            name: "newOwner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "baseToken",
+            type: "address",
+          },
+          {
+            internalType: "uint8",
+            name: "baseDecimals",
+            type: "uint8",
+          },
+          {
+            internalType: "address",
+            name: "boostToken",
+            type: "address",
+          },
+          {
+            internalType: "uint8",
+            name: "boostDecimals",
+            type: "uint8",
+          },
+          {
+            internalType: "address",
+            name: "depositVerifier",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "baseGoal",
+            type: "uint256",
+          },
+          {
+            internalType: "uint32",
+            name: "startDate",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "closeDate",
+            type: "uint32",
+          },
+        ],
+        internalType: "struct SQRpProRata.ContractParams",
+        name: "contractParams",
+        type: "tuple",
       },
     ],
     name: "initialize",
@@ -777,7 +1177,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "isReachedGoal",
+    name: "isDepositReady",
     outputs: [
       {
         internalType: "bool",
@@ -790,7 +1190,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "isReady",
+    name: "isReachedBaseGoal",
     outputs: [
       {
         internalType: "bool",
@@ -869,7 +1269,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "totalDeposited",
+    name: "totalBaseBoostDeposited",
     outputs: [
       {
         internalType: "uint256",
@@ -882,7 +1282,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "totalRefunded",
+    name: "totalBaseDeposited",
     outputs: [
       {
         internalType: "uint256",
@@ -895,7 +1295,72 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "totalWithdrew",
+    name: "totalBaseNonBoostDeposited",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalBaseRefunded",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalBaseWithdrew",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalBoostRefunded",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalBoostSwapped",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalBoostWithdrew",
     outputs: [
       {
         internalType: "uint256",
@@ -939,20 +1404,21 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "verifier",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
+    name: "withdrawBaseGoal",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [],
-    name: "withdrawGoal",
+    name: "withdrawBaseSwappedAmount",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "withdrawExcessTokens",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
