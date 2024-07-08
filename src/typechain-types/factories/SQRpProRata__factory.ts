@@ -265,9 +265,21 @@ const _abi = [
         type: "address",
       },
       {
+        indexed: true,
+        internalType: "bool",
+        name: "isBoost",
+        type: "bool",
+      },
+      {
         indexed: false,
         internalType: "uint256",
         name: "baseAmount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "boostAmount",
         type: "uint256",
       },
     ],
@@ -316,6 +328,12 @@ const _abi = [
         type: "address",
       },
       {
+        indexed: true,
+        internalType: "bool",
+        name: "isBoost",
+        type: "bool",
+      },
+      {
         indexed: false,
         internalType: "uint256",
         name: "baseAmount",
@@ -325,6 +343,12 @@ const _abi = [
         indexed: false,
         internalType: "uint256",
         name: "boostAmount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "boostAverageExchangeRate",
         type: "uint256",
       },
     ],
@@ -381,7 +405,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "boostAmount",
+        name: "boostDeposit",
         type: "uint256",
       },
     ],
@@ -594,7 +618,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "calculateAccountBoostAverageRate",
+    name: "calculateAccountBoostAverageExchangeRate",
     outputs: [
       {
         internalType: "uint256",
@@ -924,7 +948,7 @@ const _abi = [
           },
           {
             internalType: "uint256",
-            name: "boostAverageRate",
+            name: "boostAverageExchangeRate",
             type: "uint256",
           },
           {

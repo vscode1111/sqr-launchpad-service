@@ -71,8 +71,18 @@ export class ProRataTransactionItem  {
   @Column({nullable: true})
   isSig!: boolean;
 
+  @Index()
+  @Column({ nullable: true })
+  isBoost!: boolean;
+
   @Column({ type: "float" })
-  amount!: number;
+  baseAmount!: number;
+
+  @Column({ type: "float", default: 0 })
+  boostAmount!: number;
+
+  @Column({ type: "float", nullable: true })
+  boostExchangeRate!: number;
 
   @Index()
   @Column({nullable: true})

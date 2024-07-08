@@ -70,7 +70,10 @@ export type Web3BusProRataDepositEventData = {
   contractType: ContractType;
   contractAddress: string;
   account: string;
-  amount: number;
+  isBoost: boolean;
+  baseAmount: number;
+  boostAmount: number;
+  boostExchangeRate?: number;
   transactionId?: string;
   isSig?: boolean;
   timestamp?: Date;
@@ -81,6 +84,9 @@ export type Web3BusProRataRefundEventData = {
   contractType: ContractType;
   contractAddress: string;
   account: string;
-  amount: number;
+  isBoost: boolean;
+  baseAmount: number;
+  boostAmount: number;
+  boostAverageExchangeRate: number;
   timestamp?: Date;
 } & Web3BusEventDataTx;

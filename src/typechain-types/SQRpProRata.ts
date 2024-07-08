@@ -60,7 +60,7 @@ export declare namespace SQRpProRata {
     boostRefund: BigNumberish;
     boostRefunded: BigNumberish;
     nonce: BigNumberish;
-    boostAverageRate: BigNumberish;
+    boostAverageExchangeRate: BigNumberish;
     share: BigNumberish;
   };
 
@@ -75,7 +75,7 @@ export declare namespace SQRpProRata {
     boostRefund: bigint,
     boostRefunded: bigint,
     nonce: bigint,
-    boostAverageRate: bigint,
+    boostAverageExchangeRate: bigint,
     share: bigint
   ] & {
     baseDeposited: bigint;
@@ -88,7 +88,7 @@ export declare namespace SQRpProRata {
     boostRefund: bigint;
     boostRefunded: bigint;
     nonce: bigint;
-    boostAverageRate: bigint;
+    boostAverageExchangeRate: bigint;
     share: bigint;
   };
 
@@ -148,7 +148,7 @@ export interface SQRpProRataInterface extends Interface {
       | "calculateAccidentAmount"
       | "calculateAccountBaseAllocation"
       | "calculateAccountBaseRefund"
-      | "calculateAccountBoostAverageRate"
+      | "calculateAccountBoostAverageExchangeRate"
       | "calculateAccountBoostRefund"
       | "calculateAccountShare"
       | "calculateDecimalsFactors"
@@ -252,7 +252,7 @@ export interface SQRpProRataInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "calculateAccountBoostAverageRate",
+    functionFragment: "calculateAccountBoostAverageExchangeRate",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
@@ -474,7 +474,7 @@ export interface SQRpProRataInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "calculateAccountBoostAverageRate",
+    functionFragment: "calculateAccountBoostAverageExchangeRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -655,11 +655,23 @@ export interface SQRpProRataInterface extends Interface {
 }
 
 export namespace DepositEvent {
-  export type InputTuple = [account: AddressLike, baseAmount: BigNumberish];
-  export type OutputTuple = [account: string, baseAmount: bigint];
+  export type InputTuple = [
+    account: AddressLike,
+    isBoost: boolean,
+    baseAmount: BigNumberish,
+    boostAmount: BigNumberish
+  ];
+  export type OutputTuple = [
+    account: string,
+    isBoost: boolean,
+    baseAmount: bigint,
+    boostAmount: bigint
+  ];
   export interface OutputObject {
     account: string;
+    isBoost: boolean;
     baseAmount: bigint;
+    boostAmount: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -695,18 +707,24 @@ export namespace OwnershipTransferredEvent {
 export namespace RefundEvent {
   export type InputTuple = [
     account: AddressLike,
+    isBoost: boolean,
     baseAmount: BigNumberish,
-    boostAmount: BigNumberish
+    boostAmount: BigNumberish,
+    boostAverageExchangeRate: BigNumberish
   ];
   export type OutputTuple = [
     account: string,
+    isBoost: boolean,
     baseAmount: bigint,
-    boostAmount: bigint
+    boostAmount: bigint,
+    boostAverageExchangeRate: bigint
   ];
   export interface OutputObject {
     account: string;
+    isBoost: boolean;
     baseAmount: bigint;
     boostAmount: bigint;
+    boostAverageExchangeRate: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -743,17 +761,17 @@ export namespace WithdrawExcessTokensEvent {
   export type InputTuple = [
     account: AddressLike,
     baseAmount: BigNumberish,
-    boostAmount: BigNumberish
+    boostDeposit: BigNumberish
   ];
   export type OutputTuple = [
     account: string,
     baseAmount: bigint,
-    boostAmount: bigint
+    boostDeposit: bigint
   ];
   export interface OutputObject {
     account: string;
     baseAmount: bigint;
-    boostAmount: bigint;
+    boostDeposit: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -853,7 +871,7 @@ export interface SQRpProRata extends BaseContract {
     "view"
   >;
 
-  calculateAccountBoostAverageRate: TypedContractMethod<
+  calculateAccountBoostAverageExchangeRate: TypedContractMethod<
     [account: AddressLike],
     [bigint],
     "view"
@@ -1054,7 +1072,7 @@ export interface SQRpProRata extends BaseContract {
     nameOrSignature: "calculateAccountBaseRefund"
   ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
-    nameOrSignature: "calculateAccountBoostAverageRate"
+    nameOrSignature: "calculateAccountBoostAverageExchangeRate"
   ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "calculateAccountBoostRefund"
@@ -1286,7 +1304,7 @@ export interface SQRpProRata extends BaseContract {
   >;
 
   filters: {
-    "Deposit(address,uint256)": TypedContractEvent<
+    "Deposit(address,bool,uint256,uint256)": TypedContractEvent<
       DepositEvent.InputTuple,
       DepositEvent.OutputTuple,
       DepositEvent.OutputObject
@@ -1319,7 +1337,7 @@ export interface SQRpProRata extends BaseContract {
       OwnershipTransferredEvent.OutputObject
     >;
 
-    "Refund(address,uint256,uint256)": TypedContractEvent<
+    "Refund(address,bool,uint256,uint256,uint256)": TypedContractEvent<
       RefundEvent.InputTuple,
       RefundEvent.OutputTuple,
       RefundEvent.OutputObject

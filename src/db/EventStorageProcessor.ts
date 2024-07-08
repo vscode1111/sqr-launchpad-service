@@ -1,5 +1,5 @@
 import Bluebird from 'bluebird';
-import { Interface } from 'ethers';
+import { Interface, Result } from 'ethers';
 import { services } from 'index';
 import { ServiceBroker } from 'moleculer';
 import { DataSource, Repository } from 'typeorm';
@@ -11,6 +11,7 @@ import {
   decodeData,
   decodeInput,
   getAddressFromSlot,
+  toBoolean2,
   toNumberDecimals,
 } from '~common';
 import {
@@ -323,18 +324,26 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
 
     let transactionId;
     let isSig;
+    let isBoost = toBoolean2(Number(event.topic2));
+    let boostAmount = 0;
+    let boostExchangeRate;
+    let boostAverageExchangeRate = 0;
 
     const dbProRataTransactionItem = new ProRataTransactionItem();
 
     if (isDeposit) {
-      const decodedDepositInput = this.tryDecode<ProRataDepositInput>(
+      const decodedDepositInputs = this.tryDecode<ProRataDepositInput>(
         event.transactionHash.input,
         this.sqrpProRataAbiInterfaces,
         this.sqrpProRataCurrentAbiInterface,
       );
-      transactionId = decodedDepositInput.transactionId;
-      isSig = decodedDepositInput.signature !== undefined;
+      const decodedDepositInput = decodedDepositInputs[0];
 
+      dbProRataTransactionItem.isBoost = isBoost;
+      boostExchangeRate = toNumberDecimals(decodedDepositInput[2]);
+      dbProRataTransactionItem.boostExchangeRate = boostExchangeRate;
+      isSig = decodedDepositInput[5] !== undefined;
+      transactionId = decodedDepositInput[3];
       dbProRataTransactionItem.transactionId = transactionId;
       dbProRataTransactionItem.isSig = isSig;
     }
@@ -350,19 +359,37 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     const account = getAddressFromSlot(event.topic1);
     const dbAccount = await this.getOrSaveAccount(account, accountRepository);
     dbProRataTransactionItem.account = dbAccount;
-    const eventData = decodeData(event.data!, ['uint256']);
 
-    const { getSqrpProRata, getErc20Token } = this.context;
-    const decimals = await this.cacheMachine.call(
+    let eventData: Result;
+
+    if (isDeposit) {
+      eventData = decodeData(event.data!, ['uint256', 'uint256']);
+    } else {
+      eventData = decodeData(event.data!, ['uint256', 'uint256', 'uint256']);
+      boostAverageExchangeRate = toNumberDecimals(BigInt(eventData[2]));
+    }
+
+    const { getSqrpProRata } = this.context;
+    const { baseDecimals, boostDecimals } = await this.cacheMachine.call(
       () => getCacheContractSettingKey(network, contractAddress),
       async () => {
-        const tokenAddress = await getSqrpProRata(contractAddress).baseToken();
-        return getErc20Token(tokenAddress).decimals();
+        const [baseDecimals, boostDecimals] = await Promise.all([
+          await getSqrpProRata(contractAddress).baseDecimals(),
+          await getSqrpProRata(contractAddress).boostDecimals(),
+        ]);
+
+        return {
+          baseDecimals,
+          boostDecimals,
+        };
       },
     );
 
-    const amount = toNumberDecimals(BigInt(eventData[0]), decimals);
-    dbProRataTransactionItem.amount = amount;
+    const baseAmount = toNumberDecimals(BigInt(eventData[0]), baseDecimals);
+    dbProRataTransactionItem.baseAmount = baseAmount;
+    boostAmount = toNumberDecimals(BigInt(eventData[1]), boostDecimals);
+
+    dbProRataTransactionItem.boostAmount = boostAmount;
     const timestamp = event.transactionHash.block.timestamp;
     dbProRataTransactionItem.timestamp = timestamp;
 
@@ -378,7 +405,10 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
           contractType,
           contractAddress,
           account,
-          amount,
+          isBoost,
+          baseAmount,
+          boostAmount,
+          boostExchangeRate,
           transactionId,
           isSig,
           timestamp,
@@ -393,7 +423,10 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
           contractType,
           contractAddress,
           account,
-          amount,
+          isBoost,
+          baseAmount,
+          boostAmount,
+          boostAverageExchangeRate,
           timestamp,
           tx,
         },
