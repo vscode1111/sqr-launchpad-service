@@ -78,7 +78,7 @@ export class ProRataTransactionItem  {
   @Column({ type: "float" })
   baseAmount!: number;
 
-  @Column({ type: "float", default: 0 })
+  @Column({ type: "float" })
   boostAmount!: number;
 
   @Column({ type: "float", nullable: true })
