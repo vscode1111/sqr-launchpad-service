@@ -7,6 +7,7 @@ import {
 } from '~common-service';
 import { SqrLaunchpadContext } from '~services';
 import {
+  BABToken__factory,
   ERC20Token__factory,
   SQRPaymentGateway__factory,
   SQRVesting__factory,
@@ -30,6 +31,7 @@ export function getSqrLaunchpadContext(network: DeployNetworkKey): SqrLaunchpadC
   );
   const firstSqrVesting = SQRVesting__factory.connect(sqrLaunchpadData[0].address, owner);
   const firstSqrpProRata = SQRpProRata__factory.connect(sqrLaunchpadData[0].address, owner);
+  const firstBABToken = BABToken__factory.connect(sqrLaunchpadData[0].address, owner);
 
   return {
     owner,
@@ -41,5 +43,7 @@ export function getSqrLaunchpadContext(network: DeployNetworkKey): SqrLaunchpadC
     getSqrVesting: (address: string) => SQRVesting__factory.connect(address, owner),
     firstSqrpProRata,
     getSqrpProRata: (address: string) => SQRpProRata__factory.connect(address, owner),
+    firstBABToken,
+    getBABToken: (address: string) => BABToken__factory.connect(address, owner),
   };
 }
