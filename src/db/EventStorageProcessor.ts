@@ -66,6 +66,7 @@ const contractTypeToEventTypeMap: Record<ContractType, Web3BusEventType> = {
   vesting: 'VESTING',
   'pro-rata': 'PRO_RATA',
   'pro-rata-sqrp-gated': 'PRO_RATA',
+  babt: 'BABT',
 };
 
 function isWeb3BusEventType(contractType: ContractType, eventType: Web3BusEventType) {
@@ -81,6 +82,9 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
   private vestingClaimTopic0!: string;
   private proRataDepositTopic0!: string;
   private proRataRefundTopic0!: string;
+  private babTokenAttestTopic0!: string;
+  private babTokenBurnTopic0!: string;
+  private babTokenRevokeTopic0!: string;
   private topics0: string[];
   private idLock;
   private cacheMachine: CacheMachine;
@@ -112,7 +116,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     }
     this.context = context;
 
-    const { firstSqrPaymentGateway, firstSqrVesting, firstSqrpProRata } = context;
+    const { firstSqrPaymentGateway, firstSqrVesting, firstSqrpProRata, firstBABToken } = context;
     this.paymentGatewayDepositTopic0 = await this.setTopic0(
       firstSqrPaymentGateway.filters.Deposit(),
     );
@@ -121,6 +125,10 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
 
     this.proRataDepositTopic0 = await this.setTopic0(firstSqrpProRata.filters.Deposit());
     this.proRataRefundTopic0 = await this.setTopic0(firstSqrpProRata.filters.Refund());
+
+    this.babTokenAttestTopic0 = await this.setTopic0(firstBABToken.filters.Attest());
+    this.babTokenBurnTopic0 = await this.setTopic0(firstBABToken.filters.Burn());
+    this.babTokenRevokeTopic0 = await this.setTopic0(firstBABToken.filters.Revoke());
   }
 
   async setTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>) {
@@ -434,6 +442,37 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     }
   }
 
+  private async processBABTokenTransaction({
+    event,
+    dbNetwork,
+    contractType,
+    attested,
+  }: {
+    event: Event;
+    dbNetwork: Network;
+    contractType: ContractType;
+    attested: boolean;
+  }): Promise<Web3BusEvent | null> {
+    const contractAddress = event.contract.address;
+    const network = dbNetwork.name as DeployNetworkKey;
+    const account = getAddressFromSlot(event.topic1);
+    const timestamp = event.transactionHash.block.timestamp;
+    const tx = event.transactionHash.hash;
+
+    return {
+      event: 'BABT_STATUS_CHANGED',
+      data: {
+        network,
+        contractType,
+        contractAddress,
+        account,
+        attested,
+        timestamp,
+        tx,
+      },
+    };
+  }
+
   private async createTransactionItem(
     event: Event,
     paymentGatewayTransactionItemRepository: Repository<PaymentGatewayTransactionItem>,
@@ -494,6 +533,22 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
           proRataTransactionItemType: 'refund',
           proRataTransactionItemRepository,
           accountRepository,
+        });
+      }
+    } else if (isWeb3BusEventType(event.contract.type, 'BABT')) {
+      if (event.topic0 === this.babTokenAttestTopic0) {
+        return this.processBABTokenTransaction({
+          event,
+          dbNetwork,
+          contractType,
+          attested: true,
+        });
+      } else if (event.topic0 === this.babTokenRevokeTopic0 || event.topic0 === this.babTokenBurnTopic0) {
+        return this.processBABTokenTransaction({
+          event,
+          dbNetwork,
+          contractType,
+          attested: false,
         });
       }
     }
