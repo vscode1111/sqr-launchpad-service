@@ -140,12 +140,12 @@ module.exports = {
         //   type: 'vesting',
         //   disable: true,
         // },
-        // {
-        //   address: '0x30c526Ea466e35346685e410A04112422ee531CD',
-        //   blockNumber: 40690351,
-        //   type: 'fcfs',
-        //   disable: true,
-        // },
+        {
+          address: '0x30c526Ea466e35346685e410A04112422ee531CD',
+          blockNumber: 40690351,
+          type: 'fcfs',
+          disable: false,
+        },
         {
           address: '0x741046cC8f0F680e716d99D1206DCF170FE9B5C2',
           blockNumber: 40690731,
