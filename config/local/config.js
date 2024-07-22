@@ -141,26 +141,14 @@ module.exports = {
         //   disable: true,
         // },
         // {
-        //   address: '0x872D661B0840aA486f851D806A7b43aC701A660a',
-        //   blockNumber: 38970368,
+        //   address: '0x30c526Ea466e35346685e410A04112422ee531CD',
+        //   blockNumber: 40690351,
         //   type: 'fcfs',
         //   disable: true,
         // },
-        // {
-        //   address: '0xc0ad64F1FBdeCc0F5855307fcB5f3e24fbb9E543',
-        //   blockNumber: 38970509,
-        //   type: 'sqrp-gated',
-        //   disable: true,
-        // },
         {
-          address: '0xc1Db333579ff140cE999FB9b007c50766FDC4dc7',
-          blockNumber: 40288757,
-          type: 'pro-rata',
-          disable: false,
-        },
-        {
-          address: '0x8B5c0b1b6aEA174c56ec0D4f02207DA0AAfcAA63',
-          blockNumber: 40289278,
+          address: '0x741046cC8f0F680e716d99D1206DCF170FE9B5C2',
+          blockNumber: 40690731,
           type: 'pro-rata',
           disable: false,
         },
@@ -169,6 +157,7 @@ module.exports = {
     provider: {
       bsc: {
         http: 'https://rpc.ankr.com/bsc/0a92c9288ddd85181db59c48d2eae9d07873954be63e06893de5b4cbcb37842e',
+        // http: 'https://bsc-dataseed.binance.org',
         blockNumberFilterSize: 0,
         blockNumberRange: 2000,
         blockNumberOffset: 10,

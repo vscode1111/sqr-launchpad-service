@@ -6,18 +6,11 @@ export type StatusType = 'missing' | 'exists';
 
 export type HandlerParams<T> = Record<keyof T, ActionParams>;
 
-export interface CreateAccountParams {
-  userId: string;
-}
-export interface CreateAccountResponse {
-  address: string;
-}
-
 export interface GetNetworkParams {
   network: string;
 }
 
-export interface GetNetworkAddressesParams extends GetNetworkParams { }
+export interface GetNetworkAddressesParams extends GetNetworkParams {}
 
 export type GetNetworkAddressesResponse = Web3ConfigContract[];
 
@@ -47,13 +40,13 @@ export interface GetProRataNetDepositsResponse {
   amount: number;
 }
 
-export interface GetPaymentGatewayTransactionItemsParams extends GetTransactionItemsParams { }
+export interface GetPaymentGatewayTransactionItemsParams extends GetTransactionItemsParams {}
 
-export interface GetPaymentGatewayTransactionItemsResponse extends GetTransactionItemsResponse { }
+export interface GetPaymentGatewayTransactionItemsResponse extends GetTransactionItemsResponse {}
 
-export interface GetProRataTransactionItemsParams extends GetTransactionItemsParams { }
+export interface GetProRataTransactionItemsParams extends GetTransactionItemsParams {}
 
-export interface GetProRataTransactionItemsResponse extends GetTransactionItemsResponse { }
+export interface GetProRataTransactionItemsResponse extends GetTransactionItemsResponse {}
 
 export interface GetProRataNetDepositsParams extends GetNetworkParams {
   contractAddress: string;

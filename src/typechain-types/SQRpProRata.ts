@@ -108,6 +108,7 @@ export declare namespace SQRpProRata {
     baseGoal: BigNumberish;
     startDate: BigNumberish;
     closeDate: BigNumberish;
+    externalRefund: boolean;
   };
 
   export type ContractParamsStructOutput = [
@@ -119,7 +120,8 @@ export declare namespace SQRpProRata {
     depositVerifier: string,
     baseGoal: bigint,
     startDate: bigint,
-    closeDate: bigint
+    closeDate: bigint,
+    externalRefund: boolean
   ] & {
     newOwner: string;
     baseToken: string;
@@ -130,7 +132,53 @@ export declare namespace SQRpProRata {
     baseGoal: bigint;
     startDate: bigint;
     closeDate: bigint;
+    externalRefund: boolean;
   };
+}
+
+export declare namespace IDepositRefund {
+  export type DepositRefundAccountInfoStruct = {
+    baseDeposited: BigNumberish;
+    boosted: boolean;
+    baseAllocation: BigNumberish;
+    baseRefund: BigNumberish;
+    boostRefund: BigNumberish;
+    nonce: BigNumberish;
+  };
+
+  export type DepositRefundAccountInfoStructOutput = [
+    baseDeposited: bigint,
+    boosted: boolean,
+    baseAllocation: bigint,
+    baseRefund: bigint,
+    boostRefund: bigint,
+    nonce: bigint
+  ] & {
+    baseDeposited: bigint;
+    boosted: boolean;
+    baseAllocation: bigint;
+    baseRefund: bigint;
+    boostRefund: bigint;
+    nonce: bigint;
+  };
+
+  export type DepositRefundContractInfoStruct = {
+    totalBaseDeposited: BigNumberish;
+  };
+
+  export type DepositRefundContractInfoStructOutput = [
+    totalBaseDeposited: bigint
+  ] & { totalBaseDeposited: bigint };
+
+  export type DepositRefundTokensInfoStruct = {
+    baseToken: AddressLike;
+    boostToken: AddressLike;
+  };
+
+  export type DepositRefundTokensInfoStructOutput = [
+    baseToken: string,
+    boostToken: string
+  ] & { baseToken: string; boostToken: string };
 }
 
 export interface SQRpProRataInterface extends Interface {
@@ -138,7 +186,6 @@ export interface SQRpProRataInterface extends Interface {
     nameOrSignature:
       | "PRECISION_FACTOR"
       | "UPGRADE_INTERFACE_VERSION"
-      | "VERSION"
       | "balanceOf"
       | "baseDecimals"
       | "baseGoal"
@@ -164,16 +211,25 @@ export interface SQRpProRataInterface extends Interface {
       | "decimalsFactor2"
       | "depositSig"
       | "depositVerifier"
+      | "externalRefund"
       | "fetchAccountInfo"
       | "fetchTransactionItem"
       | "getAccountByIndex"
       | "getAccountCount"
-      | "getAccountDepositAmount"
       | "getAccountDepositNonce"
       | "getBaseBalance"
+      | "getBaseGoal"
       | "getBoostBalance"
+      | "getCloseDate"
+      | "getContractName"
+      | "getContractVersion"
+      | "getDepositRefundAccountInfo"
+      | "getDepositRefundAllocation"
+      | "getDepositRefundContractInfo"
+      | "getDepositRefundFetchReady"
+      | "getDepositRefundTokensInfo"
       | "getProcessedAccountIndex"
-      | "getTotalDeposited"
+      | "getStartDate"
       | "initialize"
       | "isAfterCloseDate"
       | "isBeforeStartDate"
@@ -220,7 +276,6 @@ export interface SQRpProRataInterface extends Interface {
     functionFragment: "UPGRADE_INTERFACE_VERSION",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "VERSION", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "balanceOf",
     values: [AddressLike]
@@ -313,6 +368,10 @@ export interface SQRpProRataInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "externalRefund",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "fetchAccountInfo",
     values: [AddressLike]
   ): string;
@@ -329,10 +388,6 @@ export interface SQRpProRataInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getAccountDepositAmount",
-    values: [AddressLike]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getAccountDepositNonce",
     values: [AddressLike]
   ): string;
@@ -341,7 +396,43 @@ export interface SQRpProRataInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "getBaseGoal",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getBoostBalance",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCloseDate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getContractName",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getContractVersion",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDepositRefundAccountInfo",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDepositRefundAllocation",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDepositRefundContractInfo",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDepositRefundFetchReady",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDepositRefundTokensInfo",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -349,7 +440,7 @@ export interface SQRpProRataInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getTotalDeposited",
+    functionFragment: "getStartDate",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -448,7 +539,6 @@ export interface SQRpProRataInterface extends Interface {
     functionFragment: "UPGRADE_INTERFACE_VERSION",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "VERSION", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "baseDecimals",
@@ -532,6 +622,10 @@ export interface SQRpProRataInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "externalRefund",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "fetchAccountInfo",
     data: BytesLike
   ): Result;
@@ -548,10 +642,6 @@ export interface SQRpProRataInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getAccountDepositAmount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getAccountDepositNonce",
     data: BytesLike
   ): Result;
@@ -560,7 +650,43 @@ export interface SQRpProRataInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getBaseGoal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getBoostBalance",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCloseDate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getContractName",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getContractVersion",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDepositRefundAccountInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDepositRefundAllocation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDepositRefundContractInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDepositRefundFetchReady",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDepositRefundTokensInfo",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -568,7 +694,7 @@ export interface SQRpProRataInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getTotalDeposited",
+    functionFragment: "getStartDate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
@@ -839,8 +965,6 @@ export interface SQRpProRata extends BaseContract {
 
   UPGRADE_INTERFACE_VERSION: TypedContractMethod<[], [string], "view">;
 
-  VERSION: TypedContractMethod<[], [string], "view">;
-
   balanceOf: TypedContractMethod<
     [account: AddressLike],
     [[bigint, bigint] & { baseDeposited: bigint; boostDeposited: bigint }],
@@ -927,6 +1051,8 @@ export interface SQRpProRata extends BaseContract {
 
   depositVerifier: TypedContractMethod<[], [string], "view">;
 
+  externalRefund: TypedContractMethod<[], [boolean], "view">;
+
   fetchAccountInfo: TypedContractMethod<
     [account: AddressLike],
     [SQRpProRata.AccountInfoStructOutput],
@@ -947,12 +1073,6 @@ export interface SQRpProRata extends BaseContract {
 
   getAccountCount: TypedContractMethod<[], [bigint], "view">;
 
-  getAccountDepositAmount: TypedContractMethod<
-    [account: AddressLike],
-    [bigint],
-    "view"
-  >;
-
   getAccountDepositNonce: TypedContractMethod<
     [account: AddressLike],
     [bigint],
@@ -961,11 +1081,45 @@ export interface SQRpProRata extends BaseContract {
 
   getBaseBalance: TypedContractMethod<[], [bigint], "view">;
 
+  getBaseGoal: TypedContractMethod<[], [bigint], "view">;
+
   getBoostBalance: TypedContractMethod<[], [bigint], "view">;
+
+  getCloseDate: TypedContractMethod<[], [bigint], "view">;
+
+  getContractName: TypedContractMethod<[], [string], "view">;
+
+  getContractVersion: TypedContractMethod<[], [string], "view">;
+
+  getDepositRefundAccountInfo: TypedContractMethod<
+    [account: AddressLike],
+    [IDepositRefund.DepositRefundAccountInfoStructOutput],
+    "view"
+  >;
+
+  getDepositRefundAllocation: TypedContractMethod<
+    [account: AddressLike],
+    [bigint],
+    "view"
+  >;
+
+  getDepositRefundContractInfo: TypedContractMethod<
+    [],
+    [IDepositRefund.DepositRefundContractInfoStructOutput],
+    "view"
+  >;
+
+  getDepositRefundFetchReady: TypedContractMethod<[], [boolean], "view">;
+
+  getDepositRefundTokensInfo: TypedContractMethod<
+    [],
+    [IDepositRefund.DepositRefundTokensInfoStructOutput],
+    "view"
+  >;
 
   getProcessedAccountIndex: TypedContractMethod<[], [bigint], "view">;
 
-  getTotalDeposited: TypedContractMethod<[], [bigint], "view">;
+  getStartDate: TypedContractMethod<[], [bigint], "view">;
 
   initialize: TypedContractMethod<
     [contractParams: SQRpProRata.ContractParamsStruct],
@@ -1036,9 +1190,6 @@ export interface SQRpProRata extends BaseContract {
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "UPGRADE_INTERFACE_VERSION"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
-    nameOrSignature: "VERSION"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
     nameOrSignature: "balanceOf"
@@ -1128,6 +1279,9 @@ export interface SQRpProRata extends BaseContract {
     nameOrSignature: "depositVerifier"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "externalRefund"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
     nameOrSignature: "fetchAccountInfo"
   ): TypedContractMethod<
     [account: AddressLike],
@@ -1148,22 +1302,58 @@ export interface SQRpProRata extends BaseContract {
     nameOrSignature: "getAccountCount"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "getAccountDepositAmount"
-  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
-  getFunction(
     nameOrSignature: "getAccountDepositNonce"
   ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "getBaseBalance"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "getBaseGoal"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "getBoostBalance"
   ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getCloseDate"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getContractName"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "getContractVersion"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "getDepositRefundAccountInfo"
+  ): TypedContractMethod<
+    [account: AddressLike],
+    [IDepositRefund.DepositRefundAccountInfoStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getDepositRefundAllocation"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getDepositRefundContractInfo"
+  ): TypedContractMethod<
+    [],
+    [IDepositRefund.DepositRefundContractInfoStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getDepositRefundFetchReady"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "getDepositRefundTokensInfo"
+  ): TypedContractMethod<
+    [],
+    [IDepositRefund.DepositRefundTokensInfoStructOutput],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "getProcessedAccountIndex"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "getTotalDeposited"
+    nameOrSignature: "getStartDate"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "initialize"

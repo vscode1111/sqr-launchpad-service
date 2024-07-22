@@ -70,6 +70,11 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "ContractForExternalRefund",
+    type: "error",
+  },
+  {
+    inputs: [],
     name: "DepositVerifierNotZeroAddress",
     type: "error",
   },
@@ -447,19 +452,6 @@ const _abi = [
   {
     inputs: [],
     name: "UPGRADE_INTERFACE_VERSION",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "VERSION",
     outputs: [
       {
         internalType: "string",
@@ -885,6 +877,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "externalRefund",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -1031,25 +1036,6 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "getAccountDepositAmount",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-    ],
     name: "getAccountDepositNonce",
     outputs: [
       {
@@ -1076,12 +1062,192 @@ const _abi = [
   },
   {
     inputs: [],
+    name: "getBaseGoal",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "getBoostBalance",
     outputs: [
       {
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getCloseDate",
+    outputs: [
+      {
+        internalType: "uint32",
+        name: "",
+        type: "uint32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getContractName",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getContractVersion",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "getDepositRefundAccountInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "baseDeposited",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "boosted",
+            type: "bool",
+          },
+          {
+            internalType: "uint256",
+            name: "baseAllocation",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "baseRefund",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "boostRefund",
+            type: "uint256",
+          },
+          {
+            internalType: "uint32",
+            name: "nonce",
+            type: "uint32",
+          },
+        ],
+        internalType: "struct IDepositRefund.DepositRefundAccountInfo",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "getDepositRefundAllocation",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getDepositRefundContractInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "totalBaseDeposited",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IDepositRefund.DepositRefundContractInfo",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getDepositRefundFetchReady",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getDepositRefundTokensInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "baseToken",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "boostToken",
+            type: "address",
+          },
+        ],
+        internalType: "struct IDepositRefund.DepositRefundTokensInfo",
+        name: "",
+        type: "tuple",
       },
     ],
     stateMutability: "view",
@@ -1102,12 +1268,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getTotalDeposited",
+    name: "getStartDate",
     outputs: [
       {
-        internalType: "uint256",
+        internalType: "uint32",
         name: "",
-        type: "uint256",
+        type: "uint32",
       },
     ],
     stateMutability: "view",
@@ -1161,6 +1327,11 @@ const _abi = [
             internalType: "uint32",
             name: "closeDate",
             type: "uint32",
+          },
+          {
+            internalType: "bool",
+            name: "externalRefund",
+            type: "bool",
           },
         ],
         internalType: "struct SQRpProRata.ContractParams",

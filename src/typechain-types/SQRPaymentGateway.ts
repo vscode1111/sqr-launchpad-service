@@ -27,18 +27,109 @@ export declare namespace SQRPaymentGateway {
   export type FundItemStruct = {
     depositedAmount: BigNumberish;
     withdrewAmount: BigNumberish;
+    depositNonce: BigNumberish;
+    withdrawNonce: BigNumberish;
   };
 
   export type FundItemStructOutput = [
     depositedAmount: bigint,
-    withdrewAmount: bigint
-  ] & { depositedAmount: bigint; withdrewAmount: bigint };
+    withdrewAmount: bigint,
+    depositNonce: bigint,
+    withdrawNonce: bigint
+  ] & {
+    depositedAmount: bigint;
+    withdrewAmount: bigint;
+    depositNonce: bigint;
+    withdrawNonce: bigint;
+  };
 
   export type TransactionItemStruct = { amount: BigNumberish };
 
   export type TransactionItemStructOutput = [amount: bigint] & {
     amount: bigint;
   };
+
+  export type ContractParamsStruct = {
+    newOwner: AddressLike;
+    erc20Token: AddressLike;
+    depositVerifier: AddressLike;
+    depositGoal: BigNumberish;
+    withdrawVerifier: AddressLike;
+    withdrawGoal: BigNumberish;
+    startDate: BigNumberish;
+    closeDate: BigNumberish;
+    coldWallet: AddressLike;
+    balanceLimit: BigNumberish;
+  };
+
+  export type ContractParamsStructOutput = [
+    newOwner: string,
+    erc20Token: string,
+    depositVerifier: string,
+    depositGoal: bigint,
+    withdrawVerifier: string,
+    withdrawGoal: bigint,
+    startDate: bigint,
+    closeDate: bigint,
+    coldWallet: string,
+    balanceLimit: bigint
+  ] & {
+    newOwner: string;
+    erc20Token: string;
+    depositVerifier: string;
+    depositGoal: bigint;
+    withdrawVerifier: string;
+    withdrawGoal: bigint;
+    startDate: bigint;
+    closeDate: bigint;
+    coldWallet: string;
+    balanceLimit: bigint;
+  };
+}
+
+export declare namespace IDepositRefund {
+  export type DepositRefundAccountInfoStruct = {
+    baseDeposited: BigNumberish;
+    boosted: boolean;
+    baseAllocation: BigNumberish;
+    baseRefund: BigNumberish;
+    boostRefund: BigNumberish;
+    nonce: BigNumberish;
+  };
+
+  export type DepositRefundAccountInfoStructOutput = [
+    baseDeposited: bigint,
+    boosted: boolean,
+    baseAllocation: bigint,
+    baseRefund: bigint,
+    boostRefund: bigint,
+    nonce: bigint
+  ] & {
+    baseDeposited: bigint;
+    boosted: boolean;
+    baseAllocation: bigint;
+    baseRefund: bigint;
+    boostRefund: bigint;
+    nonce: bigint;
+  };
+
+  export type DepositRefundContractInfoStruct = {
+    totalBaseDeposited: BigNumberish;
+  };
+
+  export type DepositRefundContractInfoStructOutput = [
+    totalBaseDeposited: bigint
+  ] & { totalBaseDeposited: bigint };
+
+  export type DepositRefundTokensInfoStruct = {
+    baseToken: AddressLike;
+    boostToken: AddressLike;
+  };
+
+  export type DepositRefundTokensInfoStructOutput = [
+    baseToken: string,
+    boostToken: string
+  ] & { baseToken: string; boostToken: string };
 }
 
 export interface SQRPaymentGatewayInterface extends Interface {
@@ -46,9 +137,10 @@ export interface SQRPaymentGatewayInterface extends Interface {
     nameOrSignature:
       | "MAX_INT"
       | "UPGRADE_INTERFACE_VERSION"
-      | "VERSION"
       | "balanceLimit"
       | "balanceOf"
+      | "calculateAccountAllocation"
+      | "calculateAccountRefund"
       | "calculateRemainDeposit"
       | "calculateRemainWithdraw"
       | "changeBalanceLimit"
@@ -59,13 +151,33 @@ export interface SQRPaymentGatewayInterface extends Interface {
       | "depositSig"
       | "depositVerifier"
       | "erc20Token"
-      | "fetchFundItem"
+      | "fetchAccountFundItem"
+      | "fetchSiblingAccounts"
       | "fetchTransactionItem"
+      | "fetchUserAccounts"
+      | "fetchUserFundItem"
+      | "fetchUserFundItemByAccount"
       | "forceWithdraw"
+      | "getAccountByIndex"
+      | "getAccountCount"
       | "getBalance"
+      | "getBaseGoal"
+      | "getCloseDate"
+      | "getContractName"
+      | "getContractVersion"
       | "getDepositNonce"
+      | "getDepositRefundAccountInfo"
+      | "getDepositRefundAllocation"
+      | "getDepositRefundContractInfo"
+      | "getDepositRefundFetchReady"
+      | "getDepositRefundTokensInfo"
+      | "getStartDate"
       | "getWithdrawNonce"
       | "initialize"
+      | "isAfterCloseDate"
+      | "isBeforeStartDate"
+      | "isDepositReady"
+      | "isReachedGoal"
       | "owner"
       | "proxiableUUID"
       | "renounceOwnership"
@@ -96,12 +208,19 @@ export interface SQRPaymentGatewayInterface extends Interface {
     functionFragment: "UPGRADE_INTERFACE_VERSION",
     values?: undefined
   ): string;
-  encodeFunctionData(functionFragment: "VERSION", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "balanceLimit",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "calculateAccountAllocation",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateAccountRefund",
+    values: [AddressLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "calculateRemainDeposit",
     values?: undefined
@@ -147,19 +266,59 @@ export interface SQRPaymentGatewayInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "fetchFundItem",
-    values: [string]
+    functionFragment: "fetchAccountFundItem",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchSiblingAccounts",
+    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "fetchTransactionItem",
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "fetchUserAccounts",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchUserFundItem",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "fetchUserFundItemByAccount",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
     functionFragment: "forceWithdraw",
     values: [AddressLike, AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "getAccountByIndex",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAccountCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getBalance",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getBaseGoal",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getCloseDate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getContractName",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getContractVersion",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -167,23 +326,52 @@ export interface SQRPaymentGatewayInterface extends Interface {
     values: [string]
   ): string;
   encodeFunctionData(
+    functionFragment: "getDepositRefundAccountInfo",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDepositRefundAllocation",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDepositRefundContractInfo",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDepositRefundFetchReady",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDepositRefundTokensInfo",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getStartDate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "getWithdrawNonce",
     values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [
-      AddressLike,
-      AddressLike,
-      AddressLike,
-      BigNumberish,
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      AddressLike,
-      BigNumberish
-    ]
+    values: [SQRPaymentGateway.ContractParamsStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isAfterCloseDate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isBeforeStartDate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isDepositReady",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isReachedGoal",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -240,12 +428,19 @@ export interface SQRPaymentGatewayInterface extends Interface {
     functionFragment: "UPGRADE_INTERFACE_VERSION",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "VERSION", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "balanceLimit",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateAccountAllocation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateAccountRefund",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "calculateRemainDeposit",
     data: BytesLike
@@ -272,7 +467,11 @@ export interface SQRPaymentGatewayInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "erc20Token", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "fetchFundItem",
+    functionFragment: "fetchAccountFundItem",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchSiblingAccounts",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -280,12 +479,72 @@ export interface SQRPaymentGatewayInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "fetchUserAccounts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchUserFundItem",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "fetchUserFundItemByAccount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "forceWithdraw",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAccountByIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAccountCount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "getBaseGoal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getCloseDate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getContractName",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getContractVersion",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getDepositNonce",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDepositRefundAccountInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDepositRefundAllocation",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDepositRefundContractInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDepositRefundFetchReady",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDepositRefundTokensInfo",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getStartDate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -293,6 +552,22 @@ export interface SQRPaymentGatewayInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isAfterCloseDate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isBeforeStartDate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isDepositReady",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isReachedGoal",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "proxiableUUID",
@@ -480,11 +755,21 @@ export interface SQRPaymentGateway extends BaseContract {
 
   UPGRADE_INTERFACE_VERSION: TypedContractMethod<[], [string], "view">;
 
-  VERSION: TypedContractMethod<[], [string], "view">;
-
   balanceLimit: TypedContractMethod<[], [bigint], "view">;
 
   balanceOf: TypedContractMethod<[userId: string], [bigint], "view">;
+
+  calculateAccountAllocation: TypedContractMethod<
+    [account: AddressLike],
+    [bigint],
+    "view"
+  >;
+
+  calculateAccountRefund: TypedContractMethod<
+    [account: AddressLike],
+    [bigint],
+    "view"
+  >;
 
   calculateRemainDeposit: TypedContractMethod<[], [bigint], "view">;
 
@@ -532,9 +817,15 @@ export interface SQRPaymentGateway extends BaseContract {
 
   erc20Token: TypedContractMethod<[], [string], "view">;
 
-  fetchFundItem: TypedContractMethod<
-    [userId: string],
+  fetchAccountFundItem: TypedContractMethod<
+    [account: AddressLike],
     [SQRPaymentGateway.FundItemStructOutput],
+    "view"
+  >;
+
+  fetchSiblingAccounts: TypedContractMethod<
+    [account: AddressLike],
+    [string[]],
     "view"
   >;
 
@@ -544,34 +835,89 @@ export interface SQRPaymentGateway extends BaseContract {
     "view"
   >;
 
+  fetchUserAccounts: TypedContractMethod<[userId: string], [string[]], "view">;
+
+  fetchUserFundItem: TypedContractMethod<
+    [userId: string],
+    [SQRPaymentGateway.FundItemStructOutput],
+    "view"
+  >;
+
+  fetchUserFundItemByAccount: TypedContractMethod<
+    [account: AddressLike],
+    [SQRPaymentGateway.FundItemStructOutput],
+    "view"
+  >;
+
   forceWithdraw: TypedContractMethod<
     [token: AddressLike, to: AddressLike, amount: BigNumberish],
     [void],
     "nonpayable"
   >;
 
+  getAccountByIndex: TypedContractMethod<
+    [index: BigNumberish],
+    [string],
+    "view"
+  >;
+
+  getAccountCount: TypedContractMethod<[], [bigint], "view">;
+
   getBalance: TypedContractMethod<[], [bigint], "view">;
 
+  getBaseGoal: TypedContractMethod<[], [bigint], "view">;
+
+  getCloseDate: TypedContractMethod<[], [bigint], "view">;
+
+  getContractName: TypedContractMethod<[], [string], "view">;
+
+  getContractVersion: TypedContractMethod<[], [string], "view">;
+
   getDepositNonce: TypedContractMethod<[userId: string], [bigint], "view">;
+
+  getDepositRefundAccountInfo: TypedContractMethod<
+    [account: AddressLike],
+    [IDepositRefund.DepositRefundAccountInfoStructOutput],
+    "view"
+  >;
+
+  getDepositRefundAllocation: TypedContractMethod<
+    [account: AddressLike],
+    [bigint],
+    "view"
+  >;
+
+  getDepositRefundContractInfo: TypedContractMethod<
+    [],
+    [IDepositRefund.DepositRefundContractInfoStructOutput],
+    "view"
+  >;
+
+  getDepositRefundFetchReady: TypedContractMethod<[], [boolean], "view">;
+
+  getDepositRefundTokensInfo: TypedContractMethod<
+    [],
+    [IDepositRefund.DepositRefundTokensInfoStructOutput],
+    "view"
+  >;
+
+  getStartDate: TypedContractMethod<[], [bigint], "view">;
 
   getWithdrawNonce: TypedContractMethod<[userId: string], [bigint], "view">;
 
   initialize: TypedContractMethod<
-    [
-      _newOwner: AddressLike,
-      _erc20Token: AddressLike,
-      _depositVerifier: AddressLike,
-      _depositGoal: BigNumberish,
-      _withdrawVerifier: AddressLike,
-      _withdrawGoal: BigNumberish,
-      _startDate: BigNumberish,
-      _closeDate: BigNumberish,
-      _coldWallet: AddressLike,
-      _balanceLimit: BigNumberish
-    ],
+    [contractParams: SQRPaymentGateway.ContractParamsStruct],
     [void],
     "nonpayable"
   >;
+
+  isAfterCloseDate: TypedContractMethod<[], [boolean], "view">;
+
+  isBeforeStartDate: TypedContractMethod<[], [boolean], "view">;
+
+  isDepositReady: TypedContractMethod<[], [boolean], "view">;
+
+  isReachedGoal: TypedContractMethod<[], [boolean], "view">;
 
   owner: TypedContractMethod<[], [string], "view">;
 
@@ -601,7 +947,7 @@ export interface SQRPaymentGateway extends BaseContract {
     [
       userId: string,
       transactionId: string,
-      to: AddressLike,
+      account: AddressLike,
       amount: BigNumberish,
       nonce: BigNumberish,
       timestampLimit: BigNumberish
@@ -638,14 +984,17 @@ export interface SQRPaymentGateway extends BaseContract {
     nameOrSignature: "UPGRADE_INTERFACE_VERSION"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "VERSION"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "balanceLimit"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "balanceOf"
   ): TypedContractMethod<[userId: string], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "calculateAccountAllocation"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "calculateAccountRefund"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "calculateRemainDeposit"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -699,17 +1048,37 @@ export interface SQRPaymentGateway extends BaseContract {
     nameOrSignature: "erc20Token"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
-    nameOrSignature: "fetchFundItem"
+    nameOrSignature: "fetchAccountFundItem"
+  ): TypedContractMethod<
+    [account: AddressLike],
+    [SQRPaymentGateway.FundItemStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "fetchSiblingAccounts"
+  ): TypedContractMethod<[account: AddressLike], [string[]], "view">;
+  getFunction(
+    nameOrSignature: "fetchTransactionItem"
+  ): TypedContractMethod<
+    [transactionId: string],
+    [SQRPaymentGateway.TransactionItemStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "fetchUserAccounts"
+  ): TypedContractMethod<[userId: string], [string[]], "view">;
+  getFunction(
+    nameOrSignature: "fetchUserFundItem"
   ): TypedContractMethod<
     [userId: string],
     [SQRPaymentGateway.FundItemStructOutput],
     "view"
   >;
   getFunction(
-    nameOrSignature: "fetchTransactionItem"
+    nameOrSignature: "fetchUserFundItemByAccount"
   ): TypedContractMethod<
-    [transactionId: string],
-    [SQRPaymentGateway.TransactionItemStructOutput],
+    [account: AddressLike],
+    [SQRPaymentGateway.FundItemStructOutput],
     "view"
   >;
   getFunction(
@@ -720,32 +1089,81 @@ export interface SQRPaymentGateway extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "getAccountByIndex"
+  ): TypedContractMethod<[index: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "getAccountCount"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "getBalance"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "getBaseGoal"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getCloseDate"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getContractName"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "getContractVersion"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
     nameOrSignature: "getDepositNonce"
   ): TypedContractMethod<[userId: string], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getDepositRefundAccountInfo"
+  ): TypedContractMethod<
+    [account: AddressLike],
+    [IDepositRefund.DepositRefundAccountInfoStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getDepositRefundAllocation"
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "getDepositRefundContractInfo"
+  ): TypedContractMethod<
+    [],
+    [IDepositRefund.DepositRefundContractInfoStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getDepositRefundFetchReady"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "getDepositRefundTokensInfo"
+  ): TypedContractMethod<
+    [],
+    [IDepositRefund.DepositRefundTokensInfoStructOutput],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getStartDate"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getWithdrawNonce"
   ): TypedContractMethod<[userId: string], [bigint], "view">;
   getFunction(
     nameOrSignature: "initialize"
   ): TypedContractMethod<
-    [
-      _newOwner: AddressLike,
-      _erc20Token: AddressLike,
-      _depositVerifier: AddressLike,
-      _depositGoal: BigNumberish,
-      _withdrawVerifier: AddressLike,
-      _withdrawGoal: BigNumberish,
-      _startDate: BigNumberish,
-      _closeDate: BigNumberish,
-      _coldWallet: AddressLike,
-      _balanceLimit: BigNumberish
-    ],
+    [contractParams: SQRPaymentGateway.ContractParamsStruct],
     [void],
     "nonpayable"
   >;
+  getFunction(
+    nameOrSignature: "isAfterCloseDate"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isBeforeStartDate"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isDepositReady"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isReachedGoal"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
@@ -780,7 +1198,7 @@ export interface SQRPaymentGateway extends BaseContract {
     [
       userId: string,
       transactionId: string,
-      to: AddressLike,
+      account: AddressLike,
       amount: BigNumberish,
       nonce: BigNumberish,
       timestampLimit: BigNumberish

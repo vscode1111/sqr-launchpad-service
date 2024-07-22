@@ -62,7 +62,6 @@ async function getTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>): 
 const contractTypeToEventTypeMap: Record<ContractType, Web3BusEventType> = {
   fcfs: 'PAYMENT_GATEWAY',
   'sqrp-gated': 'PAYMENT_GATEWAY',
-  'white-list': 'PAYMENT_GATEWAY',
   vesting: 'VESTING',
   'pro-rata': 'PRO_RATA',
   'pro-rata-sqrp-gated': 'PRO_RATA',
@@ -543,7 +542,10 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
           contractType,
           attested: true,
         });
-      } else if (event.topic0 === this.babTokenRevokeTopic0 || event.topic0 === this.babTokenBurnTopic0) {
+      } else if (
+        event.topic0 === this.babTokenRevokeTopic0 ||
+        event.topic0 === this.babTokenBurnTopic0
+      ) {
         return this.processBABTokenTransaction({
           event,
           dbNetwork,

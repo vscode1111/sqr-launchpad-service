@@ -399,19 +399,6 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "VERSION",
-    outputs: [
-      {
-        internalType: "string",
-        name: "",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
     name: "balanceLimit",
     outputs: [
       {
@@ -432,6 +419,44 @@ const _abi = [
       },
     ],
     name: "balanceOf",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "calculateAccountAllocation",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "calculateAccountRefund",
     outputs: [
       {
         internalType: "uint256",
@@ -625,12 +650,12 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "string",
-        name: "userId",
-        type: "string",
+        internalType: "address",
+        name: "account",
+        type: "address",
       },
     ],
-    name: "fetchFundItem",
+    name: "fetchAccountFundItem",
     outputs: [
       {
         components: [
@@ -644,10 +669,39 @@ const _abi = [
             name: "withdrewAmount",
             type: "uint256",
           },
+          {
+            internalType: "uint32",
+            name: "depositNonce",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "withdrawNonce",
+            type: "uint32",
+          },
         ],
         internalType: "struct SQRPaymentGateway.FundItem",
         name: "",
         type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "fetchSiblingAccounts",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
       },
     ],
     stateMutability: "view",
@@ -682,6 +736,107 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "string",
+        name: "userId",
+        type: "string",
+      },
+    ],
+    name: "fetchUserAccounts",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "userId",
+        type: "string",
+      },
+    ],
+    name: "fetchUserFundItem",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "depositedAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "withdrewAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint32",
+            name: "depositNonce",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "withdrawNonce",
+            type: "uint32",
+          },
+        ],
+        internalType: "struct SQRPaymentGateway.FundItem",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "fetchUserFundItemByAccount",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "depositedAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "withdrewAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint32",
+            name: "depositNonce",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "withdrawNonce",
+            type: "uint32",
+          },
+        ],
+        internalType: "struct SQRPaymentGateway.FundItem",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "token",
         type: "address",
@@ -703,6 +858,38 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "uint32",
+        name: "index",
+        type: "uint32",
+      },
+    ],
+    name: "getAccountByIndex",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getAccountCount",
+    outputs: [
+      {
+        internalType: "uint32",
+        name: "",
+        type: "uint32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "getBalance",
     outputs: [
@@ -716,6 +903,58 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "getBaseGoal",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getCloseDate",
+    outputs: [
+      {
+        internalType: "uint32",
+        name: "",
+        type: "uint32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getContractName",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getContractVersion",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "string",
@@ -724,6 +963,147 @@ const _abi = [
       },
     ],
     name: "getDepositNonce",
+    outputs: [
+      {
+        internalType: "uint32",
+        name: "",
+        type: "uint32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "getDepositRefundAccountInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "baseDeposited",
+            type: "uint256",
+          },
+          {
+            internalType: "bool",
+            name: "boosted",
+            type: "bool",
+          },
+          {
+            internalType: "uint256",
+            name: "baseAllocation",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "baseRefund",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "boostRefund",
+            type: "uint256",
+          },
+          {
+            internalType: "uint32",
+            name: "nonce",
+            type: "uint32",
+          },
+        ],
+        internalType: "struct IDepositRefund.DepositRefundAccountInfo",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "getDepositRefundAllocation",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getDepositRefundContractInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "uint256",
+            name: "totalBaseDeposited",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IDepositRefund.DepositRefundContractInfo",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getDepositRefundFetchReady",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getDepositRefundTokensInfo",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "baseToken",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "boostToken",
+            type: "address",
+          },
+        ],
+        internalType: "struct IDepositRefund.DepositRefundTokensInfo",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getStartDate",
     outputs: [
       {
         internalType: "uint32",
@@ -756,59 +1136,118 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "_newOwner",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_erc20Token",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_depositVerifier",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_depositGoal",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "_withdrawVerifier",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_withdrawGoal",
-        type: "uint256",
-      },
-      {
-        internalType: "uint32",
-        name: "_startDate",
-        type: "uint32",
-      },
-      {
-        internalType: "uint32",
-        name: "_closeDate",
-        type: "uint32",
-      },
-      {
-        internalType: "address",
-        name: "_coldWallet",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "_balanceLimit",
-        type: "uint256",
+        components: [
+          {
+            internalType: "address",
+            name: "newOwner",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "erc20Token",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "depositVerifier",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "depositGoal",
+            type: "uint256",
+          },
+          {
+            internalType: "address",
+            name: "withdrawVerifier",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "withdrawGoal",
+            type: "uint256",
+          },
+          {
+            internalType: "uint32",
+            name: "startDate",
+            type: "uint32",
+          },
+          {
+            internalType: "uint32",
+            name: "closeDate",
+            type: "uint32",
+          },
+          {
+            internalType: "address",
+            name: "coldWallet",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "balanceLimit",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct SQRPaymentGateway.ContractParams",
+        name: "contractParams",
+        type: "tuple",
       },
     ],
     name: "initialize",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "isAfterCloseDate",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "isBeforeStartDate",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "isDepositReady",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "isReachedGoal",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -928,7 +1367,7 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "to",
+        name: "account",
         type: "address",
       },
       {
