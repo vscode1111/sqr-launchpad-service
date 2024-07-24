@@ -984,7 +984,7 @@ export interface SQRPaymentGateway extends BaseContract {
     [
       userId: string,
       transactionId: string,
-      to: AddressLike,
+      account: AddressLike,
       amount: BigNumberish,
       timestampLimit: BigNumberish,
       signature: BytesLike
@@ -1243,7 +1243,7 @@ export interface SQRPaymentGateway extends BaseContract {
     [
       userId: string,
       transactionId: string,
-      to: AddressLike,
+      account: AddressLike,
       amount: BigNumberish,
       timestampLimit: BigNumberish,
       signature: BytesLike
