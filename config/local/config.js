@@ -152,6 +152,12 @@ module.exports = {
           type: 'pro-rata',
           disable: false,
         },
+        {
+          address: '0x5696fa3DD95486590dAE95b9070b0760eF57BfCe',
+          blockNumber: 40749330,
+          type: 'fcfs',
+          disable: false,
+        },
       ],
     },
     provider: {

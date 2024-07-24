@@ -177,7 +177,9 @@ export interface SQRPaymentGatewayInterface extends Interface {
       | "isAfterCloseDate"
       | "isBeforeStartDate"
       | "isDepositReady"
-      | "isReachedGoal"
+      | "isReachedDepositGoal"
+      | "isReachedWithdrawGoal"
+      | "isWithdrawReady"
       | "owner"
       | "proxiableUUID"
       | "renounceOwnership"
@@ -370,7 +372,15 @@ export interface SQRPaymentGatewayInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "isReachedGoal",
+    functionFragment: "isReachedDepositGoal",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isReachedWithdrawGoal",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isWithdrawReady",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -565,7 +575,15 @@ export interface SQRPaymentGatewayInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isReachedGoal",
+    functionFragment: "isReachedDepositGoal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isReachedWithdrawGoal",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isWithdrawReady",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -917,7 +935,11 @@ export interface SQRPaymentGateway extends BaseContract {
 
   isDepositReady: TypedContractMethod<[], [boolean], "view">;
 
-  isReachedGoal: TypedContractMethod<[], [boolean], "view">;
+  isReachedDepositGoal: TypedContractMethod<[], [boolean], "view">;
+
+  isReachedWithdrawGoal: TypedContractMethod<[], [boolean], "view">;
+
+  isWithdrawReady: TypedContractMethod<[], [boolean], "view">;
 
   owner: TypedContractMethod<[], [string], "view">;
 
@@ -1162,7 +1184,13 @@ export interface SQRPaymentGateway extends BaseContract {
     nameOrSignature: "isDepositReady"
   ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
-    nameOrSignature: "isReachedGoal"
+    nameOrSignature: "isReachedDepositGoal"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isReachedWithdrawGoal"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "isWithdrawReady"
   ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "owner"

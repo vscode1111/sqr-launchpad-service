@@ -1239,7 +1239,33 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "isReachedGoal",
+    name: "isReachedDepositGoal",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "isReachedWithdrawGoal",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "isWithdrawReady",
     outputs: [
       {
         internalType: "bool",

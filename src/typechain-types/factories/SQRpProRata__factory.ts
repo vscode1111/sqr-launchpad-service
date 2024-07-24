@@ -35,7 +35,12 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "AllUsersProcessed",
+    name: "AllUsersProcessedBaseSwapped",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "AllUsersProcessedRefund",
     type: "error",
   },
   {
@@ -71,6 +76,16 @@ const _abi = [
   {
     inputs: [],
     name: "ContractForExternalRefund",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ContractHasNoEnoughBaseTokensForRefund",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "ContractHasNoEnoughBoostTokensForRefund",
     type: "error",
   },
   {
@@ -144,6 +159,11 @@ const _abi = [
   {
     inputs: [],
     name: "NewOwnerNotZeroAddress",
+    type: "error",
+  },
+  {
+    inputs: [],
+    name: "NotAllUsersProcessedBaseSwapped",
     type: "error",
   },
   {
@@ -261,6 +281,30 @@ const _abi = [
     type: "error",
   },
   {
+    inputs: [],
+    name: "WithdrewBaseSwappedAmount",
+    type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint32",
+        name: "batchSize",
+        type: "uint32",
+      },
+      {
+        indexed: false,
+        internalType: "uint32",
+        name: "endIndex",
+        type: "uint32",
+      },
+    ],
+    name: "CalculateBaseSwappedAmount",
+    type: "event",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -289,6 +333,31 @@ const _abi = [
       },
     ],
     name: "Deposit",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "ForceWithdraw",
     type: "event",
   },
   {
@@ -410,7 +479,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint256",
-        name: "boostDeposit",
+        name: "boostAmount",
         type: "uint256",
       },
     ],
@@ -662,6 +731,26 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint32",
+        name: "_batchSize",
+        type: "uint32",
+      },
+    ],
+    name: "calculateBaseSwappedAmount",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "calculateBaseSwappedAmountAll",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint8",
         name: "_baseDecimals",
         type: "uint8",
@@ -729,7 +818,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "calculateRemainProcessedAccountAmount",
+    name: "calculateRemainProcessedBaseSwappedIndex",
     outputs: [
       {
         internalType: "uint256",
@@ -742,7 +831,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "calculatedBaseSwappedAmount",
+    name: "calculateRemainProcessedRefundIndex",
     outputs: [
       {
         internalType: "uint256",
@@ -755,7 +844,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "calculatedRequiredBoostAmount",
+    name: "calculateRequiredBoostAmount",
     outputs: [
       {
         internalType: "uint256",
@@ -768,7 +857,7 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "calculatedTotalBoostRefundAmount",
+    name: "calculateTotalBoostRefundAmount",
     outputs: [
       {
         internalType: "uint256",
@@ -994,6 +1083,29 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "forceWithdraw",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -1255,7 +1367,20 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "getProcessedAccountIndex",
+    name: "getProcessedBaseSwappedIndex",
+    outputs: [
+      {
+        internalType: "uint32",
+        name: "",
+        type: "uint32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getProcessedRefundIndex",
     outputs: [
       {
         internalType: "uint32",
@@ -1504,6 +1629,19 @@ const _abi = [
   {
     inputs: [],
     name: "totalBaseRefunded",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalBaseSwappedAmount",
     outputs: [
       {
         internalType: "uint256",
