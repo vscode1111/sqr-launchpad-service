@@ -6,7 +6,7 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 import { IdLock, Promisable, Started, Stopped, toDate } from '~common';
 //Do not change to '~db', otherwise "npm run start" doesn't work
 import { Block, Contract, ContractType, Event, Network, Transaction } from '../../db/entities';
-import { DB_CONCURRENCY_COUNT, GENESIS_BLOCK_NUMBER } from '../constants';
+import { DB_EVENT_CONCURRENCY_COUNT, GENESIS_BLOCK_NUMBER } from '../constants';
 import { ServiceBrokerBase } from '../core';
 import { DeployNetworkKey, GetBlockFn, GetTransactionByHashFn, Web3Event } from '../types';
 import { deployNetworks, logInfo } from '../utils';
@@ -19,6 +19,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
   protected dataSourceOptions: PostgresConnectionOptions;
   protected dataSource!: DataSource;
   protected networkRepository!: Repository<Network>;
+  protected blockRepository!: Repository<Block>;
   protected contractRepository!: Repository<Contract>;
   protected eventRepository!: Repository<Event>;
   protected transactionRepository!: Repository<Transaction>;
@@ -58,6 +59,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     await this.dataSource.initialize();
 
     this.networkRepository = this.dataSource.getRepository(Network);
+    this.blockRepository = this.dataSource.getRepository(Block);
     this.contractRepository = this.dataSource.getRepository(Contract);
     this.transactionRepository = this.dataSource.getRepository(Transaction);
     this.eventRepository = this.dataSource.getRepository(Event);
@@ -291,46 +293,52 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     network: DeployNetworkKey;
     onProcessEvent?: (web3Event: Web3Event) => Promisable<void>;
   }): Promise<void> {
-    await this.dataSource.transaction(async (entityManager) => {
-      const networkRepository = entityManager.getRepository(Network);
-      const contractRepository = entityManager.getRepository(Contract);
-      const blockRepository = entityManager.getRepository(Block);
-      const transactionRepository = entityManager.getRepository(Transaction);
-      const eventRepository = entityManager.getRepository(Event);
+    // await this.dataSource.transaction(async (entityManager) => {
+    // const networkRepository = entityManager.getRepository(Network);
+    // const contractRepository = entityManager.getRepository(Contract);
+    // const blockRepository = entityManager.getRepository(Block);
+    // const transactionRepository = entityManager.getRepository(Transaction);
+    // const eventRepository = entityManager.getRepository(Event);
 
-      const dbNetwork = await networkRepository.findOneBy({ name: network });
-      if (!dbNetwork) {
-        return;
-      }
+    const networkRepository = this.networkRepository;
+    const contractRepository = this.contractRepository;
+    const blockRepository = this.blockRepository;
+    const transactionRepository = this.transactionRepository;
+    const eventRepository = this.eventRepository;
 
-      const dbContract = await this.getContract(contractAddress);
-      if (!dbContract) {
-        return;
-      }
+    const dbNetwork = await networkRepository.findOneBy({ name: network });
+    if (!dbNetwork) {
+      return;
+    }
 
-      await Bluebird.map(
-        events,
-        async (event) => {
-          const dbBlock = await this.getOrSaveBlock(dbNetwork, event.blockNumber, blockRepository);
+    const dbContract = await this.getContract(contractAddress);
+    if (!dbContract) {
+      return;
+    }
 
-          const dbTransaction = await this.getOrSaveTransaction(
-            dbNetwork,
-            event.transactionHash,
-            dbBlock,
-            transactionRepository,
-          );
+    await Bluebird.map(
+      events,
+      async (event) => {
+        const dbBlock = await this.getOrSaveBlock(dbNetwork, event.blockNumber, blockRepository);
 
-          if (onProcessEvent) {
-            await onProcessEvent(event);
-          }
+        const dbTransaction = await this.getOrSaveTransaction(
+          dbNetwork,
+          event.transactionHash,
+          dbBlock,
+          transactionRepository,
+        );
 
-          await this.saveEvent(event, dbNetwork, dbContract, dbTransaction, eventRepository);
-        },
-        { concurrency: DB_CONCURRENCY_COUNT },
-      );
+        if (onProcessEvent) {
+          await onProcessEvent(event);
+        }
 
-      dbContract.syncBlockNumber = blockNumber + 1;
-      await contractRepository.save(dbContract);
-    });
+        await this.saveEvent(event, dbNetwork, dbContract, dbTransaction, eventRepository);
+      },
+      { concurrency: DB_EVENT_CONCURRENCY_COUNT },
+    );
+
+    dbContract.syncBlockNumber = blockNumber + 1;
+    await contractRepository.save(dbContract);
+    // });
   }
 }

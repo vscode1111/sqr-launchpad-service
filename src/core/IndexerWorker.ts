@@ -2,13 +2,13 @@ import Bluebird from 'bluebird';
 import { toHex } from '~common';
 import {
   BlockNumberFilter,
-  DB_CONCURRENCY_COUNT,
+  DB_CONTRACT_CONCURRENCY_COUNT,
   Provider,
   StorageProcessor,
   WorkerBase,
   logInfo,
 } from '~common-service';
-import { DataStorage } from '~db';
+import { Contract, DataStorage } from '~db';
 import { IndexerWorkerConfig, IndexerWorkerStats } from './IndexerWorker.types';
 
 const LOG_RPC_REQUEST = true;
@@ -71,6 +71,54 @@ export class IndexerWorker extends WorkerBase<IndexerWorkerStats> {
     await this.fillProcessData();
   }
 
+  private async processContract(contract: Contract, currentBlockNumber: number) {
+    const contractAddress = contract.address;
+
+    while (true) {
+      const dbContract = await this.dataStorage.getContract(contractAddress);
+
+      if (!dbContract || dbContract.syncBlockNumber > currentBlockNumber) {
+        break;
+      }
+
+      const from = dbContract.syncBlockNumber;
+      let to = from + this.blockNumberRange;
+
+      if (to > currentBlockNumber) {
+        to = currentBlockNumber;
+      }
+
+      this.statsData.syncBlockNumber = to;
+
+      this.statsData.providerRequests++;
+
+      const events = await this.provider.getEvents(contractAddress, from, to);
+
+      if (LOG_RPC_REQUEST) {
+        logInfo(
+          this.broker,
+          `RPC request events for ${contract.address} contract from ${from} (${toHex(
+            from,
+          )}) to ${to} (${toHex(to)}) blocks => events: ${events.length}`,
+        );
+      }
+
+      for (const event of events) {
+        logInfo(this.broker, `RPC-event: ${JSON.stringify(event)}`);
+      }
+
+      await this.dataStorage.saveEvents({
+        events,
+        network: this.network,
+        contractAddress,
+        blockNumber: to,
+        onProcessEvent: (event) => {
+          this.statsData.rawBlockNumber = event.blockNumber;
+        },
+      });
+    }
+  }
+
   private async fillRawData() {
     const contracts = await this.dataStorage.getContracts(this.network);
     const rawBlockNumber = await this.provider.getBlockNumber();
@@ -101,53 +149,9 @@ export class IndexerWorker extends WorkerBase<IndexerWorkerStats> {
     await Bluebird.map(
       contracts,
       async (contract) => {
-        const contractAddress = contract.address;
-
-        while (true) {
-          const dbContract = await this.dataStorage.getContract(contractAddress);
-
-          if (!dbContract || dbContract.syncBlockNumber > currentBlockNumber) {
-            break;
-          }
-
-          const from = dbContract.syncBlockNumber;
-          let to = from + this.blockNumberRange;
-
-          if (to > currentBlockNumber) {
-            to = currentBlockNumber;
-          }
-
-          this.statsData.syncBlockNumber = to;
-
-          this.statsData.providerRequests++;
-
-          const events = await this.provider.getEvents(contractAddress, from, to);
-
-          if (LOG_RPC_REQUEST) {
-            logInfo(
-              this.broker,
-              `RPC request events for ${contract.address} contract from ${from} (${toHex(
-                from,
-              )}) to ${to} (${toHex(to)}) blocks  => events: ${events.length}`,
-            );
-          }
-
-          for (const event of events) {
-            logInfo(this.broker, `RPC-event: ${JSON.stringify(event)}`);
-          }
-
-          await this.dataStorage.saveEvents({
-            events,
-            network: this.network,
-            contractAddress,
-            blockNumber: to,
-            onProcessEvent: (event) => {
-              this.statsData.rawBlockNumber = event.blockNumber;
-            },
-          });
-        }
+        await this.processContract(contract, currentBlockNumber);
       },
-      { concurrency: DB_CONCURRENCY_COUNT },
+      { concurrency: DB_CONTRACT_CONCURRENCY_COUNT },
     );
   }
 

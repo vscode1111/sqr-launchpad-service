@@ -59,7 +59,7 @@ export class WorkerBase<T = any> extends ServiceBrokerBase implements WorkerCont
 
       this.statsDataBase.successCount++;
       this.statsDataBase.lastSuccessDate = new Date();
-      this.statsDataBase.lastError = undefined;
+      // this.statsDataBase.lastError = undefined;
     } catch (e) {
       this.statsDataBase.errorCount++;
       const parsedError = parseError(e);

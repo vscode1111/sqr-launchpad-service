@@ -16,7 +16,7 @@ import {
 } from '~common';
 import {
   CacheMachine,
-  DB_CONCURRENCY_COUNT,
+  DB_EVENT_CONCURRENCY_COUNT,
   DeployNetworkKey,
   ServiceBrokerBase,
   StorageProcessor,
@@ -634,7 +634,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
           contract.processBlockNumber = to + 1;
           await contractRepository.save(contract);
         },
-        { concurrency: DB_CONCURRENCY_COUNT },
+        { concurrency: DB_EVENT_CONCURRENCY_COUNT },
       );
     });
   }
