@@ -1,4 +1,4 @@
 include:
-- project: 'magic-square/devops/ci-scripts'
+- project: 'magic.ai/devops/ci-scripts'
   ref: main
   file: 'blockchain-ci.yml'
