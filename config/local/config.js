@@ -1,4 +1,4 @@
-const local = '192.168.0.195';
+const local = '192.168.0.14';
 
 module.exports = {
   connections: {
