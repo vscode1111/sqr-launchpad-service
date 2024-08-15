@@ -87,10 +87,10 @@ export class MonitoringWorker extends WorkerBase<MonitoringWorkerStats | null> {
 
     const chainBlockNumber = await this.provider.getBlockNumber();
 
-    const contractsRemains = this.dbStats.contracts.map((constract) => ({
-      ...constract,
-      syncBlockNumber: chainBlockNumber - constract.syncBlockNumber,
-      processBlockNumber: chainBlockNumber - constract.processBlockNumber,
+    const contractsRemains = this.dbStats.contracts.map((contract) => ({
+      ...contract,
+      syncBlockNumber: chainBlockNumber - contract.syncBlockNumber,
+      processBlockNumber: chainBlockNumber - contract.processBlockNumber,
     }));
 
     return { ...this.statsData, chainBlockNumber, contractsRemains };
