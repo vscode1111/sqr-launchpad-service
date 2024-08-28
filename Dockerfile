@@ -10,12 +10,15 @@ RUN echo -n $MSQ_ROOT_CA_PEM | base64 -d > msq.pem && \
 COPY package.json package-lock.json .npmrc tsconfig.json ./
 COPY /src ./src/
 
-RUN npm config set strict-ssl false -g
+# RUN npm config set strict-ssl false -g
+RUN yarn config set strict-ssl false -g
 #RUN npm ci --omit=dev && npm update msq-moleculer-core
-RUN npm ci
+#RUN npm ci
+RUN yarn
 
 # Build package
-RUN npm run build
+#RUN npm run build
+RUN yarn run build
 
 # Bump version
 ARG VERSION="v0.0.0-dev"
