@@ -23,35 +23,134 @@ import type {
   TypedContractMethod,
 } from "./common";
 
+export declare namespace SQRVesting {
+  export type ContractParamsStruct = {
+    newOwner: AddressLike;
+    erc20Token: AddressLike;
+    startDate: BigNumberish;
+    cliffPeriod: BigNumberish;
+    firstUnlockPercent: BigNumberish;
+    unlockPeriod: BigNumberish;
+    unlockPeriodPercent: BigNumberish;
+    availableRefund: boolean;
+    refundStartDate: BigNumberish;
+    refundCloseDate: BigNumberish;
+  };
+
+  export type ContractParamsStructOutput = [
+    newOwner: string,
+    erc20Token: string,
+    startDate: bigint,
+    cliffPeriod: bigint,
+    firstUnlockPercent: bigint,
+    unlockPeriod: bigint,
+    unlockPeriodPercent: bigint,
+    availableRefund: boolean,
+    refundStartDate: bigint,
+    refundCloseDate: bigint
+  ] & {
+    newOwner: string;
+    erc20Token: string;
+    startDate: bigint;
+    cliffPeriod: bigint;
+    firstUnlockPercent: bigint;
+    unlockPeriod: bigint;
+    unlockPeriodPercent: bigint;
+    availableRefund: boolean;
+    refundStartDate: bigint;
+    refundCloseDate: bigint;
+  };
+
+  export type ClaimInfoStruct = {
+    amount: BigNumberish;
+    canClaim: boolean;
+    claimed: BigNumberish;
+    claimCount: BigNumberish;
+    claimedAt: BigNumberish;
+    exist: boolean;
+    available: BigNumberish;
+    remain: BigNumberish;
+    nextAvailable: BigNumberish;
+    nextClaimAt: BigNumberish;
+    canRefund: boolean;
+    refunded: boolean;
+  };
+
+  export type ClaimInfoStructOutput = [
+    amount: bigint,
+    canClaim: boolean,
+    claimed: bigint,
+    claimCount: bigint,
+    claimedAt: bigint,
+    exist: boolean,
+    available: bigint,
+    remain: bigint,
+    nextAvailable: bigint,
+    nextClaimAt: bigint,
+    canRefund: boolean,
+    refunded: boolean
+  ] & {
+    amount: bigint;
+    canClaim: boolean;
+    claimed: bigint;
+    claimCount: bigint;
+    claimedAt: bigint;
+    exist: boolean;
+    available: bigint;
+    remain: bigint;
+    nextAvailable: bigint;
+    nextClaimAt: bigint;
+    canRefund: boolean;
+    refunded: boolean;
+  };
+}
+
 export interface SQRVestingInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "PERCENT_DIVIDER"
       | "VERSION"
+      | "allocationCount"
       | "allocations"
+      | "availableRefund"
       | "calculateClaimAmount"
+      | "calculateClaimAt"
       | "calculateExcessAmount"
       | "calculateFinishDate"
       | "calculateMaxPeriod"
-      | "calculateNextClaimAt"
       | "calculatePassedPeriod"
       | "calculateRemainAmount"
       | "calculatedRequiredAmount"
       | "canClaim"
+      | "canRefund"
       | "claim"
       | "cliffPeriod"
       | "erc20Token"
       | "fetchClaimInfo"
       | "firstUnlockPercent"
-      | "getAllocationCount"
+      | "forceWithdraw"
+      | "getAccountByIndex"
+      | "getAccountCount"
       | "getBalance"
-      | "getTotalAllocated"
+      | "getContractName"
+      | "getContractVersion"
+      | "isAfterRefundCloseDate"
       | "isAllocationFinished"
       | "owner"
+      | "refund"
+      | "refundCloseDate"
+      | "refundCount"
+      | "refundStartDate"
       | "renounceOwnership"
       | "setAllocation"
       | "setAllocations"
+      | "setAvailableRefund"
+      | "setRefundCloseDate"
+      | "setRefundStartDate"
       | "startDate"
+      | "totalAllocated"
+      | "totalClaimed"
+      | "totalReserved"
       | "transferOwnership"
       | "unlockPeriod"
       | "unlockPeriodPercent"
@@ -61,8 +160,13 @@ export interface SQRVestingInterface extends Interface {
   getEvent(
     nameOrSignatureOrTopic:
       | "Claim"
+      | "ForceWithdraw"
       | "OwnershipTransferred"
+      | "Refund"
       | "SetAllocation"
+      | "SetAvailableRefund"
+      | "SetRefundCloseDate"
+      | "SetRefundStartDate"
       | "WithdrawExcessAmount"
   ): EventFragment;
 
@@ -72,12 +176,24 @@ export interface SQRVestingInterface extends Interface {
   ): string;
   encodeFunctionData(functionFragment: "VERSION", values?: undefined): string;
   encodeFunctionData(
+    functionFragment: "allocationCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "allocations",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
+    functionFragment: "availableRefund",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "calculateClaimAmount",
-    values: [AddressLike]
+    values: [AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "calculateClaimAt",
+    values: [AddressLike, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "calculateExcessAmount",
@@ -90,10 +206,6 @@ export interface SQRVestingInterface extends Interface {
   encodeFunctionData(
     functionFragment: "calculateMaxPeriod",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "calculateNextClaimAt",
-    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "calculatePassedPeriod",
@@ -109,6 +221,10 @@ export interface SQRVestingInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "canClaim",
+    values: [AddressLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "canRefund",
     values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "claim", values?: undefined): string;
@@ -129,7 +245,15 @@ export interface SQRVestingInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getAllocationCount",
+    functionFragment: "forceWithdraw",
+    values: [AddressLike, AddressLike, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAccountByIndex",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAccountCount",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -137,7 +261,15 @@ export interface SQRVestingInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getTotalAllocated",
+    functionFragment: "getContractName",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getContractVersion",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isAfterRefundCloseDate",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -145,6 +277,19 @@ export interface SQRVestingInterface extends Interface {
     values: [AddressLike]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "refund", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "refundCloseDate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "refundCount",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "refundStartDate",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
@@ -157,7 +302,31 @@ export interface SQRVestingInterface extends Interface {
     functionFragment: "setAllocations",
     values: [AddressLike[], BigNumberish[]]
   ): string;
+  encodeFunctionData(
+    functionFragment: "setAvailableRefund",
+    values: [boolean]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setRefundCloseDate",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setRefundStartDate",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(functionFragment: "startDate", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "totalAllocated",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalClaimed",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "totalReserved",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [AddressLike]
@@ -181,11 +350,23 @@ export interface SQRVestingInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "VERSION", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "allocationCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "allocations",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "availableRefund",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "calculateClaimAmount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "calculateClaimAt",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -201,10 +382,6 @@ export interface SQRVestingInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "calculateNextClaimAt",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "calculatePassedPeriod",
     data: BytesLike
   ): Result;
@@ -217,6 +394,7 @@ export interface SQRVestingInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "canClaim", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "canRefund", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "cliffPeriod",
@@ -232,12 +410,28 @@ export interface SQRVestingInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getAllocationCount",
+    functionFragment: "forceWithdraw",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAccountByIndex",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAccountCount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getTotalAllocated",
+    functionFragment: "getContractName",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getContractVersion",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isAfterRefundCloseDate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -245,6 +439,19 @@ export interface SQRVestingInterface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "refund", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "refundCloseDate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "refundCount",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "refundStartDate",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
@@ -257,7 +464,31 @@ export interface SQRVestingInterface extends Interface {
     functionFragment: "setAllocations",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "setAvailableRefund",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setRefundCloseDate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setRefundStartDate",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "startDate", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "totalAllocated",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalClaimed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "totalReserved",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -289,6 +520,24 @@ export namespace ClaimEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace ForceWithdrawEvent {
+  export type InputTuple = [
+    token: AddressLike,
+    to: AddressLike,
+    amount: BigNumberish
+  ];
+  export type OutputTuple = [token: string, to: string, amount: bigint];
+  export interface OutputObject {
+    token: string;
+    to: string;
+    amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace OwnershipTransferredEvent {
   export type InputTuple = [previousOwner: AddressLike, newOwner: AddressLike];
   export type OutputTuple = [previousOwner: string, newOwner: string];
@@ -302,12 +551,63 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
+export namespace RefundEvent {
+  export type InputTuple = [account: AddressLike];
+  export type OutputTuple = [account: string];
+  export interface OutputObject {
+    account: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
 export namespace SetAllocationEvent {
   export type InputTuple = [account: AddressLike, amount: BigNumberish];
   export type OutputTuple = [account: string, amount: bigint];
   export interface OutputObject {
     account: string;
     amount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SetAvailableRefundEvent {
+  export type InputTuple = [account: AddressLike, value: boolean];
+  export type OutputTuple = [account: string, value: boolean];
+  export interface OutputObject {
+    account: string;
+    value: boolean;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SetRefundCloseDateEvent {
+  export type InputTuple = [account: AddressLike, value: BigNumberish];
+  export type OutputTuple = [account: string, value: bigint];
+  export interface OutputObject {
+    account: string;
+    value: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace SetRefundStartDateEvent {
+  export type InputTuple = [account: AddressLike, value: BigNumberish];
+  export type OutputTuple = [account: string, value: bigint];
+  export interface OutputObject {
+    account: string;
+    value: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -375,21 +675,33 @@ export interface SQRVesting extends BaseContract {
 
   VERSION: TypedContractMethod<[], [string], "view">;
 
+  allocationCount: TypedContractMethod<[], [bigint], "view">;
+
   allocations: TypedContractMethod<
     [account: AddressLike],
     [
-      [bigint, bigint, bigint, boolean] & {
+      [bigint, bigint, bigint, bigint, boolean, boolean] & {
         amount: bigint;
         claimed: bigint;
+        claimCount: bigint;
         claimedAt: bigint;
         exist: boolean;
+        refunded: boolean;
       }
     ],
     "view"
   >;
 
+  availableRefund: TypedContractMethod<[], [boolean], "view">;
+
   calculateClaimAmount: TypedContractMethod<
-    [account: AddressLike],
+    [account: AddressLike, periodOffset: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
+  calculateClaimAt: TypedContractMethod<
+    [account: AddressLike, periodOffset: BigNumberish],
     [bigint],
     "view"
   >;
@@ -400,16 +712,10 @@ export interface SQRVesting extends BaseContract {
 
   calculateMaxPeriod: TypedContractMethod<[], [bigint], "view">;
 
-  calculateNextClaimAt: TypedContractMethod<
-    [account: AddressLike],
-    [bigint],
-    "view"
-  >;
-
   calculatePassedPeriod: TypedContractMethod<[], [bigint], "view">;
 
   calculateRemainAmount: TypedContractMethod<
-    [wallet: AddressLike],
+    [account: AddressLike],
     [bigint],
     "view"
   >;
@@ -417,6 +723,8 @@ export interface SQRVesting extends BaseContract {
   calculatedRequiredAmount: TypedContractMethod<[], [bigint], "view">;
 
   canClaim: TypedContractMethod<[account: AddressLike], [boolean], "view">;
+
+  canRefund: TypedContractMethod<[account: AddressLike], [boolean], "view">;
 
   claim: TypedContractMethod<[], [void], "nonpayable">;
 
@@ -426,28 +734,33 @@ export interface SQRVesting extends BaseContract {
 
   fetchClaimInfo: TypedContractMethod<
     [account: AddressLike],
-    [
-      [bigint, bigint, bigint, boolean, boolean, bigint, bigint, bigint] & {
-        _amount: bigint;
-        _claimed: bigint;
-        _claimedAt: bigint;
-        _exist: boolean;
-        _canClaim: boolean;
-        _available: bigint;
-        _remain: bigint;
-        _nextClaimAt: bigint;
-      }
-    ],
+    [SQRVesting.ClaimInfoStructOutput],
     "view"
   >;
 
   firstUnlockPercent: TypedContractMethod<[], [bigint], "view">;
 
-  getAllocationCount: TypedContractMethod<[], [bigint], "view">;
+  forceWithdraw: TypedContractMethod<
+    [token: AddressLike, to: AddressLike, amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  getAccountByIndex: TypedContractMethod<
+    [index: BigNumberish],
+    [string],
+    "view"
+  >;
+
+  getAccountCount: TypedContractMethod<[], [bigint], "view">;
 
   getBalance: TypedContractMethod<[], [bigint], "view">;
 
-  getTotalAllocated: TypedContractMethod<[], [bigint], "view">;
+  getContractName: TypedContractMethod<[], [string], "view">;
+
+  getContractVersion: TypedContractMethod<[], [string], "view">;
+
+  isAfterRefundCloseDate: TypedContractMethod<[], [boolean], "view">;
 
   isAllocationFinished: TypedContractMethod<
     [account: AddressLike],
@@ -456,6 +769,14 @@ export interface SQRVesting extends BaseContract {
   >;
 
   owner: TypedContractMethod<[], [string], "view">;
+
+  refund: TypedContractMethod<[], [void], "nonpayable">;
+
+  refundCloseDate: TypedContractMethod<[], [bigint], "view">;
+
+  refundCount: TypedContractMethod<[], [bigint], "view">;
+
+  refundStartDate: TypedContractMethod<[], [bigint], "view">;
 
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
@@ -471,7 +792,31 @@ export interface SQRVesting extends BaseContract {
     "nonpayable"
   >;
 
+  setAvailableRefund: TypedContractMethod<
+    [value: boolean],
+    [void],
+    "nonpayable"
+  >;
+
+  setRefundCloseDate: TypedContractMethod<
+    [value: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
+  setRefundStartDate: TypedContractMethod<
+    [value: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+
   startDate: TypedContractMethod<[], [bigint], "view">;
+
+  totalAllocated: TypedContractMethod<[], [bigint], "view">;
+
+  totalClaimed: TypedContractMethod<[], [bigint], "view">;
+
+  totalReserved: TypedContractMethod<[], [bigint], "view">;
 
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
@@ -496,22 +841,41 @@ export interface SQRVesting extends BaseContract {
     nameOrSignature: "VERSION"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "allocationCount"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "allocations"
   ): TypedContractMethod<
     [account: AddressLike],
     [
-      [bigint, bigint, bigint, boolean] & {
+      [bigint, bigint, bigint, bigint, boolean, boolean] & {
         amount: bigint;
         claimed: bigint;
+        claimCount: bigint;
         claimedAt: bigint;
         exist: boolean;
+        refunded: boolean;
       }
     ],
     "view"
   >;
   getFunction(
+    nameOrSignature: "availableRefund"
+  ): TypedContractMethod<[], [boolean], "view">;
+  getFunction(
     nameOrSignature: "calculateClaimAmount"
-  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<
+    [account: AddressLike, periodOffset: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "calculateClaimAt"
+  ): TypedContractMethod<
+    [account: AddressLike, periodOffset: BigNumberish],
+    [bigint],
+    "view"
+  >;
   getFunction(
     nameOrSignature: "calculateExcessAmount"
   ): TypedContractMethod<[], [bigint], "view">;
@@ -522,19 +886,19 @@ export interface SQRVesting extends BaseContract {
     nameOrSignature: "calculateMaxPeriod"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "calculateNextClaimAt"
-  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
-  getFunction(
     nameOrSignature: "calculatePassedPeriod"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "calculateRemainAmount"
-  ): TypedContractMethod<[wallet: AddressLike], [bigint], "view">;
+  ): TypedContractMethod<[account: AddressLike], [bigint], "view">;
   getFunction(
     nameOrSignature: "calculatedRequiredAmount"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "canClaim"
+  ): TypedContractMethod<[account: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "canRefund"
   ): TypedContractMethod<[account: AddressLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "claim"
@@ -549,38 +913,55 @@ export interface SQRVesting extends BaseContract {
     nameOrSignature: "fetchClaimInfo"
   ): TypedContractMethod<
     [account: AddressLike],
-    [
-      [bigint, bigint, bigint, boolean, boolean, bigint, bigint, bigint] & {
-        _amount: bigint;
-        _claimed: bigint;
-        _claimedAt: bigint;
-        _exist: boolean;
-        _canClaim: boolean;
-        _available: bigint;
-        _remain: bigint;
-        _nextClaimAt: bigint;
-      }
-    ],
+    [SQRVesting.ClaimInfoStructOutput],
     "view"
   >;
   getFunction(
     nameOrSignature: "firstUnlockPercent"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "getAllocationCount"
+    nameOrSignature: "forceWithdraw"
+  ): TypedContractMethod<
+    [token: AddressLike, to: AddressLike, amount: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
+  getFunction(
+    nameOrSignature: "getAccountByIndex"
+  ): TypedContractMethod<[index: BigNumberish], [string], "view">;
+  getFunction(
+    nameOrSignature: "getAccountCount"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "getBalance"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
-    nameOrSignature: "getTotalAllocated"
-  ): TypedContractMethod<[], [bigint], "view">;
+    nameOrSignature: "getContractName"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "getContractVersion"
+  ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "isAfterRefundCloseDate"
+  ): TypedContractMethod<[], [boolean], "view">;
   getFunction(
     nameOrSignature: "isAllocationFinished"
   ): TypedContractMethod<[account: AddressLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "owner"
   ): TypedContractMethod<[], [string], "view">;
+  getFunction(
+    nameOrSignature: "refund"
+  ): TypedContractMethod<[], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "refundCloseDate"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "refundCount"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "refundStartDate"
+  ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "renounceOwnership"
   ): TypedContractMethod<[], [void], "nonpayable">;
@@ -599,7 +980,25 @@ export interface SQRVesting extends BaseContract {
     "nonpayable"
   >;
   getFunction(
+    nameOrSignature: "setAvailableRefund"
+  ): TypedContractMethod<[value: boolean], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setRefundCloseDate"
+  ): TypedContractMethod<[value: BigNumberish], [void], "nonpayable">;
+  getFunction(
+    nameOrSignature: "setRefundStartDate"
+  ): TypedContractMethod<[value: BigNumberish], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "startDate"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "totalAllocated"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "totalClaimed"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
+    nameOrSignature: "totalReserved"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
     nameOrSignature: "transferOwnership"
@@ -622,6 +1021,13 @@ export interface SQRVesting extends BaseContract {
     ClaimEvent.OutputObject
   >;
   getEvent(
+    key: "ForceWithdraw"
+  ): TypedContractEvent<
+    ForceWithdrawEvent.InputTuple,
+    ForceWithdrawEvent.OutputTuple,
+    ForceWithdrawEvent.OutputObject
+  >;
+  getEvent(
     key: "OwnershipTransferred"
   ): TypedContractEvent<
     OwnershipTransferredEvent.InputTuple,
@@ -629,11 +1035,39 @@ export interface SQRVesting extends BaseContract {
     OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
+    key: "Refund"
+  ): TypedContractEvent<
+    RefundEvent.InputTuple,
+    RefundEvent.OutputTuple,
+    RefundEvent.OutputObject
+  >;
+  getEvent(
     key: "SetAllocation"
   ): TypedContractEvent<
     SetAllocationEvent.InputTuple,
     SetAllocationEvent.OutputTuple,
     SetAllocationEvent.OutputObject
+  >;
+  getEvent(
+    key: "SetAvailableRefund"
+  ): TypedContractEvent<
+    SetAvailableRefundEvent.InputTuple,
+    SetAvailableRefundEvent.OutputTuple,
+    SetAvailableRefundEvent.OutputObject
+  >;
+  getEvent(
+    key: "SetRefundCloseDate"
+  ): TypedContractEvent<
+    SetRefundCloseDateEvent.InputTuple,
+    SetRefundCloseDateEvent.OutputTuple,
+    SetRefundCloseDateEvent.OutputObject
+  >;
+  getEvent(
+    key: "SetRefundStartDate"
+  ): TypedContractEvent<
+    SetRefundStartDateEvent.InputTuple,
+    SetRefundStartDateEvent.OutputTuple,
+    SetRefundStartDateEvent.OutputObject
   >;
   getEvent(
     key: "WithdrawExcessAmount"
@@ -655,6 +1089,17 @@ export interface SQRVesting extends BaseContract {
       ClaimEvent.OutputObject
     >;
 
+    "ForceWithdraw(address,address,uint256)": TypedContractEvent<
+      ForceWithdrawEvent.InputTuple,
+      ForceWithdrawEvent.OutputTuple,
+      ForceWithdrawEvent.OutputObject
+    >;
+    ForceWithdraw: TypedContractEvent<
+      ForceWithdrawEvent.InputTuple,
+      ForceWithdrawEvent.OutputTuple,
+      ForceWithdrawEvent.OutputObject
+    >;
+
     "OwnershipTransferred(address,address)": TypedContractEvent<
       OwnershipTransferredEvent.InputTuple,
       OwnershipTransferredEvent.OutputTuple,
@@ -666,6 +1111,17 @@ export interface SQRVesting extends BaseContract {
       OwnershipTransferredEvent.OutputObject
     >;
 
+    "Refund(address)": TypedContractEvent<
+      RefundEvent.InputTuple,
+      RefundEvent.OutputTuple,
+      RefundEvent.OutputObject
+    >;
+    Refund: TypedContractEvent<
+      RefundEvent.InputTuple,
+      RefundEvent.OutputTuple,
+      RefundEvent.OutputObject
+    >;
+
     "SetAllocation(address,uint256)": TypedContractEvent<
       SetAllocationEvent.InputTuple,
       SetAllocationEvent.OutputTuple,
@@ -675,6 +1131,39 @@ export interface SQRVesting extends BaseContract {
       SetAllocationEvent.InputTuple,
       SetAllocationEvent.OutputTuple,
       SetAllocationEvent.OutputObject
+    >;
+
+    "SetAvailableRefund(address,bool)": TypedContractEvent<
+      SetAvailableRefundEvent.InputTuple,
+      SetAvailableRefundEvent.OutputTuple,
+      SetAvailableRefundEvent.OutputObject
+    >;
+    SetAvailableRefund: TypedContractEvent<
+      SetAvailableRefundEvent.InputTuple,
+      SetAvailableRefundEvent.OutputTuple,
+      SetAvailableRefundEvent.OutputObject
+    >;
+
+    "SetRefundCloseDate(address,uint32)": TypedContractEvent<
+      SetRefundCloseDateEvent.InputTuple,
+      SetRefundCloseDateEvent.OutputTuple,
+      SetRefundCloseDateEvent.OutputObject
+    >;
+    SetRefundCloseDate: TypedContractEvent<
+      SetRefundCloseDateEvent.InputTuple,
+      SetRefundCloseDateEvent.OutputTuple,
+      SetRefundCloseDateEvent.OutputObject
+    >;
+
+    "SetRefundStartDate(address,uint32)": TypedContractEvent<
+      SetRefundStartDateEvent.InputTuple,
+      SetRefundStartDateEvent.OutputTuple,
+      SetRefundStartDateEvent.OutputObject
+    >;
+    SetRefundStartDate: TypedContractEvent<
+      SetRefundStartDateEvent.InputTuple,
+      SetRefundStartDateEvent.OutputTuple,
+      SetRefundStartDateEvent.OutputObject
     >;
 
     "WithdrawExcessAmount(address,uint256)": TypedContractEvent<

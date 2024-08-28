@@ -46,6 +46,7 @@ import {
   PaymentGatewayTransactionItem,
   ProRataTransactionItemType,
   VestingTransactionItem,
+  VestingTransactionItemType,
 } from './entities';
 import { ProRataTransactionItem } from './entities/process/ProRataTransactionItem';
 
@@ -79,6 +80,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
   private sqrpProRataCurrentAbiInterface!: Interface;
   private paymentGatewayDepositTopic0!: string;
   private vestingClaimTopic0!: string;
+  private vestingRefundTopic0!: string;
   private proRataDepositTopic0!: string;
   private proRataRefundTopic0!: string;
   private babTokenAttestTopic0!: string;
@@ -121,6 +123,7 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     );
 
     this.vestingClaimTopic0 = await this.setTopic0(firstSqrVesting.filters.Claim());
+    this.vestingRefundTopic0 = await this.setTopic0(firstSqrVesting.filters.Refund());
 
     this.proRataDepositTopic0 = await this.setTopic0(firstSqrpProRata.filters.Deposit());
     this.proRataRefundTopic0 = await this.setTopic0(firstSqrpProRata.filters.Refund());
@@ -257,14 +260,18 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
   private async saveVestingTransactionItem({
     event,
     dbNetwork,
+    type,
     vestingTransactionItemRepository,
     accountRepository,
   }: {
     event: Event;
     dbNetwork: Network;
+    type: VestingTransactionItemType;
     vestingTransactionItemRepository: Repository<VestingTransactionItem>;
     accountRepository: Repository<Account>;
   }): Promise<Web3BusEvent | null> {
+    const isClaim = type === 'claim';
+
     const contractAddress = event.contract.address;
     const network = dbNetwork.name as DeployNetworkKey;
 
@@ -274,39 +281,59 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     dbVestingTransactionItem.network = dbNetwork;
     dbVestingTransactionItem.contract = event.contract;
     dbVestingTransactionItem.contract.networkId = networkId;
+    dbVestingTransactionItem.type = type;
     dbVestingTransactionItem.transaction = event.transactionHash;
     dbVestingTransactionItem.transaction.networkId = networkId;
     const account = getAddressFromSlot(event.topic1);
     const dbAccount = await this.getOrSaveAccount(account, accountRepository);
     dbVestingTransactionItem.account = dbAccount;
-    const eventData = decodeData(event.data!, ['uint256']);
 
-    const { getSqrVesting, getErc20Token } = this.context;
-    const decimals = await this.cacheMachine.call(
-      () => getCacheContractSettingKey(network, contractAddress),
-      async () => {
-        const tokenAddress = await getSqrVesting(contractAddress).erc20Token();
-        return getErc20Token(tokenAddress).decimals();
-      },
-    );
+    let amount = 0;
 
-    const amount = toNumberDecimals(BigInt(eventData[0]), decimals);
-    dbVestingTransactionItem.amount = amount;
+    if (isClaim) {
+      const { getSqrVesting, getErc20Token } = this.context;
+      const decimals = await this.cacheMachine.call(
+        () => getCacheContractSettingKey(network, contractAddress),
+        async () => {
+          const tokenAddress = await getSqrVesting(contractAddress).erc20Token();
+          return getErc20Token(tokenAddress).decimals();
+        },
+      );
+
+      const eventData = decodeData(event.data!, ['uint256']);
+      amount = toNumberDecimals(BigInt(eventData[0]), decimals);
+      dbVestingTransactionItem.amount = amount;
+    }
+
     const timestamp = event.transactionHash.block.timestamp;
     dbVestingTransactionItem.timestamp = timestamp;
 
     await vestingTransactionItemRepository.save(dbVestingTransactionItem);
-    return {
-      event: 'VESTING_CONTRACT_CLAIM',
-      data: {
-        network,
-        contractAddress,
-        account,
-        amount,
-        timestamp,
-        tx: event.transactionHash.hash,
-      },
-    };
+
+    if (isClaim) {
+      return {
+        event: 'VESTING_CONTRACT_CLAIM',
+        data: {
+          network,
+          contractAddress,
+          account,
+          amount,
+          timestamp,
+          tx: event.transactionHash.hash,
+        },
+      };
+    } else {
+      return {
+        event: 'VESTING_CONTRACT_REFUND',
+        data: {
+          network,
+          contractAddress,
+          account,
+          timestamp,
+          tx: event.transactionHash.hash,
+        },
+      };
+    }
   }
 
   private async saveProRataTransactionItem({
@@ -510,6 +537,16 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
         return this.saveVestingTransactionItem({
           event,
           dbNetwork,
+          type: 'claim',
+          vestingTransactionItemRepository,
+          accountRepository,
+        });
+      } else if (event.topic0 === this.vestingRefundTopic0) {
+        console.log(111);
+        return this.saveVestingTransactionItem({
+          event,
+          dbNetwork,
+          type: 'refund',
           vestingTransactionItemRepository,
           accountRepository,
         });

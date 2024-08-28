@@ -14,6 +14,10 @@ import { processDbTable } from "~db/tableNames";
 import { Contract, Network, Transaction } from "../raw";
 import { Account } from "./Account";
 
+export const vestingTransactionItemType = ['claim', 'refund'] as const;
+export type VestingTransactionItemType = (typeof vestingTransactionItemType)[number];
+const DEFAULT_VESTING_TYPE: VestingTransactionItemType = 'claim';
+
 @Entity({ name: processDbTable.vesting_transaction_items })
 export class VestingTransactionItem  {
   @PrimaryGeneratedColumn()
@@ -44,6 +48,14 @@ export class VestingTransactionItem  {
   ])
   contract!: Contract;
 
+  @Index()
+  @Column({
+    type: "enum",
+    default: DEFAULT_VESTING_TYPE,
+    enum: vestingTransactionItemType,
+  })
+  type!: VestingTransactionItemType;
+
   @ManyToOne(() => Account, (account) => account.accountTransactionItems)
   @JoinColumn({
     name: P<VestingTransactionItem>((p) => p.account),
@@ -54,11 +66,11 @@ export class VestingTransactionItem  {
   @RelationId((p: VestingTransactionItem) => p.account)
   accountAddress!: string;
 
-  @Column({ type: "float" })
+  @Column({ type: "float", nullable: true })
   amount!: number;
 
   @Index()
-  @Column({nullable: true})
+  @Column({ nullable: true })
   transactionHash!: string;
 
   @ManyToOne(() => Transaction)

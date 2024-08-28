@@ -1,6 +1,13 @@
 import { arrayify } from '@ethersproject/bytes';
 import { createCipheriv, createDecipheriv } from 'crypto';
-import { AbiCoder, Interface, Signer, keccak256, solidityPacked, toUtf8Bytes } from 'ethers';
+import {
+  AbiCoder,
+  Interface,
+  Signer,
+  keccak256,
+  solidityPackedKeccak256,
+  toUtf8Bytes,
+} from 'ethers';
 import { MerkleTree } from 'merkletreejs';
 import { sanitizePrivateKey } from './wallet';
 
@@ -13,8 +20,7 @@ export async function signEncodePackedMessage(
   types: readonly string[],
   values: readonly any[],
 ): Promise<string> {
-  const packed = solidityPacked(types, values);
-  const hash = keccak256(packed);
+  const hash = solidityPackedKeccak256(types, values);
   const messageHashBin = arrayify(hash);
   return signer.signMessage(messageHashBin);
 }

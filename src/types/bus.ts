@@ -21,33 +21,37 @@ export type Web3BusEventType = 'PAYMENT_GATEWAY' | 'VESTING' | 'PRO_RATA' | 'BAB
 
 export type Web3BusEvent =
   | {
-    event: 'PAYMENT_GATEWAY_CONTRACT_DEPOSIT';
-    data: Web3BusPaymentGatewayDepositEventData;
-  }
+      event: 'PAYMENT_GATEWAY_CONTRACT_DEPOSIT';
+      data: Web3BusPaymentGatewayDepositEventData;
+    }
   | {
-    event: 'VESTING_CONTRACT_CLAIM';
-    data: Web3BusVestingClaimEventData;
-  }
+      event: 'VESTING_CONTRACT_CLAIM';
+      data: Web3BusVestingClaimEventData;
+    }
   | {
-    event: 'PRO_RATA_CONTRACT_DEPOSIT';
-    data: Web3BusProRataDepositEventData;
-  }
+      event: 'VESTING_CONTRACT_REFUND';
+      data: Web3BusVestingRefundEventData;
+    }
   | {
-    event: 'PRO_RATA_CONTRACT_REFUND';
-    data: Web3BusProRataRefundEventData;
-  }
+      event: 'PRO_RATA_CONTRACT_DEPOSIT';
+      data: Web3BusProRataDepositEventData;
+    }
   | {
-    event: 'BABT_STATUS_CHANGED';
-    data: Web3BusProBABTokenStatusChangedEventData;
-  };
+      event: 'PRO_RATA_CONTRACT_REFUND';
+      data: Web3BusProRataRefundEventData;
+    }
+  | {
+      event: 'BABT_STATUS_CHANGED';
+      data: Web3BusProBABTokenStatusChangedEventData;
+    };
 
 type Web3BusEventDataTx =
   | {
-    tx: string;
-  }
+      tx: string;
+    }
   | {
-    error: string;
-  };
+      error: string;
+    };
 
 export type Web3BusPaymentGatewayDepositEventData = {
   network: DeployNetworkKey;
@@ -66,6 +70,13 @@ export type Web3BusVestingClaimEventData = {
   contractAddress: string;
   account: string;
   amount: number;
+  timestamp?: Date;
+} & Web3BusEventDataTx;
+
+export type Web3BusVestingRefundEventData = {
+  network: DeployNetworkKey;
+  contractAddress: string;
+  account: string;
   timestamp?: Date;
 } & Web3BusEventDataTx;
 

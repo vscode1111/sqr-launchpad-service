@@ -2,43 +2,70 @@
   {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "_newOwner",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_erc20Token",
-        "type": "address"
-      },
-      {
-        "internalType": "uint32",
-        "name": "_startDate",
-        "type": "uint32"
-      },
-      {
-        "internalType": "uint32",
-        "name": "_cliffPeriod",
-        "type": "uint32"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_firstUnlockPercent",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint32",
-        "name": "_unlockPeriod",
-        "type": "uint32"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_unlockPeriodPercent",
-        "type": "uint256"
+        "components": [
+          {
+            "internalType": "address",
+            "name": "newOwner",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "erc20Token",
+            "type": "address"
+          },
+          {
+            "internalType": "uint32",
+            "name": "startDate",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "cliffPeriod",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "firstUnlockPercent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint32",
+            "name": "unlockPeriod",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "unlockPeriodPercent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "availableRefund",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint32",
+            "name": "refundStartDate",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "refundCloseDate",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct SQRVesting.ContractParams",
+        "name": "contractParams",
+        "type": "tuple"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "AccountNotExist",
+    "type": "error"
   },
   {
     "inputs": [],
@@ -65,6 +92,16 @@
       }
     ],
     "name": "AddressInsufficientBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "AlreadyClaimed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "AlreadyRefunded",
     "type": "error"
   },
   {
@@ -130,6 +167,31 @@
     "type": "error"
   },
   {
+    "inputs": [],
+    "name": "RefundCloseDateMustBeGreaterThanCurrentTime",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "RefundCloseDateMustBeGreaterThanRefundStartDate",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "RefundStartDateMustBeGreaterThanCurrentTime",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "RefundStartDateMustBeLessThanRefundCloseDate",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "RefundUnavailable",
+    "type": "error"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -143,6 +205,16 @@
   {
     "inputs": [],
     "name": "StartDateMustBeGreaterThanCurrentTime",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TooEarlyToRefund",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "TooLateToRefund",
     "type": "error"
   },
   {
@@ -180,6 +252,31 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "ForceWithdraw",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "previousOwner",
         "type": "address"
       },
@@ -201,6 +298,19 @@
         "internalType": "address",
         "name": "account",
         "type": "address"
+      }
+    ],
+    "name": "Refund",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
       },
       {
         "indexed": false,
@@ -210,6 +320,63 @@
       }
     ],
     "name": "SetAllocation",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "value",
+        "type": "bool"
+      }
+    ],
+    "name": "SetAvailableRefund",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "value",
+        "type": "uint32"
+      }
+    ],
+    "name": "SetRefundCloseDate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "value",
+        "type": "uint32"
+      }
+    ],
+    "name": "SetRefundStartDate",
     "type": "event"
   },
   {
@@ -258,6 +425,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "allocationCount",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -279,12 +459,35 @@
       },
       {
         "internalType": "uint32",
+        "name": "claimCount",
+        "type": "uint32"
+      },
+      {
+        "internalType": "uint32",
         "name": "claimedAt",
         "type": "uint32"
       },
       {
         "internalType": "bool",
         "name": "exist",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "refunded",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "availableRefund",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
         "type": "bool"
       }
     ],
@@ -297,6 +500,11 @@
         "internalType": "address",
         "name": "account",
         "type": "address"
+      },
+      {
+        "internalType": "uint32",
+        "name": "periodOffset",
+        "type": "uint32"
       }
     ],
     "name": "calculateClaimAmount",
@@ -305,6 +513,30 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "internalType": "uint32",
+        "name": "periodOffset",
+        "type": "uint32"
+      }
+    ],
+    "name": "calculateClaimAt",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
       }
     ],
     "stateMutability": "view",
@@ -350,25 +582,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "calculateNextClaimAt",
-    "outputs": [
-      {
-        "internalType": "uint32",
-        "name": "",
-        "type": "uint32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "calculatePassedPeriod",
     "outputs": [
@@ -385,7 +598,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "wallet",
+        "name": "account",
         "type": "address"
       }
     ],
@@ -422,6 +635,25 @@
       }
     ],
     "name": "canClaim",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "canRefund",
     "outputs": [
       {
         "internalType": "bool",
@@ -476,44 +708,71 @@
     "name": "fetchClaimInfo",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_claimed",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint32",
-        "name": "_claimedAt",
-        "type": "uint32"
-      },
-      {
-        "internalType": "bool",
-        "name": "_exist",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "_canClaim",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_available",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_remain",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint32",
-        "name": "_nextClaimAt",
-        "type": "uint32"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "canClaim",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "claimed",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint32",
+            "name": "claimCount",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "claimedAt",
+            "type": "uint32"
+          },
+          {
+            "internalType": "bool",
+            "name": "exist",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "available",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "remain",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "nextAvailable",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint32",
+            "name": "nextClaimAt",
+            "type": "uint32"
+          },
+          {
+            "internalType": "bool",
+            "name": "canRefund",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "refunded",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct SQRVesting.ClaimInfo",
+        "name": "",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -533,8 +792,50 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "forceWithdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "index",
+        "type": "uint32"
+      }
+    ],
+    "name": "getAccountByIndex",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
-    "name": "getAllocationCount",
+    "name": "getAccountCount",
     "outputs": [
       {
         "internalType": "uint32",
@@ -560,12 +861,38 @@
   },
   {
     "inputs": [],
-    "name": "getTotalAllocated",
+    "name": "getContractName",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "string",
         "name": "",
-        "type": "uint256"
+        "type": "string"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getContractVersion",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isAfterRefundCloseDate",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -598,6 +925,52 @@
         "internalType": "address",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "refund",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "refundCloseDate",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "refundCount",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "refundStartDate",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
       }
     ],
     "stateMutability": "view",
@@ -647,6 +1020,45 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "value",
+        "type": "bool"
+      }
+    ],
+    "name": "setAvailableRefund",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "value",
+        "type": "uint32"
+      }
+    ],
+    "name": "setRefundCloseDate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "value",
+        "type": "uint32"
+      }
+    ],
+    "name": "setRefundStartDate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "startDate",
     "outputs": [
@@ -654,6 +1066,45 @@
         "internalType": "uint32",
         "name": "",
         "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalAllocated",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalClaimed",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalReserved",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",

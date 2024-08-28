@@ -134,12 +134,6 @@ module.exports = {
         //   type: 'fcfs',
         //   disable: true,
         // },
-        // {
-        //   address: '0x3554A27F8e0869fE568DcF3ebE922Ce9200e16BE',
-        //   blockNumber: 38801527,
-        //   type: 'vesting',
-        //   disable: true,
-        // },
         //--------------
         // {
         //   address: '0x30c526Ea466e35346685e410A04112422ee531CD',
@@ -160,40 +154,46 @@ module.exports = {
         //   disable: false,
         // },
         //Prod first sales
+        // {
+        //   address: '0x73ee8C0cb385a663A411D306b7aa249b59c18d7d',
+        //   blockNumber: 40777025,
+        //   type: 'fcfs',
+        //   disable: false,
+        // },
+        // {
+        //   address: '0x46A49a705d8E7a7765dce7e5F4016fBC44DF3fA3',
+        //   blockNumber: 40777150,
+        //   type: 'sqrp-gated',
+        //   disable: false,
+        // },
+        // {
+        //   address: '0xd4F4c2eE273c0F3611f7f93EA8e8eED4fef6906F',
+        //   blockNumber: 40777233,
+        //   type: 'fcfs',
+        //   disable: false,
+        // },
+        // {
+        //   address: '0xf98844b0103a68E58B5ce99415879A1e30AFCAAC',
+        //   blockNumber: 40777295,
+        //   type: 'fcfs',
+        //   disable: false,
+        // },
+        // {
+        //   address: '0x99518a992cC4d9c51f0ae4B269D45F4e9e33b0b2',
+        //   blockNumber: 40777373,
+        //   type: 'sqrp-gated',
+        //   disable: false,
+        // },
+        // {
+        //   address: '0x097F154bA5b83DA37a51752D9435b12EbE231689',
+        //   blockNumber: 40777555,
+        //   type: 'fcfs',
+        //   disable: false,
+        // },
         {
-          address: '0x73ee8C0cb385a663A411D306b7aa249b59c18d7d',
-          blockNumber: 40777025,
-          type: 'fcfs',
-          disable: false,
-        },
-        {
-          address: '0x46A49a705d8E7a7765dce7e5F4016fBC44DF3fA3',
-          blockNumber: 40777150,
-          type: 'sqrp-gated',
-          disable: false,
-        },
-        {
-          address: '0xd4F4c2eE273c0F3611f7f93EA8e8eED4fef6906F',
-          blockNumber: 40777233,
-          type: 'fcfs',
-          disable: false,
-        },
-        {
-          address: '0xf98844b0103a68E58B5ce99415879A1e30AFCAAC',
-          blockNumber: 40777295,
-          type: 'fcfs',
-          disable: false,
-        },
-        {
-          address: '0x99518a992cC4d9c51f0ae4B269D45F4e9e33b0b2',
-          blockNumber: 40777373,
-          type: 'sqrp-gated',
-          disable: false,
-        },
-        {
-          address: '0x097F154bA5b83DA37a51752D9435b12EbE231689',
-          blockNumber: 40777555,
-          type: 'fcfs',
+          address: '0xFa05DdfE305a7425beB08F2A14E6B52C0Ab7D9B4',
+          blockNumber: 41761100,
+          type: 'vesting',
           disable: false,
         },
       ],
