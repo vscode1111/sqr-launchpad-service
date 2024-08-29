@@ -117,20 +117,20 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     }
     this.context = context;
 
-    const { firstSqrPaymentGateway, firstSqrVesting, firstSqrpProRata, firstBABToken } = context;
+    const { emptySqrPaymentGateway, emptySqrVesting, emptySqrpProRata, emptyBABToken } = context;
     this.paymentGatewayDepositTopic0 = await this.setTopic0(
-      firstSqrPaymentGateway.filters.Deposit(),
+      emptySqrPaymentGateway.filters.Deposit(),
     );
 
-    this.vestingClaimTopic0 = await this.setTopic0(firstSqrVesting.filters.Claim());
-    this.vestingRefundTopic0 = await this.setTopic0(firstSqrVesting.filters.Refund());
+    this.vestingClaimTopic0 = await this.setTopic0(emptySqrVesting.filters.Claim());
+    this.vestingRefundTopic0 = await this.setTopic0(emptySqrVesting.filters.Refund());
 
-    this.proRataDepositTopic0 = await this.setTopic0(firstSqrpProRata.filters.Deposit());
-    this.proRataRefundTopic0 = await this.setTopic0(firstSqrpProRata.filters.Refund());
+    this.proRataDepositTopic0 = await this.setTopic0(emptySqrpProRata.filters.Deposit());
+    this.proRataRefundTopic0 = await this.setTopic0(emptySqrpProRata.filters.Refund());
 
-    this.babTokenAttestTopic0 = await this.setTopic0(firstBABToken.filters.Attest());
-    this.babTokenBurnTopic0 = await this.setTopic0(firstBABToken.filters.Burn());
-    this.babTokenRevokeTopic0 = await this.setTopic0(firstBABToken.filters.Revoke());
+    this.babTokenAttestTopic0 = await this.setTopic0(emptyBABToken.filters.Attest());
+    this.babTokenBurnTopic0 = await this.setTopic0(emptyBABToken.filters.Burn());
+    this.babTokenRevokeTopic0 = await this.setTopic0(emptyBABToken.filters.Revoke());
   }
 
   async setTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>) {

@@ -47,7 +47,8 @@ export class IndexerWorker extends WorkerBase<IndexerWorkerStats> {
 
   async start(): Promise<void> {
     logInfo(this.broker, `IndexerWorker ${this.network} init`);
-    this.dataStorage.setRpcFns({
+    this.dataStorage.setProviderFns({
+      network: this.network,
       getBlockFn: (blockNumber) => {
         this.statsData.providerRequests++;
         return this.provider.getBlockByNumber(blockNumber);

@@ -38,6 +38,14 @@ module.exports = {
   web3: {
     ownerPrivateKey: 'f3c17fde54d9923e81dcc9dd4742a217b33c9f3885def8557f8989d6da72bded',
     contracts: {
+      mainnet: [
+        {
+          address: '0xc73F020ef7BF6EA2292a3B8545E21ef90340A4DD',
+          blockNumber: 20634206,
+          type: 'vesting',
+          disable: false,
+        },
+      ],
       bsc: [
         // {
         //   address: '0x5D27C778759e078BBe6D11A6cd802E41459Fe852',
@@ -203,6 +211,12 @@ module.exports = {
       bsc: {
         http: 'https://rpc.ankr.com/bsc/0a92c9288ddd85181db59c48d2eae9d07873954be63e06893de5b4cbcb37842e',
         // http: 'https://bsc-dataseed.binance.org',
+        blockNumberFilterSize: 0,
+        blockNumberRange: 2000,
+        blockNumberOffset: 10,
+      },
+      mainnet: {
+        http: 'https://rpc.ankr.com/eth/0a92c9288ddd85181db59c48d2eae9d07873954be63e06893de5b4cbcb37842e',
         blockNumberFilterSize: 0,
         blockNumberRange: 2000,
         blockNumberOffset: 10,

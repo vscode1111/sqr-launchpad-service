@@ -8,7 +8,13 @@ import { IdLock, Promisable, Started, Stopped, toDate } from '~common';
 import { Block, Contract, ContractType, Event, Network, Transaction } from '../../db/entities';
 import { DB_EVENT_CONCURRENCY_COUNT, GENESIS_BLOCK_NUMBER } from '../constants';
 import { ServiceBrokerBase } from '../core';
-import { DeployNetworkKey, GetBlockFn, GetTransactionByHashFn, Web3Event } from '../types';
+import {
+  DeployNetworkKey,
+  GetBlockFn,
+  GetTransactionByHashFn,
+  ProviderFns,
+  Web3Event,
+} from '../types';
 import { deployNetworks, logInfo } from '../utils';
 import { GetContractDataFn } from './types';
 import { findContract, findContracts, findNetwork } from './utils';
@@ -26,8 +32,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
   protected isDestroyed: boolean;
   protected idLock: IdLock;
   protected getContractDataFn: GetContractDataFn;
-  protected getBlockFn!: GetBlockFn;
-  protected getTransactionByHashFn!: GetTransactionByHashFn;
+  protected providerFns: Record<DeployNetworkKey, ProviderFns>;
 
   constructor(
     broker: ServiceBroker,
@@ -40,6 +45,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     this.getContractDataFn = getContractDataFn;
     this.isDestroyed = false;
     this.idLock = new IdLock();
+    this.providerFns = {} as Record<DeployNetworkKey, ProviderFns>;
   }
 
   getDataSource() {
@@ -111,15 +117,23 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     });
   }
 
-  setRpcFns({
+  setProviderFns({
+    network,
     getBlockFn,
     getTransactionByHashFn,
   }: {
+    network: DeployNetworkKey;
     getBlockFn: GetBlockFn;
     getTransactionByHashFn: GetTransactionByHashFn;
   }) {
-    this.getBlockFn = getBlockFn;
-    this.getTransactionByHashFn = getTransactionByHashFn;
+    this.providerFns[network] = {
+      getBlockFn,
+      getTransactionByHashFn,
+    };
+  }
+
+  private getProviderFns(network: string): ProviderFns {
+    return this.providerFns[network as DeployNetworkKey];
   }
 
   async start(): Promise<void> {
@@ -178,7 +192,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     return this.idLock.tryInvoke(`block_${blockNumber}`, async () => {
       let dbBlock = await blockRepository.findOneBy({ number: blockNumber });
       if (!dbBlock) {
-        const block = await this.getBlockFn(blockNumber);
+        const block = await this.getProviderFns(dbNetwork.name).getBlockFn(blockNumber);
         dbBlock = new Block();
         dbBlock.network = dbNetwork;
         dbBlock.number = block.number;
@@ -198,7 +212,9 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     transactionRepository: Repository<Transaction>,
     dbTransaction: Transaction,
   ) {
-    const transaction = await this.getTransactionByHashFn(transactionHash);
+    const transaction = await this.getProviderFns(dbNetwork.name).getTransactionByHashFn(
+      transactionHash,
+    );
     dbTransaction.network = dbNetwork;
     dbTransaction.hash = transaction.hash;
     dbTransaction.transactionIndex = transaction.transactionIndex;

@@ -2,6 +2,7 @@ import { Promisable, Started, StringNumber } from '~common';
 import { Web3Block, Web3Transaction } from './web3';
 
 export interface DeployNetworks {
+  mainnet: string;
   bsc: string;
 }
 
@@ -29,6 +30,11 @@ export interface WorkerController<T> extends Started {
 export type GetBlockFn = (blockNumber: StringNumber) => Promise<Web3Block>;
 
 export type GetTransactionByHashFn = (hash: string) => Promise<Web3Transaction>;
+
+export interface ProviderFns {
+  getBlockFn: GetBlockFn;
+  getTransactionByHashFn: GetTransactionByHashFn;
+}
 
 export interface ContractData {
   address: string;

@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
-import { C, NF2, P } from "~common";
+import { C, NF, NF2, P } from "~common";
 import { rawDbTable } from "../../tableNames";
 import { PaymentGatewayTransactionItem } from "../process";
 import { Event } from "./Event";
@@ -79,4 +79,5 @@ export class Contract {
 }
 
 export const  CContract = C(Contract);
+export const FContract = NF<Contract>();
 export const PContract = NF2<Contract>((name) => `${CContract}.${name}`);

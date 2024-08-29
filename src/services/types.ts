@@ -8,12 +8,12 @@ export interface SqrLaunchpadContext {
   owner: Wallet;
   rawProvider: JsonRpcProvider;
   getErc20Token: (address: string) => ERC20Token;
-  firstSqrPaymentGateway: SQRPaymentGateway;
+  emptySqrPaymentGateway: SQRPaymentGateway;
   getSqrPaymentGateway: (address: string) => SQRPaymentGateway;
-  firstSqrVesting: SQRVesting;
+  emptySqrVesting: SQRVesting;
   getSqrVesting: (address: string) => SQRVesting;
-  firstSqrpProRata: SQRpProRata;
+  emptySqrpProRata: SQRpProRata;
   getSqrpProRata: (address: string) => SQRpProRata;
-  firstBABToken: BABToken,
+  emptyBABToken: BABToken;
   getBABToken: (address: string) => BABToken;
 }
