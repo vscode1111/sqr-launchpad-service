@@ -27,9 +27,9 @@ export const waitUntil = (
         } else {
           timer = setTimeout(doStep, timerInterval);
         }
-      } catch (e) {
+      } catch (err: any) {
         clearTimers();
-        reject(e);
+        reject(err);
       }
     };
 

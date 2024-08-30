@@ -208,15 +208,15 @@ module.exports = {
       ],
     },
     provider: {
-      bsc: {
-        http: 'https://rpc.ankr.com/bsc/0a92c9288ddd85181db59c48d2eae9d07873954be63e06893de5b4cbcb37842e',
-        // http: 'https://bsc-dataseed.binance.org',
+      mainnet: {
+        http: 'https://rpc.ankr.com/eth/0a92c9288ddd85181db59c48d2eae9d07873954be63e06893de5b4cbcb37842e',
         blockNumberFilterSize: 0,
         blockNumberRange: 2000,
         blockNumberOffset: 10,
       },
-      mainnet: {
-        http: 'https://rpc.ankr.com/eth/0a92c9288ddd85181db59c48d2eae9d07873954be63e06893de5b4cbcb37842e',
+      bsc: {
+        http: 'https://rpc.ankr.com/bsc/0a92c9288ddd85181db59c48d2eae9d07873954be63e06893de5b4cbcb37842e',
+        // http: 'https://bsc-dataseed.binance.org',
         blockNumberFilterSize: 0,
         blockNumberRange: 2000,
         blockNumberOffset: 10,

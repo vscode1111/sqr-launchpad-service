@@ -53,11 +53,11 @@ export async function waitTxEx(
     if (options?.onSuccess) {
       await options.onSuccess(tx);
     }
-  } catch (e) {
+  } catch (err: any) {
     if (options?.onFail) {
-      await options.onFail(e);
+      await options.onFail(err);
     }
-    throw e;
+    throw err;
   }
   return tx;
 }

@@ -73,14 +73,14 @@ export async function sleep(ms: number): Promise<number> {
 export async function attempt(fn: () => Promise<any>, attempts = 3, delayMs = 1000): Promise<any> {
   try {
     return await fn();
-  } catch (e) {
+  } catch (err: any) {
     if (attempts > 0) {
-      console.log(e);
+      console.log(err);
       await sleep(delayMs);
       // console.log(`${attempts - 1} attempts left`);
       return await attempt(fn, attempts - 1, delayMs);
     } else {
-      throw e;
+      throw err;
     }
   }
 }

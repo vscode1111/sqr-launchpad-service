@@ -164,8 +164,8 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
 
     try {
       return decodeInput<T>(transactionInput, currentAbiInterface);
-    } catch (e) {
-      error = e;
+    } catch (err: any) {
+      error = err;
     }
 
     for (const abiInterface of abiInterfaces) {
@@ -176,8 +176,8 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
         const result = decodeInput<T>(transactionInput, abiInterface);
         currentAbiInterface = abiInterface;
         return result;
-      } catch (e) {
-        error = e;
+      } catch (err: any) {
+        error = err;
       }
     }
     throw error;

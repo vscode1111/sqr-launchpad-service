@@ -13,9 +13,9 @@ export class ServicesBase extends ServiceBrokerBase {
     this.errorCount = 0;
   }
 
-  saveProcessError(error: any) {
-    this.lastError = parseError(error);
-    this.lastErrorStack = parseStack(error);
+  saveProcessError(err: any) {
+    this.lastError = parseError(err);
+    this.lastErrorStack = parseStack(err);
     this.lastErrorDate = new Date();
     this.errorCount++;
     return this.errorCount;

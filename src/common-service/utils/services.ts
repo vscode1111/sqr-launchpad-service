@@ -59,6 +59,6 @@ export function catchAllExceptions(broker: ServiceBroker, services: ServicesBase
         `Process caught exception #${errorCount}: ${parseError(err)} in ${parseStack(err)}`,
         err,
       );
-    } catch (e) {}
+    } catch (err: any) {}
   });
 }

@@ -72,8 +72,8 @@ export class SecurityBlocker implements Initialized, Stopped {
           await this.config.onStart(privateKey);
           this.status = 'running';
         }
-      } catch (e) {
-        console.error(e);
+      } catch (err: any) {
+        console.error(err);
       }
     }
     return this.getStatus();

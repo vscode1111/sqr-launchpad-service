@@ -15,5 +15,6 @@ export type WorkerBaseStats = {
   executionTime: number;
   lastSuccessDate: Date;
   lastError?: string;
+  lastErrorStack?: string;
   lastErrorDate?: Date;
 };
