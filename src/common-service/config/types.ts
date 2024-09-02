@@ -1,6 +1,7 @@
 export interface BaseConfig {
   connections?: Connections;
   api: ApiConfig;
+  auth?: AuthConfig;
   web3: Web3Config;
   integrations?: Integrations;
   protocol?: string;
@@ -29,6 +30,10 @@ export interface ApiConfig {
   port?: number;
 }
 
+export interface AuthConfig {
+  oktaDomain: string;
+}
+
 export interface Web3ConfigContract {
   address: string;
   blockNumber: number;
@@ -37,7 +42,9 @@ export interface Web3ConfigContract {
 }
 
 export interface Web3Config {
-  ownerPrivateKey?: string;
+  ownerPrivateKey: string;
+  ownerAddress: string;
+  sharesThreshold: number;
   apiKey?: {
     bscScan?: string;
   };
@@ -57,7 +64,10 @@ export interface Web3Config {
     syncRule: string;
   };
   kafka: {
+    topicGroup: string;
+    inTopic: string;
     outTopic: string;
+    metricTopic: string;
   };
   vault?: {
     enable: boolean;
