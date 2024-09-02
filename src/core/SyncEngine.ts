@@ -33,7 +33,7 @@ export class SyncEngine implements Started {
         storageProcessor,
         blockNumberRange,
         blockNumberOffset,
-        blockNumberFilterSize: blockNumberFilterSize,
+        blockNumberFilterSize,
         tickDivider: isBuildRun ? 30 : 5,
       }),
       db: new DbWorker({ broker, network, workerName: 'TaskWorker', tickDivider: 1, dataStorage }),

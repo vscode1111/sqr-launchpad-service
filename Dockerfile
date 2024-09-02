@@ -18,8 +18,8 @@ RUN npm ci
 RUN npm run build
 
 # Bump version
-ARG VERSION="v0.0.0-dev"
-RUN npm version ${VERSION} --no-git-tag-version
+# ARG VERSION="v0.0.0-dev"
+# RUN npm version ${VERSION} --no-git-tag-version
 
 FROM node:20-alpine 
 WORKDIR /application

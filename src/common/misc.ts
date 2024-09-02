@@ -28,6 +28,13 @@ export function parseStack(error: any) {
   }
 }
 
+// https://github.com/astra-net/astra-scan.backend/blob/8f9618d8d4df0976b5544b75ed5636b2ef949acd/src/indexer/rpc/transport/ws/WebSocketRPC.ts
+export function timeoutPromise(callTimeout: number) {
+  return new Promise((_, reject) =>
+    setTimeout(() => reject(new Error(`Timeout error in ${callTimeout}ms`)), callTimeout),
+  );
+}
+
 export function incrementChangeHexChar(char: string): string {
   return (Number(`0x${char}`) + 1).toString(16).slice(-1);
 }
