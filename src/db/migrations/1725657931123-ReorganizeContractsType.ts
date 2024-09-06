@@ -4,6 +4,7 @@ export class ReorganizeContractsType1725657931123 implements MigrationInterface 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
       UPDATE _contracts SET type = 'payment-gateway' WHERE type = 'fcfs';
+      UPDATE _contracts SET type = 'payment-gateway' WHERE type = 'sqrp-gated';
       UPDATE _contracts SET type = 'payment-gateway' WHERE type = 'white-list';
       UPDATE _contracts SET type = 'pro-rata' WHERE type = 'pro-rata-sqrp-gated';
 
