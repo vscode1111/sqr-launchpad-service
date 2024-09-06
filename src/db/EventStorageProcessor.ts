@@ -63,9 +63,9 @@ async function getTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>): 
 const contractTypeToEventTypeMap: Record<ContractType, Web3BusEventType> = {
   fcfs: 'PAYMENT_GATEWAY',
   'sqrp-gated': 'PAYMENT_GATEWAY',
-  vesting: 'VESTING',
   'pro-rata': 'PRO_RATA',
   'pro-rata-sqrp-gated': 'PRO_RATA',
+  vesting: 'VESTING',
   babt: 'BABT',
 };
 
