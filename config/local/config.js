@@ -151,12 +151,6 @@ module.exports = {
         //   disable: false,
         // },
         // {
-        //   address: '0x741046cC8f0F680e716d99D1206DCF170FE9B5C2',
-        //   blockNumber: 40690731,
-        //   type: 'pro-rata',
-        //   disable: false,
-        // },
-        // {
         //   address: '0x5696fa3DD95486590dAE95b9070b0760eF57BfCe',
         //   blockNumber: 40749330,
         //   type: 'fcfs',
@@ -167,12 +161,6 @@ module.exports = {
         //   address: '0x73ee8C0cb385a663A411D306b7aa249b59c18d7d',
         //   blockNumber: 40777025,
         //   type: 'fcfs',
-        //   disable: false,
-        // },
-        // {
-        //   address: '0x46A49a705d8E7a7765dce7e5F4016fBC44DF3fA3',
-        //   blockNumber: 40777150,
-        //   type: 'sqrp-gated',
         //   disable: false,
         // },
         // {
@@ -193,18 +181,24 @@ module.exports = {
         //   type: 'sqrp-gated',
         //   disable: false,
         // },
-        // {
-        //   address: '0x097F154bA5b83DA37a51752D9435b12EbE231689',
-        //   blockNumber: 40777555,
-        //   type: 'fcfs',
-        //   disable: false,
-        // },
         {
-          address: '0xFa05DdfE305a7425beB08F2A14E6B52C0Ab7D9B4',
-          blockNumber: 41761100,
-          type: 'vesting',
+          address: '0x741046cC8f0F680e716d99D1206DCF170FE9B5C2',
+          blockNumber: 40690731,
+          type: 'pro-rata',
           disable: false,
         },
+        {
+          address: '0x097F154bA5b83DA37a51752D9435b12EbE231689',
+          blockNumber: 40777555,
+          type: 'payment-gateway',
+          disable: false,
+        },
+        // {
+        //   address: '0xFa05DdfE305a7425beB08F2A14E6B52C0Ab7D9B4',
+        //   blockNumber: 41761100,
+        //   type: 'vesting',
+        //   disable: false,
+        // },
       ],
     },
     provider: {

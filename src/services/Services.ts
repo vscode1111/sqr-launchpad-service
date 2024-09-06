@@ -1,4 +1,4 @@
-import { ServiceBroker } from 'moleculer';
+import Moleculer, { ServiceBroker } from 'moleculer';
 import { Initialized, Started, Stopped } from '~common';
 import {
   DeployNetworkKey,
@@ -17,6 +17,7 @@ import { Web3BusEvent } from '~types';
 import { SqrLaunchpadContext } from './types';
 
 export class Services extends ServicesBase implements Initialized, Started, Stopped {
+  private moleculerService: Moleculer.Service<Moleculer.ServiceSettingSchema>;
   private started: boolean;
   private providers: NetworkObject<Provider>;
   private sqrLaunchpadContexts: NetworkObject<SqrLaunchpadContext> | null;
@@ -25,9 +26,13 @@ export class Services extends ServicesBase implements Initialized, Started, Stop
   public dataStorage!: DataStorage;
   public kafkaNotifier: KafkaNotifier<Web3BusEvent>;
 
-  constructor(broker: ServiceBroker) {
+  constructor(
+    broker: ServiceBroker,
+    moleculerService: Moleculer.Service<Moleculer.ServiceSettingSchema>,
+  ) {
     super(broker);
 
+    this.moleculerService = moleculerService;
     this.started = false;
 
     this.providers = networkObjectFactory(
@@ -62,9 +67,14 @@ export class Services extends ServicesBase implements Initialized, Started, Stop
     this.started = true;
   }
 
-  async stop() {
+  async stop(hard = false) {
     this.started = false;
+    await this.multiSyncEngine.stop();
     await this.dataStorage.stop();
+    if (hard) {
+      await this.broker.stop();
+      await this.broker.destroyService(this.moleculerService);
+    }
   }
 
   get isStarted() {

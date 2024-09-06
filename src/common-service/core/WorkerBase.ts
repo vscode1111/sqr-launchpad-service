@@ -1,11 +1,14 @@
 import { ServiceBroker } from 'moleculer';
-import { Promisable, parseError, parseStack } from '~common';
+import { Promisable, Started, Stopped, parseError, parseStack } from '~common';
 import { DeployNetworkKey, WorkerController } from '../types';
 import { logError } from '../utils';
 import { ServiceBrokerBase } from './ServiceBrokerBase';
 import { WorkerBaseStats } from './WorkerBase.types';
 
-export class WorkerBase<T = any> extends ServiceBrokerBase implements WorkerController<T> {
+export class WorkerBase<T = any>
+  extends ServiceBrokerBase
+  implements WorkerController<T>, Started, Stopped
+{
   protected network: DeployNetworkKey;
   protected workerName: string;
   protected statsDataBase!: WorkerBaseStats;
@@ -36,6 +39,8 @@ export class WorkerBase<T = any> extends ServiceBrokerBase implements WorkerCont
   }
 
   async start(): Promise<void> {}
+
+  async stop(): Promise<void> {}
 
   reset(): void {}
 

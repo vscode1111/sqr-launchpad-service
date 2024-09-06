@@ -26,7 +26,7 @@ import sqrPaymentGatewayABI from '~contracts/abi/SQRPaymentGateway.json';
 import sqrpProRataABI from '~contracts/abi/SQRpProRata.json';
 import { SqrLaunchpadContext } from '~services';
 import { TypedContractEvent, TypedDeferredTopicFilter } from '~typechain-types/common';
-import { Web3BusEvent, Web3BusEventType } from '~types';
+import { Web3BusEvent } from '~types';
 import { getCacheContractSettingKey } from '~utils';
 import { PaymentGatewayDepositInput, ProRataDepositInput } from './EventStorageProcessor.types';
 import {
@@ -60,18 +60,18 @@ async function getTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>): 
   return topics[0];
 }
 
-const contractTypeToEventTypeMap: Record<ContractType, Web3BusEventType> = {
-  fcfs: 'PAYMENT_GATEWAY',
-  'sqrp-gated': 'PAYMENT_GATEWAY',
-  'pro-rata': 'PRO_RATA',
-  'pro-rata-sqrp-gated': 'PRO_RATA',
-  vesting: 'VESTING',
-  babt: 'BABT',
-};
+// const contractTypeToEventTypeMap: Record<ContractType, Web3BusEventType> = {
+//   fcfs: 'PAYMENT_GATEWAY',
+//   'sqrp-gated': 'PAYMENT_GATEWAY',
+//   'pro-rata': 'PRO_RATA',
+//   'pro-rata-sqrp-gated': 'PRO_RATA',
+//   vesting: 'VESTING',
+//   babt: 'BABT',
+// };
 
-function isWeb3BusEventType(contractType: ContractType, eventType: Web3BusEventType) {
-  return contractTypeToEventTypeMap[contractType] === eventType;
-}
+// function isWeb3BusEventType(contractType: ContractType, eventType: Web3BusEventType) {
+//   return contractTypeToEventTypeMap[contractType] === eventType;
+// }
 
 export class EventStorageProcessor extends ServiceBrokerBase implements StorageProcessor {
   private sqrPaymentGatewayAbiInterfaces!: Interface[];
@@ -186,13 +186,11 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
   private async savePaymentGatewayTransactionItem({
     event,
     dbNetwork,
-    contractType,
     paymentGatewayTransactionItemRepository,
     accountRepository,
   }: {
     event: Event;
     dbNetwork: Network;
-    contractType: ContractType;
     paymentGatewayTransactionItemRepository: Repository<PaymentGatewayTransactionItem>;
     accountRepository: Repository<Account>;
   }): Promise<Web3BusEvent | null> {
@@ -244,7 +242,6 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
       event: 'PAYMENT_GATEWAY_CONTRACT_DEPOSIT',
       data: {
         network,
-        contractType,
         contractAddress,
         userId,
         transactionId,
@@ -522,74 +519,80 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
 
     const contractType = event.contract.type;
 
-    if (isWeb3BusEventType(event.contract.type, 'PAYMENT_GATEWAY')) {
-      if (event.topic0 === this.paymentGatewayDepositTopic0) {
-        return this.savePaymentGatewayTransactionItem({
-          event,
-          dbNetwork,
-          contractType,
-          paymentGatewayTransactionItemRepository,
-          accountRepository,
-        });
-      }
-    } else if (isWeb3BusEventType(event.contract.type, 'VESTING')) {
-      if (event.topic0 === this.vestingClaimTopic0) {
-        return this.saveVestingTransactionItem({
-          event,
-          dbNetwork,
-          type: 'claim',
-          vestingTransactionItemRepository,
-          accountRepository,
-        });
-      } else if (event.topic0 === this.vestingRefundTopic0) {
-        console.log(111);
-        return this.saveVestingTransactionItem({
-          event,
-          dbNetwork,
-          type: 'refund',
-          vestingTransactionItemRepository,
-          accountRepository,
-        });
-      }
-    } else if (isWeb3BusEventType(event.contract.type, 'PRO_RATA')) {
-      if (event.topic0 === this.proRataDepositTopic0) {
-        return this.saveProRataTransactionItem({
-          event,
-          dbNetwork,
-          contractType,
-          proRataTransactionItemType: 'deposit',
-          proRataTransactionItemRepository,
-          accountRepository,
-        });
-      } else if (event.topic0 === this.proRataRefundTopic0) {
-        return this.saveProRataTransactionItem({
-          event,
-          dbNetwork,
-          contractType,
-          proRataTransactionItemType: 'refund',
-          proRataTransactionItemRepository,
-          accountRepository,
-        });
-      }
-    } else if (isWeb3BusEventType(event.contract.type, 'BABT')) {
-      if (event.topic0 === this.babTokenAttestTopic0) {
-        return this.processBABTokenTransaction({
-          event,
-          dbNetwork,
-          contractType,
-          attested: true,
-        });
-      } else if (
-        event.topic0 === this.babTokenRevokeTopic0 ||
-        event.topic0 === this.babTokenBurnTopic0
-      ) {
-        return this.processBABTokenTransaction({
-          event,
-          dbNetwork,
-          contractType,
-          attested: false,
-        });
-      }
+    switch (contractType) {
+      case 'payment-gateway':
+        if (event.topic0 === this.paymentGatewayDepositTopic0) {
+          return this.savePaymentGatewayTransactionItem({
+            event,
+            dbNetwork,
+            paymentGatewayTransactionItemRepository,
+            accountRepository,
+          });
+        }
+        break;
+
+      case 'vesting':
+        if (event.topic0 === this.vestingClaimTopic0) {
+          return this.saveVestingTransactionItem({
+            event,
+            dbNetwork,
+            type: 'claim',
+            vestingTransactionItemRepository,
+            accountRepository,
+          });
+        } else if (event.topic0 === this.vestingRefundTopic0) {
+          return this.saveVestingTransactionItem({
+            event,
+            dbNetwork,
+            type: 'refund',
+            vestingTransactionItemRepository,
+            accountRepository,
+          });
+        }
+        break;
+
+      case 'pro-rata':
+        if (event.topic0 === this.proRataDepositTopic0) {
+          return this.saveProRataTransactionItem({
+            event,
+            dbNetwork,
+            contractType,
+            proRataTransactionItemType: 'deposit',
+            proRataTransactionItemRepository,
+            accountRepository,
+          });
+        } else if (event.topic0 === this.proRataRefundTopic0) {
+          return this.saveProRataTransactionItem({
+            event,
+            dbNetwork,
+            contractType,
+            proRataTransactionItemType: 'refund',
+            proRataTransactionItemRepository,
+            accountRepository,
+          });
+        }
+        break;
+
+      case 'babt':
+        if (event.topic0 === this.babTokenAttestTopic0) {
+          return this.processBABTokenTransaction({
+            event,
+            dbNetwork,
+            contractType,
+            attested: true,
+          });
+        } else if (
+          event.topic0 === this.babTokenRevokeTopic0 ||
+          event.topic0 === this.babTokenBurnTopic0
+        ) {
+          return this.processBABTokenTransaction({
+            event,
+            dbNetwork,
+            contractType,
+            attested: false,
+          });
+        }
+        break;
     }
 
     return null;

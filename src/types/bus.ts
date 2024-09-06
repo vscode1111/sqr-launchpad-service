@@ -55,7 +55,6 @@ type Web3BusEventDataTx =
 
 export type Web3BusPaymentGatewayDepositEventData = {
   network: DeployNetworkKey;
-  contractType: ContractType;
   contractAddress: string;
   userId: string;
   transactionId: string;

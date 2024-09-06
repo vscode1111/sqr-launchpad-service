@@ -9,8 +9,8 @@ checkBaseConfig(config);
 
 export let services: Services;
 
-bootstrapService(routes, undefined, async (broker) => {
-  services = new Services(broker);
+bootstrapService(routes, undefined, async (broker, moleculerService) => {
+  services = new Services(broker, moleculerService);
   await services.init();
   const app = new App(services);
   await app.start();

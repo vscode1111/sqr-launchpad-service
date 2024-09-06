@@ -1,6 +1,6 @@
 {
   "name": "sqr-launchpad-service",
-  "version": "0.0.75",
+  "version": "0.0.76",
   "description": "sqr-launchpad-service",
   "repository": {
     "type": "git",
@@ -21,9 +21,9 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --fix --ext .ts",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "db:migration": "cross-env RUN_SCRIPT=true npm run typeorm migration:run -- -d src/db/dataSource.ts",
-    "db:migration:local": "cross-env NODE_ENV=local cross-env RUN_SCRIPT=true npm run typeorm migration:run -- -d src/db/dataSource.ts",
-    "db:migration:dev": "cross-env NODE_ENV=dev cross-env RUN_SCRIPT=true npm run typeorm migration:run -- -d src/db/dataSource.ts",
+    "db:migration": "cross-env RUN_SCRIPT=true npm run typeorm migration:run -- -d src/db/dataSource.ts -t=false",
+    "db:migration:local": "cross-env NODE_ENV=local cross-env RUN_SCRIPT=true npm run typeorm migration:run -- -d src/db/dataSource.ts -t=false",
+    "db:migration:dev": "cross-env NODE_ENV=dev cross-env RUN_SCRIPT=true npm run typeorm migration:run -- -d src/db/dataSource.ts -t=false",
     "db:sync": "cross-env RUN_SCRIPT=true npm run typeorm schema:sync -- -d src/db/dataSource.ts",
     "db:sync:local": "cross-env NODE_ENV=local cross-env RUN_SCRIPT=true npm run typeorm schema:sync -- -d src/db/dataSource.ts",
     "db:sync:dev": "cross-env NODE_ENV=dev cross-env RUN_SCRIPT=true npm run typeorm schema:sync -- -d src/db/dataSource.ts",

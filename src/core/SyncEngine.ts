@@ -1,11 +1,11 @@
-import { Started } from '~common';
+import { Started, Stopped } from '~common';
 import { isBuildRun } from '~common-service';
 import { DbWorker } from './DbWorker';
 import { IndexerWorker } from './IndexerWorker';
 import { MonitoringWorker } from './MonitoringWorker';
 import { StatsData, SyncEngineConfig, SyncWorkerControllers } from './SyncEngine.types';
 
-export class SyncEngine implements Started {
+export class SyncEngine implements Started, Stopped {
   private tickId: number;
 
   private workers: SyncWorkerControllers;
@@ -54,6 +54,12 @@ export class SyncEngine implements Started {
   async start(): Promise<void> {
     for (const worker of Object.values(this.workers)) {
       await worker.start();
+    }
+  }
+
+  async stop(): Promise<void> {
+    for (const worker of Object.values(this.workers)) {
+      await worker?.stop();
     }
   }
 

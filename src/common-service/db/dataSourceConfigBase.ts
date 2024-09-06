@@ -3,6 +3,8 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 import { config, isBuildRun } from '../config';
 import { DB_POOL_SIZE } from '../constants';
 
+const SQL_LOGGING = false;
+
 function getPrefix() {
   return isBuildRun ? 'dist' : 'src';
 }
@@ -13,7 +15,7 @@ function getPostfix() {
 
 export const dataSourceConfigBase: PostgresConnectionOptions = {
   type: 'postgres',
-  logging: false,
+  logging: SQL_LOGGING,
   synchronize: true,
   migrationsTableName: '__migrations',
   migrations: [`${getPrefix()}/db/migrations/[1234567890]*.${getPostfix()}`],

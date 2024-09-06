@@ -1,4 +1,4 @@
-import { ServiceBroker } from 'moleculer';
+import Moleculer, { ServiceBroker } from 'moleculer';
 import ApiService, { ApiRouteSchema } from 'moleculer-web';
 import { buildBroker, mixins } from 'msq-moleculer-core';
 import path from 'path';
@@ -11,14 +11,17 @@ import { logConsoleError, logConsoleInfo } from '../utils';
 export async function bootstrapService<T extends ServicesBase>(
   routes: ApiRouteSchema[],
   channels: any,
-  startFn: (broker: ServiceBroker) => Promise<T>,
+  startFn: (
+    broker: ServiceBroker,
+    moleculerService: Moleculer.Service<Moleculer.ServiceSettingSchema>,
+  ) => Promise<T>,
 ): Promise<{
   broker: ServiceBroker;
   services: T;
 }> {
   const broker = buildBroker(config);
   const srcPath = path.join(__dirname, '../..');
-  broker.createService({
+  const moleculerService = broker.createService({
     name: config.serviceName ?? '',
     version: config.version,
     mixins: [mixins.LoadHandler(`${srcPath}/handlers/`, broker), ApiService],
@@ -35,7 +38,7 @@ export async function bootstrapService<T extends ServicesBase>(
   let services: T = {} as any;
 
   try {
-    services = await startFn(broker);
+    services = await startFn(broker, moleculerService);
     catchAllExceptions(broker, services);
     await broker.start();
   } catch (err) {

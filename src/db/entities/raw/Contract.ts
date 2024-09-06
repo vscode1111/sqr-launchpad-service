@@ -15,9 +15,9 @@ import { PaymentGatewayTransactionItem } from "../process";
 import { Event } from "./Event";
 import { Network } from "./Network";
 
-export const contractTypes = ['fcfs', 'sqrp-gated', 'vesting', 'pro-rata', 'pro-rata-sqrp-gated', 'babt'] as const;
+export const contractTypes = ['payment-gateway', 'pro-rata', 'vesting', 'babt'] as const;
 export type ContractType = (typeof contractTypes)[number];
-const DEFAULT_CONTRACT_TYPE: ContractType = 'fcfs';
+const DEFAULT_CONTRACT_TYPE: ContractType = 'payment-gateway';
 
 @Entity({ name: rawDbTable._contracts })
 @Index([P<Contract>((p) => p.networkId) as string, P<Contract>((p) => p.address) as string], {
