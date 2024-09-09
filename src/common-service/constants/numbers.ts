@@ -10,7 +10,7 @@ export const UINT32_MAX = 4294967295;
 export const GENESIS_BLOCK_NUMBER = 1;
 
 export const DB_CONTRACT_CONCURRENCY_COUNT = 5;
-export const DB_EVENT_CONCURRENCY_COUNT = 20;
+export const DB_EVENT_CONCURRENCY_COUNT = 3;
 export const DB_POOL_SPARE = 2;
 
 export const DB_POOL_SIZE =
