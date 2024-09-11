@@ -48,8 +48,6 @@ export function convertContentToArray(content: string, lineSeparator = LINE_SEPA
   return content.split(lineSeparator);
 }
 
-//tabSeparator
-
 export function convertArray2DToContent(
   array: string[][],
   lineSeparator = LINE_SEPARATOR,

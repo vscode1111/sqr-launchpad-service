@@ -1,6 +1,8 @@
 //Do not move to 'handlers' folder. Moleculer was configured to read code from there, not types
 import { ActionParams } from 'moleculer';
 import { Web3Block, Web3ConfigContract } from '~common-service';
+import { Contract } from '~db';
+import { GetListResult } from './reactAdmin';
 
 export type StatusType = 'missing' | 'exists';
 
@@ -52,7 +54,15 @@ export interface GetProRataNetDepositsParams extends GetNetworkParams {
   contractAddress: string;
 }
 
+export interface GetContractParams {
+  page?: number;
+  size?: number;
+  sort?: string;
+}
+
 export interface GetProRataNetDepositsResponse {
   account: string;
   amount: number;
 }
+
+export interface GetMenageContractListResult extends GetListResult<Contract> {}

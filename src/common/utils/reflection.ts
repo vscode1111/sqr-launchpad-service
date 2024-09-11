@@ -1,7 +1,7 @@
-export const P = <T>(fn: (object: T) => void) => {
+export const P = <T>(fn: (object: T) => void): string => {
   const fnStr = fn.toString();
   const arr = fnStr.match(/(\.)[\S]+/);
-  return arr?.[0].slice(1);
+  return arr?.[0].slice(1) ?? '';
 };
 
 function cleanseAssertionOperators(parsedName: string): string {

@@ -1,9 +1,26 @@
+import { Repository } from 'typeorm';
 import { NF } from '~common';
+import { DeployNetworkKey } from '~common-service';
+import { Contract, Network } from '~db';
 
-export interface TransactionItemQuery {
-  account: string;
-  limit: string;
-  offset: string;
+export type OrderType = 'ASC' | 'DESC';
+
+export interface OrderByParams {
+  sort: string;
+  order?: OrderType;
 }
 
-export const NRecordsQuery = NF<TransactionItemQuery>();
+export interface FindContractsParamsBase {
+  network?: DeployNetworkKey;
+  notDisable?: boolean;
+  limit?: number;
+  offset?: number;
+  orderBy?: OrderByParams;
+}
+
+export interface FindContractsParams extends FindContractsParamsBase {
+  contractRepository: Repository<Contract>;
+  networkRepository: Repository<Network>;
+}
+
+export const NFindContractsParams = NF<FindContractsParams>();

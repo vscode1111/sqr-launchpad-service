@@ -32,4 +32,10 @@ export const routes: ApiRouteSchema[] = modifyRoutes([
       'DELETE stop': `${apiPrefix}security.stop`,
     },
   },
+  {
+    path: '/manage',
+    aliases: {
+      'GET contracts': `${apiPrefix}contracts`,
+    },
+  },
 ]);

@@ -1,5 +1,7 @@
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Repository, SelectQueryBuilder } from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
+import { exist } from '~common';
+import { FindContractsParams, OrderByParams, OrderType } from '~db';
 import { CContract, Contract, Network, PContract } from '~db/entities';
 import { DeployNetworkKey } from '../types';
 import { DbQuerable, DbWorkerContractStat } from './types';
@@ -39,16 +41,19 @@ export async function findContract(
   return contractRepository.findOneBy(findOption);
 }
 
-export async function findContracts(
-  contractRepository: Repository<Contract>,
-  networkRepository: Repository<Network>,
-  network?: DeployNetworkKey,
+export async function createContractsQueryBuilder({
+  contractRepository,
+  networkRepository,
+  network,
   notDisable = true,
-): Promise<Contract[]> {
+  limit,
+  offset,
+  orderBy,
+}: FindContractsParams): Promise<SelectQueryBuilder<Contract>> {
   const createQueryBuilder = contractRepository.createQueryBuilder(CContract);
 
-  if (network) {
-    const dbNetwork = await findNetwork(network, networkRepository);
+  if (exist(network)) {
+    const dbNetwork = await findNetwork(network!, networkRepository);
     createQueryBuilder.andWhere(`${PContract('networkId')} = :id`, { id: dbNetwork.id });
   }
 
@@ -56,7 +61,38 @@ export async function findContracts(
     createQueryBuilder.andWhere(`${PContract('disable')} IS NOT TRUE`);
   }
 
+  if (exist(limit)) {
+    createQueryBuilder.limit(limit);
+  }
+
+  if (exist(offset)) {
+    createQueryBuilder.offset(offset);
+  }
+
+  if (exist(orderBy)) {
+    createQueryBuilder.orderBy(orderBy!.sort, orderBy!.order);
+  }
+
+  return createQueryBuilder;
+}
+
+export async function findContracts(params: FindContractsParams): Promise<Contract[]> {
+  const createQueryBuilder = await createContractsQueryBuilder(params);
   return createQueryBuilder.getMany();
+}
+
+export async function findContractsAndCount(
+  params: FindContractsParams,
+): Promise<[Contract[], number]> {
+  const createQueryBuilder = await createContractsQueryBuilder(params);
+  return createQueryBuilder.getManyAndCount();
+}
+
+export async function findContractsAndCountEx(
+  params: FindContractsParams,
+): Promise<[Contract[], number]> {
+  const createQueryBuilder = await createContractsQueryBuilder(params);
+  return createQueryBuilder.getManyAndCount();
 }
 
 export function mapContract(contract: Contract): DbWorkerContractStat {
@@ -72,4 +108,12 @@ export function mapContract(contract: Contract): DbWorkerContractStat {
 
 export function printDbConfig(dataSourceConfig: PostgresConnectionOptions) {
   console.log(`DB: ${dataSourceConfig.host}:${dataSourceConfig.port} ${dataSourceConfig.database}`);
+}
+
+export function parseOrderBy(value: string, sortPrefix = ''): OrderByParams {
+  const [sort, order] = value.split(' ');
+  return {
+    sort: `${sortPrefix}.${sort}`,
+    order: order as OrderType,
+  };
 }

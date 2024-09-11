@@ -9,13 +9,17 @@ import {
   ZERO,
   checkIfNetwork,
   commonHandlers,
+  parseOrderBy,
   web3Constants,
 } from '~common-service';
 import { StatsData } from '~core';
+import { FContract } from '~db';
 import { services } from '~index';
 import {
   GetBlockParams,
   GetBlockResponse,
+  GetContractParams,
+  GetMenageContractListResult,
   GetNetworkAddressesResponse,
   GetNetworkParams,
   GetPaymentGatewayTransactionItemsParams,
@@ -29,6 +33,8 @@ import {
 import { getCacheContractSettingKey, getContractData } from '~utils';
 
 const cacheMachine = new CacheMachine();
+
+const DEFAULT_CONTRACT_SORT = `${FContract('id')} ASC`;
 
 const handlerFunc: HandlerFunc = () => ({
   actions: {
@@ -267,6 +273,31 @@ const handlerFunc: HandlerFunc = () => ({
       async handler(ctx: Context): Promise<void> {
         ctx.broker.logger.info(`web3.handler: indexer.soft-reset`);
         await services.multiSyncEngine.softReset();
+      },
+    },
+
+    contracts: {
+      params: {
+        page: { type: 'string', optional: true },
+        size: { type: 'string', optional: true },
+        sort: { type: 'string', optional: true },
+      } as HandlerParams<GetContractParams>,
+      async handler(ctx: Context<GetContractParams>): Promise<GetMenageContractListResult> {
+        const page = ctx?.params?.page ?? 1;
+        const size = ctx?.params?.size ?? 10;
+        const sort = ctx?.params?.sort ?? DEFAULT_CONTRACT_SORT;
+
+        const [data, total] = await services.dataStorage.getContractsAndCountEx({
+          offset: (page - 1) * size,
+          limit: size,
+          orderBy: parseOrderBy(sort, 'Contract'),
+          notDisable: false,
+        });
+
+        return {
+          data,
+          total,
+        };
       },
     },
   },

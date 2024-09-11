@@ -1,2 +1,2 @@
-//VERSION 0.0.30;
+//VERSION 0.0.2;
 export * from './utils';

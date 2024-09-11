@@ -2,7 +2,7 @@ import appRoot from 'app-root-path';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { PackageFile } from '~common-service';
-import { replaceTexts } from '../../common/files';
+import { replaceTexts } from '../../common-back/utils/files';
 
 const packagePath = path.join(appRoot.path, 'package.json');
 

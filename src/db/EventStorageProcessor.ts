@@ -8,12 +8,11 @@ import {
   IdLock,
   MISSING_SERVICE_PRIVATE_KEY,
   Promisable,
-  decodeData,
-  decodeInput,
   getAddressFromSlot,
   toBoolean2,
   toNumberDecimals,
 } from '~common';
+import { decodeData, decodeInput } from '~common-back';
 import {
   CacheMachine,
   DB_EVENT_CONCURRENCY_COUNT,
@@ -613,7 +612,11 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
       const proRataTransactionItemRepository = entityManager.getRepository(ProRataTransactionItem);
       const accountRepository = entityManager.getRepository(Account);
 
-      const contracts = await findContracts(contractRepository, networkRepository, this.network);
+      const contracts = await findContracts({
+        contractRepository,
+        networkRepository,
+        network: this.network,
+      });
 
       await Bluebird.map(
         contracts,

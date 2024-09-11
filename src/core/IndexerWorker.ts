@@ -121,7 +121,7 @@ export class IndexerWorker extends WorkerBase<IndexerWorkerStats> {
   }
 
   private async fillRawData() {
-    const contracts = await this.dataStorage.getContracts(this.network);
+    const contracts = await this.dataStorage.getContracts({ network: this.network });
     const rawBlockNumber = await this.provider.getBlockNumber();
     if (LOG_RPC_REQUEST) {
       logInfo(this.broker, `rawBlockNumber: ${rawBlockNumber}`);
