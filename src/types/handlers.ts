@@ -54,11 +54,27 @@ export interface GetProRataNetDepositsParams extends GetNetworkParams {
   contractAddress: string;
 }
 
-export interface GetContractParams {
+export interface GetContractListParams {
   page?: number;
   size?: number;
   sort?: string;
 }
+
+export interface GetContractParams {
+  id: number;
+}
+
+export interface CreateContractParams {
+  networkId?: number;
+  address?: string;
+  type?: string;
+  name?: string;
+  syncBlockNumber?: number;
+  processBlockNumber?: number;
+  disable?: boolean;
+}
+
+export interface UpdateContractParams extends GetContractParams, CreateContractParams {}
 
 export interface GetProRataNetDepositsResponse {
   account: string;

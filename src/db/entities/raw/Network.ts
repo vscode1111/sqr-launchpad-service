@@ -31,22 +31,22 @@ export class Network {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @OneToMany(() => Transaction, (item) => item.blockNumber)
+  @OneToMany(() => Transaction, (item) => item.blockNumber, { onDelete:'CASCADE'})
   transactions!: Transaction[];
 
   @OneToMany(() => Contract, (item) => item.networkId)
   contracts!: Contract[];
 
-  @OneToMany(() => Block, (item) => item.networkId)
+  @OneToMany(() => Block, (item) => item.networkId, { onDelete:'CASCADE'})
   blocks!: Block[];
 
-  @OneToMany(() => PaymentGatewayTransactionItem, (item) => item.network)
+  @OneToMany(() => PaymentGatewayTransactionItem, (item) => item.network, { onDelete:'CASCADE'})
   paymentGatewayTransactionItems!: PaymentGatewayTransactionItem[];
   
-  @OneToMany(() => VestingTransactionItem, (item) => item.network)
+  @OneToMany(() => VestingTransactionItem, (item) => item.network, { onDelete:'CASCADE'})
   vestingTransactionItems!: VestingTransactionItem[];
 
-  @OneToMany(() => ProRataTransactionItem, (item) => item.network)
+  @OneToMany(() => ProRataTransactionItem, (item) => item.network, { onDelete:'CASCADE'})
   proRataTransactionItems!: ProRataTransactionItem[];
 }
 

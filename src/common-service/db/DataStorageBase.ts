@@ -27,6 +27,7 @@ import {
 } from './utils';
 
 const CREATED_DATABASE = false;
+const UPDATE_CONTRACTS_FROM_CONFIG = true;
 
 export class DataStorageBase extends ServiceBrokerBase implements Started, Stopped {
   protected dataSourceOptions: PostgresConnectionOptions;
@@ -77,10 +78,12 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     this.transactionRepository = this.dataSource.getRepository(Transaction);
     this.eventRepository = this.dataSource.getRepository(Event);
 
-    this.updateContracts(this.getContractDataFn);
+    if (UPDATE_CONTRACTS_FROM_CONFIG) {
+      this.updateContractsFromConfig(this.getContractDataFn);
+    }
   }
 
-  async updateContracts(getContractData: GetContractDataFn) {
+  async updateContractsFromConfig(getContractData: GetContractDataFn) {
     await this.dataSource.transaction(async (entityManager) => {
       const networkRepository = entityManager.getRepository(Network);
       const contractRepository = entityManager.getRepository(Contract);
@@ -167,6 +170,10 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     return findNetwork(network, this.networkRepository);
   }
 
+  async getNetworks(): Promise<Network[]> {
+    return this.networkRepository.find();
+  }
+
   async getOrSaveNetwork(
     network: DeployNetworkKey,
     networkRepository: Repository<Network>,
@@ -183,7 +190,23 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     });
   }
 
-  async getContract(address: string) {
+  async getContract(id: number) {
+    return this.contractRepository.findOneBy({ id });
+  }
+
+  async createContract(contract: Partial<Contract>) {
+    return this.contractRepository.save(contract);
+  }
+
+  async updateContract(id: number, contract: Partial<Contract>) {
+    return this.contractRepository.update({ id }, contract);
+  }
+
+  async deleteContract(id: number) {
+    return this.contractRepository.delete({ id });
+  }
+
+  async getContractByAddress(address: string) {
     return this.contractRepository.findOneBy({ address });
   }
 
@@ -336,13 +359,6 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
     network: DeployNetworkKey;
     onProcessEvent?: (web3Event: Web3Event) => Promisable<void>;
   }): Promise<void> {
-    // await this.dataSource.transaction(async (entityManager) => {
-    // const networkRepository = entityManager.getRepository(Network);
-    // const contractRepository = entityManager.getRepository(Contract);
-    // const blockRepository = entityManager.getRepository(Block);
-    // const transactionRepository = entityManager.getRepository(Transaction);
-    // const eventRepository = entityManager.getRepository(Event);
-
     const networkRepository = this.networkRepository;
     const contractRepository = this.contractRepository;
     const blockRepository = this.blockRepository;
@@ -354,7 +370,7 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
       return;
     }
 
-    const dbContract = await this.getContract(contractAddress);
+    const dbContract = await this.getContractByAddress(contractAddress);
     if (!dbContract) {
       return;
     }
@@ -382,6 +398,5 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
 
     dbContract.syncBlockNumber = blockNumber + 1;
     await contractRepository.save(dbContract);
-    // });
   }
 }

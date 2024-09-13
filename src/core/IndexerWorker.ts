@@ -76,7 +76,7 @@ export class IndexerWorker extends WorkerBase<IndexerWorkerStats> {
     const contractAddress = contract.address;
 
     while (true) {
-      const dbContract = await this.dataStorage.getContract(contractAddress);
+      const dbContract = await this.dataStorage.getContractByAddress(contractAddress);
 
       if (!dbContract || dbContract.syncBlockNumber > currentBlockNumber) {
         break;

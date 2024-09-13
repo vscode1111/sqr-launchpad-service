@@ -28,14 +28,14 @@ export class VestingTransactionItem  {
   @Column({ type: "int" })
   networkId!: number;
 
-  @ManyToOne(() => Network, (network) => network.vestingTransactionItems)
+  @ManyToOne(() => Network, (network) => network.vestingTransactionItems, { onDelete:'CASCADE'})
   @JoinColumn({
     name: P<VestingTransactionItem>((p) => p.networkId),
     referencedColumnName: P<Network>((p) => p.id),
   })
   network!: Network;
 
-  @ManyToOne(() => Contract, (contract) => contract.contractTransactionItems)
+  @ManyToOne(() => Contract, (contract) => contract.contractTransactionItems, { onDelete:'CASCADE' })
   @JoinColumn([
     {
       name: P<VestingTransactionItem>((p) => p.networkId),
@@ -56,7 +56,7 @@ export class VestingTransactionItem  {
   })
   type!: VestingTransactionItemType;
 
-  @ManyToOne(() => Account, (account) => account.accountTransactionItems)
+  @ManyToOne(() => Account, (account) => account.accountTransactionItems, { onDelete:'CASCADE'})
   @JoinColumn({
     name: P<VestingTransactionItem>((p) => p.account),
     referencedColumnName: P<Account>((p) => p.address),

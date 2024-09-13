@@ -1,23 +1,27 @@
 import Bluebird from 'bluebird';
 import { Context } from 'moleculer';
+import { DeleteResult, UpdateResult } from 'typeorm';
 import { checkIfAddress, checkIfNumber, toDate, toNumberDecimals } from '~common';
 import {
   CacheMachine,
+  checkIfNetwork,
+  commonHandlers,
   HANDLER_CONCURRENCY_COUNT,
   HandlerFunc,
   MissingServicePrivateKey,
-  ZERO,
-  checkIfNetwork,
-  commonHandlers,
+  NotFound,
   parseOrderBy,
   web3Constants,
+  ZERO,
 } from '~common-service';
 import { StatsData } from '~core';
-import { FContract } from '~db';
+import { Contract, ContractType, contractTypes, FContract, Network } from '~db';
 import { services } from '~index';
 import {
+  CreateContractParams,
   GetBlockParams,
   GetBlockResponse,
+  GetContractListParams,
   GetContractParams,
   GetMenageContractListResult,
   GetNetworkAddressesResponse,
@@ -29,6 +33,7 @@ import {
   GetProRataTransactionItemsParams,
   GetProRataTransactionItemsResponse,
   HandlerParams,
+  UpdateContractParams,
 } from '~types';
 import { getCacheContractSettingKey, getContractData } from '~utils';
 
@@ -276,13 +281,25 @@ const handlerFunc: HandlerFunc = () => ({
       },
     },
 
-    contracts: {
+    'contract-types': {
+      async handler() {
+        return contractTypes;
+      },
+    },
+
+    'networks.get-list': {
+      async handler(): Promise<Network[]> {
+        return services.dataStorage.getNetworks();
+      },
+    },
+
+    'contracts.get-list': {
       params: {
         page: { type: 'string', optional: true },
         size: { type: 'string', optional: true },
         sort: { type: 'string', optional: true },
-      } as HandlerParams<GetContractParams>,
-      async handler(ctx: Context<GetContractParams>): Promise<GetMenageContractListResult> {
+      } as HandlerParams<GetContractListParams>,
+      async handler(ctx: Context<GetContractListParams>): Promise<GetMenageContractListResult> {
         const page = ctx?.params?.page ?? 1;
         const size = ctx?.params?.size ?? 10;
         const sort = ctx?.params?.sort ?? DEFAULT_CONTRACT_SORT;
@@ -298,6 +315,117 @@ const handlerFunc: HandlerFunc = () => ({
           data,
           total,
         };
+      },
+    },
+
+    'contracts.get-item': {
+      params: {
+        id: { type: 'string', optional: true },
+      } as HandlerParams<GetContractParams>,
+      async handler(ctx: Context<GetContractParams>): Promise<Contract | null> {
+        const id = ctx?.params?.id ?? 0;
+
+        const contract = await services.dataStorage.getContract(id);
+
+        if (!contract) {
+          throw new NotFound();
+        }
+
+        return contract;
+      },
+    },
+
+    'contracts.create-item': {
+      params: {
+        networkId: { type: 'number', optional: true },
+        address: { type: 'string', optional: true },
+        type: { type: 'string', optional: true },
+        name: { type: 'string', optional: true },
+        syncBlockNumber: { type: 'number', optional: true },
+        processBlockNumber: { type: 'number', optional: true },
+        disable: { type: 'boolean', optional: true },
+      } as HandlerParams<CreateContractParams>,
+      async handler(ctx: Context<CreateContractParams>): Promise<{
+        data: Contract | null;
+      } | null> {
+        if (!ctx?.params) {
+          return null;
+        }
+
+        const { networkId, address, type, name, syncBlockNumber, processBlockNumber, disable } =
+          ctx.params;
+
+        const contract = await services.dataStorage.createContract({
+          networkId,
+          address,
+          type: type as ContractType,
+          name,
+          syncBlockNumber,
+          processBlockNumber,
+          disable,
+        });
+
+        return {
+          data: contract,
+        };
+      },
+    },
+
+    'contracts.update-item': {
+      params: {
+        id: { type: 'string' },
+        networkId: { type: 'number', optional: true },
+        address: { type: 'string', optional: true },
+        type: { type: 'string', optional: true },
+        name: { type: 'string', optional: true },
+        syncBlockNumber: { type: 'number', optional: true },
+        processBlockNumber: { type: 'number', optional: true },
+        disable: { type: 'boolean', optional: true },
+      } as HandlerParams<UpdateContractParams>,
+      async handler(ctx: Context<UpdateContractParams>): Promise<{
+        data: Contract | null;
+        updateResult: UpdateResult | null;
+      } | null> {
+        if (!ctx?.params) {
+          return null;
+        }
+
+        const { id, networkId, address, type, name, syncBlockNumber, processBlockNumber, disable } =
+          ctx.params;
+
+        const updateResult = await services.dataStorage.updateContract(id, {
+          networkId,
+          address,
+          type: type as ContractType,
+          name,
+          syncBlockNumber,
+          processBlockNumber,
+          disable,
+        });
+
+        const contract = await services.dataStorage.getContract(id);
+
+        return {
+          data: contract,
+          updateResult,
+        };
+      },
+    },
+
+    'contracts.delete-item': {
+      params: {
+        id: { type: 'string', optional: true },
+      } as HandlerParams<GetContractParams>,
+      async handler(ctx: Context<GetContractParams>): Promise<DeleteResult | null> {
+        const id = ctx?.params?.id ?? 0;
+
+        const deleteResult = await services.dataStorage.deleteContract(id);
+
+        if (!deleteResult) {
+          throw new NotFound();
+        }
+
+        return deleteResult;
       },
     },
   },

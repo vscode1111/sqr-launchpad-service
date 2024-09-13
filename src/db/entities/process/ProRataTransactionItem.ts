@@ -27,14 +27,14 @@ export class ProRataTransactionItem  {
   @Column({ type: "int" })
   networkId!: number;
 
-  @ManyToOne(() => Network, (network) => network.proRataTransactionItems)
+  @ManyToOne(() => Network, (network) => network.proRataTransactionItems, { onDelete:'CASCADE'})
   @JoinColumn({
     name: P<ProRataTransactionItem>((p) => p.networkId),
     referencedColumnName: P<Network>((p) => p.id),
   })
   network!: Network;
 
-  @ManyToOne(() => Contract, (contract) => contract.contractTransactionItems)
+  @ManyToOne(() => Contract, (contract) => contract.contractTransactionItems,  { onDelete:'CASCADE' })
   @JoinColumn([
     {
       name: P<ProRataTransactionItem>((p) => p.networkId),
@@ -54,7 +54,7 @@ export class ProRataTransactionItem  {
   })
   type!: ProRataTransactionItemType;
 
-  @ManyToOne(() => Account, (account) => account.accountTransactionItems)
+  @ManyToOne(() => Account, (account) => account.accountTransactionItems, { onDelete:'CASCADE'})
   @JoinColumn({
     name: P<ProRataTransactionItem>((p) => p.account),
     referencedColumnName: P<Account>((p) => p.address),

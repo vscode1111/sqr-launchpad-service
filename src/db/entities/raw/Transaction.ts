@@ -25,7 +25,7 @@ export class Transaction {
   @Index()
   networkId!: number;
 
-  @ManyToOne(() => Network)
+  @ManyToOne(() => Network, { onDelete:'CASCADE'})
   @JoinColumn({
     name: P<Transaction>((p) => p.networkId),
     referencedColumnName: P<Network>((p) => p.id),
@@ -42,7 +42,7 @@ export class Transaction {
   @Index()
   blockNumber!: number;
 
-  @ManyToOne(() => Block, (block) => block.transactions)
+  @ManyToOne(() => Block, (block) => block.transactions, { onDelete:'CASCADE'})
   @JoinColumn({
     name: P<Transaction>((p) => p.blockNumber),
     referencedColumnName: P<Block>((p) => p.number),
@@ -76,10 +76,10 @@ export class Transaction {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @OneToMany(() => Event, (event) => event.transactionHash)
+  @OneToMany(() => Event, (event) => event.transactionHash, { onDelete:'CASCADE'})
   events!: Event[];
 
-  @OneToMany(() => PaymentGatewayTransactionItem, (transactionItem) => transactionItem.transaction)
+  @OneToMany(() => PaymentGatewayTransactionItem, (transactionItem) => transactionItem.transaction, { onDelete:'CASCADE'})
   paymentGatewayTransactionItems!: PaymentGatewayTransactionItem[]; 
 }
 

@@ -23,4 +23,9 @@ export interface FindContractsParams extends FindContractsParamsBase {
   networkRepository: Repository<Network>;
 }
 
+export interface FindContractParams {
+  id: number;
+  contractRepository: Repository<Contract>;
+}
+
 export const NFindContractsParams = NF<FindContractsParams>();

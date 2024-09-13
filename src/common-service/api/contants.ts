@@ -43,4 +43,16 @@ export const commonRoutes: ApiRouteSchema[] = modifyRoutes([
       'DELETE stop': `${apiPrefix}security.stop`,
     },
   },
+  {
+    path: '/db',
+    aliases: {
+      'GET contract-types': `${apiPrefix}contract-types`,
+      'GET networks': `${apiPrefix}networks.get-list`,
+      'GET contracts': `${apiPrefix}contracts.get-list`,
+      'GET contracts/:id': `${apiPrefix}contracts.get-item`,
+      'POST contracts': `${apiPrefix}contracts.create-item`,
+      'PUT contracts/:id': `${apiPrefix}contracts.update-item`,
+      'DELETE contracts/:id': `${apiPrefix}contracts.delete-item`,
+    },
+  },
 ]);
