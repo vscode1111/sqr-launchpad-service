@@ -96,7 +96,10 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
       //   },
       // },
       // relations: [FContract('network')],
-      where: contractFindOption,
+      where: {
+        ...contractFindOption,
+        disable: false,
+      },
     });
 
     const _transaction = await this.transactionRepository.countBy(transactionFindOption);
@@ -113,7 +116,7 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
     );
 
     return {
-      contracts: contracts.map(mapContract),
+      activeContracts: contracts.map(mapContract),
       _transaction,
       _events,
       paymentGatewayTransactionItems,

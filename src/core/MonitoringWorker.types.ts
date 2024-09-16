@@ -11,7 +11,7 @@ export interface MonitoringWorkerStats {
   tickId: number;
   indexerLag: number;
   chainBlockNumber: number;
-  contractsRemains: DbWorkerContractStat[];
+  activeContractsRemains: DbWorkerContractStat[];
   providerRequestsPerSec: number;
   syncBlockNumberPerSec: number;
   rawBlockNumberPerSec: number;

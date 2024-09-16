@@ -6,7 +6,7 @@ export interface DbWorkerConfig extends WorkerBaseConfig {
 }
 
 export interface DbWorkerStats {
-  contracts: DbWorkerContractStat[];
+  activeContracts: DbWorkerContractStat[];
   _transaction: number;
   _events: number;
   paymentGatewayTransactionItems: number;

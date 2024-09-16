@@ -24,7 +24,7 @@ export class DbWorker extends WorkerBase<DbWorkerStats> {
 
   reset() {
     this.statsData = {
-      contracts: [],
+      activeContracts: [],
       _transaction: 0,
       _events: 0,
       paymentGatewayTransactionItems: 0,
