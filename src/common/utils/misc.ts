@@ -49,10 +49,10 @@ export function toUnixTimeUtc(value: string | Date = new Date()): number {
 }
 
 export function numberToByteArray(value: number, bytesNumber = 4): number[] {
-  var byteArray = new Array(bytesNumber).fill(0);
+  const byteArray = new Array(bytesNumber).fill(0);
 
-  for (var index = byteArray.length - 1; index >= 0; index--) {
-    var byte = value & 0xff;
+  for (let index = byteArray.length - 1; index >= 0; index--) {
+    const byte = value & 0xff;
     byteArray[index] = byte;
     value = (value - byte) / 256;
   }
@@ -61,8 +61,8 @@ export function numberToByteArray(value: number, bytesNumber = 4): number[] {
 }
 
 export function byteArrayToNumber(byteArray: number[]): number {
-  var value = 0;
-  for (var i = byteArray.length - 1; i >= 0; i--) {
+  let value = 0;
+  for (let i = byteArray.length - 1; i >= 0; i--) {
     value = value * 256 + byteArray[i];
   }
 

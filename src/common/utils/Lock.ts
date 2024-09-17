@@ -1,9 +1,11 @@
 import { parseError } from './misc';
 import { Promisable, StringNumber } from './types';
 
+type QueueFn = (value?: unknown) => void;
+
 export class Lock {
   private locked: boolean;
-  private queue: Function[];
+  private queue: QueueFn[];
 
   constructor() {
     this.locked = false;
