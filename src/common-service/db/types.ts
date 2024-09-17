@@ -1,5 +1,8 @@
 import { DataSource, QueryRunner } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Promisable, Started } from '~common';
+import { NF } from '~common';
+import { Contract, Network } from '~db';
 import { Web3BusEvent } from '~types';
 import { Event } from '../../db/entities';
 import { Web3ConfigContract } from '../config';
@@ -27,3 +30,30 @@ export interface DbWorkerContractStat {
   disable?: boolean;
   type?: string;
 }
+
+export type OrderType = 'ASC' | 'DESC';
+
+export interface OrderByParams {
+  sort: string;
+  order?: OrderType;
+}
+
+export interface FindContractsParamsBase {
+  network?: DeployNetworkKey;
+  notDisable?: boolean;
+  limit?: number;
+  offset?: number;
+  orderBy?: OrderByParams;
+}
+
+export interface FindContractsParams extends FindContractsParamsBase {
+  contractRepository: Repository<Contract>;
+  networkRepository: Repository<Network>;
+}
+
+export interface FindContractParams {
+  id: number;
+  contractRepository: Repository<Contract>;
+}
+
+export const NFindContractsParams = NF<FindContractsParams>();

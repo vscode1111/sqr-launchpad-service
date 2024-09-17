@@ -1,10 +1,15 @@
 import { FindOptionsWhere, Repository, SelectQueryBuilder } from 'typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 import { exist } from '~common';
-import { FindContractsParams, OrderByParams, OrderType } from '~db';
 import { CContract, Contract, Network, PContract } from '~db/entities';
 import { DeployNetworkKey } from '../types';
-import { DbQuerable, DbWorkerContractStat } from './types';
+import {
+  DbQuerable,
+  DbWorkerContractStat,
+  FindContractsParams,
+  OrderByParams,
+  OrderType,
+} from './types';
 
 export async function truncateTables(queryRunner: DbQuerable, tables: string[]) {
   for (const table of tables) {

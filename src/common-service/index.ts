@@ -1,4 +1,4 @@
-//VERSION 0.0.39;
+//VERSION 0.0.40;
 export * from './api';
 export * from './config';
 export * from './constants';
