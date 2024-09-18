@@ -1,7 +1,5 @@
 import moleculer from 'moleculer';
-import { BaseConfig } from '~common-service';
-import { Broker } from './broker';
-import { Logger } from './logger';
+import { BaseConfig } from '../../config';
 
 declare module 'msq-moleculer-core' {
   export function buildBroker(config: BaseConfig): moleculer.ServiceBroker;

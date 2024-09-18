@@ -1,10 +1,10 @@
 import { ActionSchema, Context } from 'moleculer';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { checkIfNumber, toDate } from '~common';
-import { web3Constants } from '~common-service/constants';
 import { StatsData } from '~core';
 import { Contract, ContractType, contractTypes, FContract, Network } from '~db';
 import { services } from '~index';
+import { web3Constants } from '../constants';
 import { parseOrderBy } from '../db';
 import { NotFound } from '../libs';
 import { checkIfNetwork } from '../utils';

@@ -1,4 +1,4 @@
-import { DeployNetworkKey } from '~common-service';
+import { DeployNetworkKey } from '../types';
 
 const chainConfig: Record<
   DeployNetworkKey,
