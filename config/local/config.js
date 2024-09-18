@@ -39,12 +39,12 @@ module.exports = {
     ownerPrivateKey: 'f3c17fde54d9923e81dcc9dd4742a217b33c9f3885def8557f8989d6da72bded',
     contracts: {
       mainnet: [
-        {
-          address: '0xc73F020ef7BF6EA2292a3B8545E21ef90340A4DD',
-          blockNumber: 20634206,
-          type: 'vesting',
-          disable: true,
-        },
+        // {
+        //   address: '0xc73F020ef7BF6EA2292a3B8545E21ef90340A4DD',
+        //   blockNumber: 20634206,
+        //   type: 'vesting',
+        //   disable: true,
+        // },
       ],
       bsc: [
         {

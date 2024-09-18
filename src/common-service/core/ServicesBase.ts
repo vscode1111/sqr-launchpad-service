@@ -1,5 +1,7 @@
 import { ServiceBroker } from 'moleculer';
+import { exit } from 'process';
 import { parseError, parseStack } from '~common';
+import { logError } from '../utils';
 import { ServiceBrokerBase } from './ServiceBrokerBase';
 
 export class ServicesBase extends ServiceBrokerBase {
@@ -11,6 +13,10 @@ export class ServicesBase extends ServiceBrokerBase {
   constructor(broker: ServiceBroker) {
     super(broker);
     this.errorCount = 0;
+  }
+  reboot() {
+    logError(this.broker, 'User invoked reboot');
+    exit(1);
   }
 
   saveProcessError(error: any) {

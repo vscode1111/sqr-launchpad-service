@@ -26,7 +26,7 @@ import {
 } from './utils';
 
 const CREATED_DATABASE = false;
-const UPDATE_CONTRACTS_FROM_CONFIG = true;
+const UPDATE_CONTRACTS_FROM_CONFIG = false;
 
 export class DataStorageBase extends ServiceBrokerBase implements Started, Stopped {
   protected dataSourceOptions: PostgresConnectionOptions;

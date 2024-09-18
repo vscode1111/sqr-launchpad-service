@@ -24,6 +24,7 @@ export const commonRoutes: ApiRouteSchema[] = modifyRoutes([
     path: '/',
     aliases: {
       'GET version': `${apiPrefix}version`,
+      'DELETE reboot': `${apiPrefix}reboot`,
     },
   },
   {

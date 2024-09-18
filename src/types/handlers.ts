@@ -1,28 +1,7 @@
 //Do not move to 'handlers' folder. Moleculer was configured to read code from there, not types
-import { ActionParams } from 'moleculer';
-import { Web3Block, Web3ConfigContract } from '~common-service';
-import { Contract } from '~db';
-import { GetListResult } from './reactAdmin';
+import { GetNetworkParams } from '~common-service';
 
 export type StatusType = 'missing' | 'exists';
-
-export type HandlerParams<T> = Record<keyof T, ActionParams>;
-
-export interface GetNetworkParams {
-  network: string;
-}
-
-export interface GetNetworkAddressesParams extends GetNetworkParams {}
-
-export type GetNetworkAddressesResponse = Web3ConfigContract[];
-
-export interface GetBlockParams extends GetNetworkParams {
-  id: string;
-}
-
-export interface GetBlockResponse extends Web3Block {
-  timestampDate: Date;
-}
 
 export interface GetTransactionItemsParams extends GetNetworkParams {
   contractAddress: string;
@@ -53,32 +32,3 @@ export interface GetProRataTransactionItemsResponse extends GetTransactionItemsR
 export interface GetProRataNetDepositsParams extends GetNetworkParams {
   contractAddress: string;
 }
-
-export interface GetContractListParams {
-  page?: number;
-  size?: number;
-  sort?: string;
-}
-
-export interface GetContractParams {
-  id: number;
-}
-
-export interface CreateContractParams {
-  networkId?: number;
-  address?: string;
-  type?: string;
-  name?: string;
-  syncBlockNumber?: number;
-  processBlockNumber?: number;
-  disable?: boolean;
-}
-
-export interface UpdateContractParams extends GetContractParams, CreateContractParams {}
-
-export interface GetProRataNetDepositsResponse {
-  account: string;
-  amount: number;
-}
-
-export interface GetMenageContractListResult extends GetListResult<Contract> {}

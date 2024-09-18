@@ -42,17 +42,21 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
   }
 
   async getTableRowCounts(network?: DeployNetworkKey): Promise<DbWorkerStats> {
+    let contractFindOption: FindOptionsWhere<Contract> = {};
     let transactionFindOption: FindOptionsWhere<Transaction> = {};
     let eventFindOption: FindOptionsWhere<Event> = {};
     let paymentGatewayTransactionItemFindOption: FindOptionsWhere<PaymentGatewayTransactionItem> =
       {};
     let vestingTransactionItemFindOption: FindOptionsWhere<VestingTransactionItem> = {};
     let proRataTransactionItemFindOption: FindOptionsWhere<ProRataTransactionItem> = {};
-    let contractFindOption: FindOptionsWhere<Contract> = {};
 
     if (network) {
       const dbNetwork = await this.getNetwork(network);
       const networkId = dbNetwork.id;
+
+      contractFindOption = {
+        networkId,
+      };
 
       transactionFindOption = {
         networkId,
@@ -73,35 +77,17 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
       proRataTransactionItemFindOption = {
         networkId,
       };
-
-      contractFindOption = {
-        networkId,
-      };
     }
 
     const contracts = await this.contractRepository.find({
       order: {
         id: 'ASC',
       },
-      // select: {
-      //   id: true,
-      //   address: true,
-      //   name: true,
-      //   syncBlockNumber: true,
-      //   processBlockNumber: true,
-      //   disable: true,
-      //   type: true,
-      //   network: {
-      //     name: true,
-      //   },
-      // },
-      // relations: [FContract('network')],
       where: {
         ...contractFindOption,
         disable: false,
       },
     });
-
     const _transaction = await this.transactionRepository.countBy(transactionFindOption);
     const _events = await this.eventRepository.countBy(eventFindOption);
     const paymentGatewayTransactionItems =
