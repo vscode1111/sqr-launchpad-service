@@ -1,6 +1,7 @@
 import { Promisable } from '~common';
-import { NetworkObject } from '~common-service';
-import { deployNetworks } from '~constants';
+//Do not change to '~constants', otherwise "npm run test" doesn't work
+import { deployNetworks } from '~constants/networks';
+import { NetworkObject } from '../providers';
 import { DeployNetworkKey } from '../types';
 import { objectFactory } from './objects';
 
