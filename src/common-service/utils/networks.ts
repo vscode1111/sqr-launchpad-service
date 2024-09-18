@@ -1,9 +1,8 @@
 import { Promisable } from '~common';
 import { NetworkObject } from '~common-service';
+import { deployNetworks } from '~constants';
 import { DeployNetworkKey } from '../types';
 import { objectFactory } from './objects';
-
-export const deployNetworks: DeployNetworkKey[] = ['mainnet', 'bsc'] as const;
 
 export function networkObjectFactory<T>(fn: (network: DeployNetworkKey) => T) {
   return objectFactory(deployNetworks, fn) as NetworkObject<T>;

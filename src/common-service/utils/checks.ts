@@ -1,8 +1,8 @@
 import { ApiError } from '~common';
 //Do not change "from '~db/entities'"
+import { deployNetworks } from '~constants';
 import { ContractType, contractTypes } from '~db/entities';
 import { DeployNetworkKey } from '../types';
-import { deployNetworks } from './networks';
 
 const ALL_VALUE = 'all';
 

@@ -5,6 +5,7 @@ import { createDatabase } from 'typeorm-extension';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 import { IdLock, Promisable, Started, Stopped, toDate } from '~common';
 //Do not change to '~db', otherwise "npm run start" doesn't work
+import { deployNetworks } from '~constants';
 import { Block, Contract, ContractType, Event, Network, Transaction } from '../../db/entities';
 import { DB_EVENT_CONCURRENCY_COUNT, GENESIS_BLOCK_NUMBER } from '../constants';
 import { ServiceBrokerBase } from '../core';
@@ -15,7 +16,7 @@ import {
   ProviderFns,
   Web3Event,
 } from '../types';
-import { deployNetworks, logInfo } from '../utils';
+import { logInfo } from '../utils';
 import { FindContractsParamsBase, GetContractDataFn } from './types';
 import {
   findContract,
