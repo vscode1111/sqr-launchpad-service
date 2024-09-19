@@ -24,14 +24,14 @@ export class PaymentGatewayTransactionItem  {
   @Column({ type: "int" })
   networkId!: number;
 
-  @ManyToOne(() => Network, (network) => network.paymentGatewayTransactionItems, { onDelete:'CASCADE'})
+  @ManyToOne(() => Network, (network) => network.paymentGatewayTransactionItems, { onDelete: 'CASCADE' })
   @JoinColumn({
     name: P<PaymentGatewayTransactionItem>((p) => p.networkId),
     referencedColumnName: P<Network>((p) => p.id),
   })
   network!: Network;
 
-  @ManyToOne(() => Contract, (contract) => contract.contractTransactionItems,  { onDelete:'CASCADE' })
+  @ManyToOne(() => Contract, (contract) => contract.contractTransactionItems,  { onDelete: 'CASCADE' })
   @JoinColumn([
     {
       name: P<PaymentGatewayTransactionItem>((p) => p.networkId),
@@ -44,7 +44,7 @@ export class PaymentGatewayTransactionItem  {
   ])
   contract!: Contract;
 
-  @ManyToOne(() => Account, (account) => account.accountTransactionItems, { onDelete:'CASCADE'})
+  @ManyToOne(() => Account, (account) => account.accountTransactionItems, { onDelete: 'CASCADE' })
   @JoinColumn({
     name: P<PaymentGatewayTransactionItem>((p) => p.account),
     referencedColumnName: P<Account>((p) => p.address),

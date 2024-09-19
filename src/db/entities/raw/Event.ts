@@ -20,7 +20,7 @@ export class Event {
   @Index()
   networkId!: number;
 
-  @ManyToOne(() => Network, (network) => network.blocks, { onDelete:'CASCADE'})
+  @ManyToOne(() => Network, (network) => network.blocks, { onDelete: 'CASCADE' })
   @JoinColumn({
     name: P<Event>((p) => p.networkId),
     referencedColumnName: P<Network>((p) => p.id),
@@ -29,7 +29,7 @@ export class Event {
 
   @PrimaryColumn()
   @Index()
-  @ManyToOne(() => Transaction, (transaction) => transaction.events, { onDelete:'CASCADE'})
+  @ManyToOne(() => Transaction, (transaction) => transaction.events, { onDelete: 'CASCADE' })
   @JoinColumn({
     name: P<Event>((p) => p.transactionHash),
     referencedColumnName: P<Transaction>((p) => p.hash),
@@ -65,7 +65,7 @@ export class Event {
   @Index()
   contractId!: string;
 
-  @ManyToOne(() => Contract, (contract) => contract.events, { onDelete:'CASCADE' })
+  @ManyToOne(() => Contract, (contract) => contract.events, { onDelete: 'CASCADE' })
   @JoinColumn({
     name: P<Event>((p) => p.contractId),
     referencedColumnName: P<Contract>((p) => p.id),

@@ -20,7 +20,7 @@ export class Block {
   @Index()
   networkId!: number;
 
-  @ManyToOne(() => Network, (network) => network.blocks, { onDelete:'CASCADE'})
+  @ManyToOne(() => Network, (network) => network.blocks, { onDelete: 'CASCADE' })
   @JoinColumn({
     name: P<Block>((p) => p.networkId),
     referencedColumnName: P<Network>((p) => p.id),
@@ -36,7 +36,7 @@ export class Block {
   @Column()
   timestamp!: Date;
 
-  @OneToMany(() => Transaction, (item) => item.blockNumber, { onDelete:'CASCADE'})
+  @OneToMany(() => Transaction, (item) => item.blockNumber, { onDelete: 'CASCADE' })
   transactions!: Transaction[];
 
   @CreateDateColumn()

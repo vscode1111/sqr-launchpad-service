@@ -28,7 +28,7 @@ export class Contract {
   @Index()
   networkId!: number;
 
-  @ManyToOne(() => Network, (network) => network.contracts, { onDelete:'CASCADE'})
+  @ManyToOne(() => Network, (network) => network.contracts, { onDelete: 'CASCADE' })
   @JoinColumn({
     name: P<Contract>((p) => p.networkId),
     referencedColumnName: P<Network>((p) => p.id),
@@ -71,10 +71,10 @@ export class Contract {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  @OneToMany(() => Event, (item) => item.contractId, { onDelete:'CASCADE' })
+  @OneToMany(() => Event, (item) => item.contractId, { onDelete: 'CASCADE' })
   events!: Event[];
 
-  @OneToMany(() => PaymentGatewayTransactionItem, (item) => item.account, { onDelete:'CASCADE' })
+  @OneToMany(() => PaymentGatewayTransactionItem, (item) => item.account, { onDelete: 'CASCADE' })
   contractTransactionItems!: PaymentGatewayTransactionItem[];
 }
 
