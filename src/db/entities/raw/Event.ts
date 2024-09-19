@@ -8,7 +8,7 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { C, NF2, P } from "~common";
+import { C, NF, NF2, P } from "~common";
 import { rawDbTable } from "../../tableNames";
 import { Contract } from "./Contract";
 import { Network } from "./Network";
@@ -83,4 +83,5 @@ export class Event {
 }
 
 export const CEvent = C(Event);
+export const FEvent = NF<Event>();
 export const PEvent = NF2<Event>((name) => `${CEvent}.${name}`);

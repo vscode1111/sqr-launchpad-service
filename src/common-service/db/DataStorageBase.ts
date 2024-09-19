@@ -6,7 +6,17 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 import { IdLock, Promisable, Started, Stopped, toDate } from '~common';
 //Do not change to '~db', otherwise "npm run start" doesn't work
 import { deployNetworks } from '~constants/networks';
-import { Block, Contract, ContractType, Event, Network, Transaction } from '../../db/entities';
+import { rawDbTable } from '~db/tableNames';
+import {
+  Block,
+  Contract,
+  ContractType,
+  Event,
+  FEvent,
+  FTransaction,
+  Network,
+  Transaction,
+} from '../../db/entities';
 import { DB_EVENT_CONCURRENCY_COUNT, GENESIS_BLOCK_NUMBER } from '../constants';
 import { ServiceBrokerBase } from '../core';
 import {
@@ -203,7 +213,18 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
   }
 
   async deleteContract(id: number) {
-    return this.contractRepository.delete({ id });
+    const result = await this.contractRepository.delete({ id });
+    await this.deleteUnlinkedTransactions();
+    return result;
+  }
+
+  async deleteUnlinkedTransactions() {
+    return this.dataSource.manager.query(
+      `DELETE FROM ${rawDbTable._transactions} 
+          WHERE ${FTransaction('hash')} NOT IN 
+          (SELECT "${FEvent('transactionHash')}" FROM ${rawDbTable._events})
+      `,
+    );
   }
 
   async getContractByAddress(address: string) {
