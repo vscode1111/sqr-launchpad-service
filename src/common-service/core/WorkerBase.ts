@@ -15,6 +15,7 @@ export class WorkerBase<T = any>
   protected tickDivider: number;
   protected started: boolean;
   // protected timeOut: number;
+  protected lastExternalRequestStats: Date;
 
   constructor(
     broker: ServiceBroker,
@@ -29,6 +30,7 @@ export class WorkerBase<T = any>
     this.tickDivider = tickDivider;
     this.started = false;
     // this.timeOut = timeOut;
+    this.lastExternalRequestStats = new Date();
     this.statsDataBase = {
       executing: false,
       successCount: 0,
@@ -89,7 +91,10 @@ export class WorkerBase<T = any>
 
   public async work(_tickId: number) {}
 
-  getStats(): Promisable<T> {
+  getStats(isExternal = false): Promisable<T> {
+    if (isExternal) {
+      this.lastExternalRequestStats = new Date();
+    }
     return this.statsDataBase as any;
   }
 }

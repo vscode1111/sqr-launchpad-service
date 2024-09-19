@@ -1,5 +1,5 @@
 import { Started, Stopped } from '~common';
-import { isBuildRun } from '~common-service';
+import { isBuildRun, WorkerBase } from '~common-service';
 import { DbWorker } from './DbWorker';
 import { IndexerWorker } from './IndexerWorker';
 import { MonitoringWorker } from './MonitoringWorker';
@@ -79,8 +79,9 @@ export class SyncEngine implements Started, Stopped {
   async getStats(): Promise<StatsData> {
     const workersStats = {} as any;
 
-    for (const [key, worker] of Object.entries(this.workers)) {
-      workersStats[key] = await worker.getStats();
+    for (const [key, value] of Object.entries(this.workers)) {
+      const worker = value as WorkerBase;
+      workersStats[key] = await worker.getStats(true);
     }
 
     return workersStats;

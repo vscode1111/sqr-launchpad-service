@@ -1,6 +1,9 @@
+import { calculateDiffSecFromNow } from '~common';
 import { WorkerBase } from '~common-service';
 import { DataStorage } from '~db';
 import { DbWorkerConfig, DbWorkerStats } from './DbWorker.types';
+
+const LAST_EXTERNAL_REQUEST_LIMIT = 10;
 
 export class DbWorker extends WorkerBase<DbWorkerStats> {
   public statsData!: DbWorkerStats;
@@ -15,11 +18,17 @@ export class DbWorker extends WorkerBase<DbWorkerStats> {
   async start(): Promise<void> {}
 
   public async work() {
+    const diffFromLastRequest = calculateDiffSecFromNow(this.lastExternalRequestStats);
+    if (diffFromLastRequest > LAST_EXTERNAL_REQUEST_LIMIT) {
+      return;
+    }
+
     this.statsData = await this.dataStorage.getTableRowCounts(this.network);
   }
 
-  async getStats(): Promise<DbWorkerStats> {
-    return { ...this.statsData };
+  async getStats(isExternal = false): Promise<DbWorkerStats> {
+    super.getStats(isExternal);
+    return this.statsData;
   }
 
   reset() {
