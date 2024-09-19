@@ -18,6 +18,8 @@ export const DB_POOL_SIZE =
 
 export const HANDLER_CONCURRENCY_COUNT = 50;
 
+export const LAST_EXTERNAL_REQUEST_STATS_LIMIT = 10;
+
 export const SEC_RULE = '* * * * * *';
 
 export const DEFAULT_NETWORK: DeployNetworkKey = 'bsc';
