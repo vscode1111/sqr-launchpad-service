@@ -30,8 +30,8 @@ export const dataSourceConfigBase: PostgresConnectionOptions = {
   extra: {
     poolSize: DB_POOL_SIZE,
     // poolSize: 1_000,
-    connectionTimeoutMillis: 2000,
-    query_timeout: 1000,
-    statement_timeout: 1000,
+    connectionTimeoutMillis: 30_000,
+    query_timeout: 30_000,
+    statement_timeout: 30_000,
   },
 };
