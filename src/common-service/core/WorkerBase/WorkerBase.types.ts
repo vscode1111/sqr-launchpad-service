@@ -1,5 +1,5 @@
 import { ServiceBroker } from 'moleculer';
-import { DeployNetworkKey } from '../types';
+import { DeployNetworkKey } from '../../types';
 
 export interface WorkerBaseConfig {
   broker: ServiceBroker;

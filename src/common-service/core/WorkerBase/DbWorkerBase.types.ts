@@ -6,7 +6,5 @@ export interface DbWorkerConfig extends WorkerBaseConfig {
 }
 
 export interface DbWorkerStats extends DbWorkerStatsBase {
-  paymentGatewayTransactionItems: number;
-  vestingTransactionItems: number;
-  proRataTransactionItems: number;
+  transactionItems: number;
 }

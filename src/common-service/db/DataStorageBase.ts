@@ -1,6 +1,6 @@
 import Bluebird from 'bluebird';
 import { ServiceBroker } from 'moleculer';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 import { createDatabase } from 'typeorm-extension';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 import { IdLock, Promisable, Started, Stopped, toDate } from '~common';
@@ -20,6 +20,7 @@ import {
 import { DB_EVENT_CONCURRENCY_COUNT, GENESIS_BLOCK_NUMBER } from '../constants';
 import { ServiceBrokerBase } from '../core';
 import {
+  DbWorkerStatsBase,
   DeployNetworkKey,
   GetBlockFn,
   GetTransactionByHashFn,
@@ -34,6 +35,7 @@ import {
   findContractsAndCount,
   findContractsAndCountEx,
   findNetwork,
+  mapContract,
 } from './utils';
 
 const CREATED_DATABASE = false;
@@ -419,5 +421,46 @@ export class DataStorageBase extends ServiceBrokerBase implements Started, Stopp
 
     dbContract.syncBlockNumber = blockNumber + 1;
     await contractRepository.save(dbContract);
+  }
+
+  async getTableRowCounts(network?: DeployNetworkKey): Promise<DbWorkerStatsBase> {
+    let contractFindOption: FindOptionsWhere<Contract> = {};
+    let transactionFindOption: FindOptionsWhere<Transaction> = {};
+    const eventFindOption: FindOptionsWhere<Event> = {};
+
+    if (network) {
+      const dbNetwork = await this.getNetwork(network);
+      const networkId = dbNetwork.id;
+
+      contractFindOption = {
+        networkId,
+      };
+
+      transactionFindOption = {
+        networkId,
+      };
+
+      eventFindOption.contract = {
+        networkId,
+      };
+    }
+
+    const contracts = await this.contractRepository.find({
+      order: {
+        id: 'ASC',
+      },
+      where: {
+        ...contractFindOption,
+        disable: false,
+      },
+    });
+    const _transaction = await this.transactionRepository.countBy(transactionFindOption);
+    const _events = await this.eventRepository.countBy(eventFindOption);
+
+    return {
+      activeContracts: contracts.map(mapContract),
+      _transaction,
+      _events,
+    };
   }
 }

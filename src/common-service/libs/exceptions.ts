@@ -28,3 +28,9 @@ export class NotFound extends Errors.MoleculerError {
     super(`Not found`, 404, 'NOT_FOUND');
   }
 }
+
+export class MissingUserIdOrPrivateKey extends Errors.MoleculerError {
+  constructor() {
+    super(MISSING_USER_USER_ID_OR_PRIVATE_KEY, 500, 'INTERNAL_ERROR');
+  }
+}

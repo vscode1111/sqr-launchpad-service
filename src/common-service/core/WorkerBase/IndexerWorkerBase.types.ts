@@ -7,13 +7,13 @@ import {
 } from '~common-service';
 import { DataStorage } from '~db';
 
-export interface IndexerWorkerConfig extends WorkerBaseConfig {
+export interface IndexerWorkerBaseConfig extends WorkerBaseConfig {
   provider: Provider;
   dataStorage: DataStorage;
   storageProcessor: StorageProcessor;
+  blockNumberFilterSize?: number;
   blockNumberRange?: number;
   blockNumberOffset?: number;
-  blockNumberFilterSize?: number;
 }
 
 export interface IndexerWorkerStats extends WorkerBaseStats {

@@ -1,9 +1,10 @@
-import { Started, Stopped } from '~common';
+import { Started } from '~common';
 import {
   DeployNetworkKey,
   KafkaNotifier,
   NetworkObject,
   ServiceBrokerBase,
+  StatsData,
   config,
   logInfo,
   networkObjectFactory,
@@ -13,11 +14,10 @@ import { DataStorage, EventStorageProcessor } from '~db';
 import { Web3BusEvent } from '~types';
 import { SyncEngineConfigBase } from './MultiSyncEngine.types';
 import { SyncEngine } from './SyncEngine';
-import { StatsData } from './SyncEngine.types';
 
 const INIT_HARD_RESET = false;
 
-export class MultiSyncEngine extends ServiceBrokerBase implements Started, Stopped {
+export class MultiSyncEngine extends ServiceBrokerBase implements Started {
   private syncEngines: NetworkObject<SyncEngine>;
   private dataStorage: DataStorage;
   private kafkaNotifier: KafkaNotifier<Web3BusEvent>;
@@ -61,11 +61,6 @@ export class MultiSyncEngine extends ServiceBrokerBase implements Started, Stopp
     logInfo(this.broker, `MultiSyncEngine init`);
     await processNetworkObject(this.syncEngines, (network) => this.syncEngines[network].start());
     this.sync();
-  }
-
-  async stop(): Promise<void> {
-    await processNetworkObject(this.syncEngines, (network) => this.syncEngines[network].stop());
-    logInfo(this.broker, `MultiSyncEngine was stopped`);
   }
 
   public async sync(network?: DeployNetworkKey) {

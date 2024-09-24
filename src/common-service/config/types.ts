@@ -44,6 +44,7 @@ export interface Web3ConfigContract {
 export interface Web3Config {
   ownerPrivateKey: string;
   ownerAddress: string;
+  sqrContractAddress: string;
   sharesThreshold: number;
   apiKey?: {
     bscScan?: string;
@@ -66,6 +67,7 @@ export interface Web3Config {
   kafka: {
     topicGroup: string;
     inTopic: string;
+    inTokenTopic: string;
     outTopic: string;
     metricTopic: string;
   };

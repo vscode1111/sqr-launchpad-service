@@ -1,12 +1,12 @@
 import { ActionSchema, Context } from 'moleculer';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { checkIfNumber, toDate } from '~common';
-import { StatsData } from '~core';
 import { Contract, ContractType, contractTypes, FContract, Network } from '~db';
 import { services } from '~index';
 import { web3Constants } from '../constants';
 import { parseOrderBy } from '../db';
 import { NotFound } from '../libs';
+import { GetSecuritySharesParams, SetSecurityShareParams, StatsData } from '../types';
 import { checkIfNetwork } from '../utils';
 import {
   CreateContractParams,
@@ -61,6 +61,40 @@ export const commonHandlers: Record<string, ActionSchema> = {
         ...block,
         timestampDate: toDate(block.timestamp),
       };
+    },
+  },
+
+  'security.status': {
+    async handler() {
+      return services.securityBlocker.getStatus();
+    },
+  },
+
+  'security.get-shares': {
+    params: {
+      secret: { type: 'string' },
+      shares: { type: 'number' },
+      threshold: { type: 'number' },
+    } as HandlerParams<GetSecuritySharesParams>,
+    async handler(ctx: Context<GetSecuritySharesParams>) {
+      const { secret, shares, threshold } = ctx?.params;
+      return services.securityBlocker.getShares(secret, shares, threshold);
+    },
+  },
+
+  'security.send-share': {
+    params: {
+      share: { type: 'string' },
+    } as HandlerParams<SetSecurityShareParams>,
+    async handler(ctx: Context<SetSecurityShareParams>) {
+      const { share } = ctx?.params;
+      return services.securityBlocker.setShare(share);
+    },
+  },
+
+  'security.stop': {
+    async handler() {
+      return services.securityBlocker.stop();
     },
   },
 

@@ -13,11 +13,11 @@ export interface Initialized {
 }
 
 export interface Started {
-  start: () => Promisable<any>;
+  start: (...args: any) => Promisable<any>;
 }
 
 export interface Stopped {
-  stop: () => Promisable<any>;
+  stop: (...args: any) => Promisable<any>;
 }
 
 export interface EventNotifier<T> {

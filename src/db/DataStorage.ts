@@ -1,18 +1,10 @@
 import { ServiceBroker } from 'moleculer';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { Started, Stopped } from '~common';
-import { DataStorageBase, DeployNetworkKey, logInfo, mapContract } from '~common-service';
+import { DataStorageBase, DeployNetworkKey, getContractData, logInfo } from '~common-service';
 import { DbWorkerStats } from '~core';
-import { getContractData } from '~utils';
 import { dataSourceConfig } from './dataSource';
-import {
-  Account,
-  Contract,
-  Event,
-  PaymentGatewayTransactionItem,
-  Transaction,
-  VestingTransactionItem,
-} from './entities';
+import { Account, PaymentGatewayTransactionItem, VestingTransactionItem } from './entities';
 import { ProRataTransactionItem } from './entities/process/ProRataTransactionItem';
 import { dbHardReset, dbSoftReset } from './utils';
 
@@ -23,7 +15,7 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
   private proRataTransactionItemRepository!: Repository<ProRataTransactionItem>;
 
   constructor(broker: ServiceBroker) {
-    super(broker, dataSourceConfig, (network) => getContractData(network).sqrLaunchpadData);
+    super(broker, dataSourceConfig, (network) => getContractData(network));
   }
 
   getDataSource() {
@@ -42,9 +34,8 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
   }
 
   async getTableRowCounts(network?: DeployNetworkKey): Promise<DbWorkerStats> {
-    let contractFindOption: FindOptionsWhere<Contract> = {};
-    let transactionFindOption: FindOptionsWhere<Transaction> = {};
-    let eventFindOption: FindOptionsWhere<Event> = {};
+    const statsBase = await super.getTableRowCounts(network);
+
     let paymentGatewayTransactionItemFindOption: FindOptionsWhere<PaymentGatewayTransactionItem> =
       {};
     let vestingTransactionItemFindOption: FindOptionsWhere<VestingTransactionItem> = {};
@@ -53,18 +44,6 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
     if (network) {
       const dbNetwork = await this.getNetwork(network);
       const networkId = dbNetwork.id;
-
-      contractFindOption = {
-        networkId,
-      };
-
-      transactionFindOption = {
-        networkId,
-      };
-
-      eventFindOption = {
-        networkId,
-      };
 
       paymentGatewayTransactionItemFindOption = {
         networkId,
@@ -79,17 +58,6 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
       };
     }
 
-    const contracts = await this.contractRepository.find({
-      order: {
-        id: 'ASC',
-      },
-      where: {
-        ...contractFindOption,
-        disable: false,
-      },
-    });
-    const _transaction = await this.transactionRepository.countBy(transactionFindOption);
-    const _events = await this.eventRepository.countBy(eventFindOption);
     const paymentGatewayTransactionItems =
       await this.paymentGatewayTransactionItemRepository.countBy(
         paymentGatewayTransactionItemFindOption,
@@ -102,9 +70,7 @@ export class DataStorage extends DataStorageBase implements Started, Stopped {
     );
 
     return {
-      activeContracts: contracts.map(mapContract),
-      _transaction,
-      _events,
+      ...statsBase,
       paymentGatewayTransactionItems,
       vestingTransactionItems,
       proRataTransactionItems,

@@ -1,4 +1,5 @@
 import { Promisable, Started, StringNumber } from '~common';
+import { DbWorkerContractStat } from '../db';
 import { Web3Block, Web3Transaction } from './web3';
 
 export interface DeployNetworks {
@@ -40,4 +41,24 @@ export interface ContractData {
   address: string;
   blockNumber?: number;
   disable?: boolean;
+}
+
+export interface StatsData {
+  [key: string]: Object;
+}
+
+export interface GetSecuritySharesParams {
+  secret: string;
+  shares: number;
+  threshold: number;
+}
+
+export interface SetSecurityShareParams {
+  share: string;
+}
+
+export interface DbWorkerStatsBase {
+  activeContracts: DbWorkerContractStat[];
+  _transaction: number;
+  _events: number;
 }

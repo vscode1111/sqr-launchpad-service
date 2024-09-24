@@ -1,8 +1,8 @@
 import { ServiceBroker } from 'moleculer';
 import { Promisable, Started, Stopped, parseError, parseStack } from '~common';
-import { DeployNetworkKey, WorkerController } from '../types';
-import { logError } from '../utils';
-import { ServiceBrokerBase } from './ServiceBrokerBase';
+import { DeployNetworkKey, WorkerController } from '../../types';
+import { logError } from '../../utils';
+import { ServiceBrokerBase } from '../ServiceBrokerBase';
 import { WorkerBaseStats } from './WorkerBase.types';
 
 export class WorkerBase<T = any>

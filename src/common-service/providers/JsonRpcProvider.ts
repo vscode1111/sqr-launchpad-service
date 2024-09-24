@@ -1,7 +1,7 @@
 import axios from 'axios';
 import WebSocket from 'ws';
 import { StringNumber, toHex } from '~common';
-import { getAxiosConfiguration } from '../utils';
+import { getAxiosConfiguration } from '../utils/axios';
 import {
   JsonRpcEvent,
   JsonRpcReceipt,

@@ -1,7 +1,6 @@
 import { SpeedCounter, calculateDiffSecFromNow, secondsToDhms } from '~common';
-import { Provider, WorkerBase } from '~common-service';
+import { IndexerWorkerStats, Provider, WorkerBase } from '~common-service';
 import { DbWorkerStats } from './DbWorker.types';
-import { IndexerWorkerStats } from './IndexerWorker.types';
 import { MonitoringWorkerConfig, MonitoringWorkerStats } from './MonitoringWorker.types';
 import { SyncWorkerControllers } from './SyncEngine.types';
 

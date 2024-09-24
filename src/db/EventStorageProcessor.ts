@@ -12,19 +12,18 @@ import {
   toBoolean2,
   toNumberDecimals,
 } from '~common';
-import { decodeData, decodeInput } from '~common-back';
+import { decodeData } from '~common-back';
 import {
   CacheMachine,
   DB_EVENT_CONCURRENCY_COUNT,
   DeployNetworkKey,
-  ServiceBrokerBase,
+  EventStorageProcessorBase,
   StorageProcessor,
   findContracts,
 } from '~common-service';
 import sqrPaymentGatewayABI from '~contracts/abi/SQRPaymentGateway.json';
 import sqrpProRataABI from '~contracts/abi/SQRpProRata.json';
 import { SqrLaunchpadContext } from '~services';
-import { TypedContractEvent, TypedDeferredTopicFilter } from '~typechain-types/common';
 import { Web3BusEvent } from '~types';
 import { getCacheContractSettingKey } from '~utils';
 import { PaymentGatewayDepositInput, ProRataDepositInput } from './EventStorageProcessor.types';
@@ -51,15 +50,7 @@ import { ProRataTransactionItem } from './entities/process/ProRataTransactionIte
 
 const CONTRACT_EVENT_ENABLE = true;
 
-async function getTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>): Promise<string> {
-  const topics = (await filter?.getTopicFilter()) as any as string[];
-  if (topics.length === 0) {
-    throw Error("Couldn't find filter for topic 0");
-  }
-  return topics[0];
-}
-
-export class EventStorageProcessor extends ServiceBrokerBase implements StorageProcessor {
+export class EventStorageProcessor extends EventStorageProcessorBase implements StorageProcessor {
   private sqrPaymentGatewayAbiInterfaces!: Interface[];
   private sqrPaymentGatewayCurrentAbiInterface!: Interface;
   private sqrpProRataAbiInterfaces!: Interface[];
@@ -72,18 +63,18 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
   private babTokenAttestTopic0!: string;
   private babTokenBurnTopic0!: string;
   private babTokenRevokeTopic0!: string;
-  private topics0: string[];
+
   private idLock;
   private cacheMachine: CacheMachine;
   private context!: SqrLaunchpadContext;
 
   constructor(
     broker: ServiceBroker,
-    private dataSource: DataSource,
-    private network: DeployNetworkKey,
-    private eventNotifier: EventNotifier<Web3BusEvent>,
+    dataSource: DataSource,
+    network: DeployNetworkKey,
+    eventNotifier: EventNotifier<Web3BusEvent>,
   ) {
-    super(broker);
+    super(broker, dataSource, network, eventNotifier);
 
     this.topics0 = [];
     this.idLock = new IdLock();
@@ -119,16 +110,6 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     this.babTokenRevokeTopic0 = await this.setTopic0(emptyBABToken.filters.Revoke());
   }
 
-  async setTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>) {
-    const topic0 = await getTopic0(filter);
-    this.topics0.push(topic0);
-    return topic0;
-  }
-
-  async setDataSource(dataSource: DataSource) {
-    this.dataSource = dataSource;
-  }
-
   async getOrSaveAccount(address: string, accountRepository: Repository<Account>) {
     return await this.idLock.tryInvoke<Account>(`account_${Account}`, async () => {
       let dbAccount = await accountRepository.findOneBy({ address });
@@ -139,34 +120,6 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
       }
       return dbAccount;
     });
-  }
-
-  private tryDecode<T>(
-    transactionInput: string,
-    abiInterfaces: Interface[],
-    currentAbiInterface: Interface,
-  ) {
-    let error;
-
-    try {
-      return decodeInput<T>(transactionInput, currentAbiInterface);
-    } catch (err: any) {
-      error = err;
-    }
-
-    for (const abiInterface of abiInterfaces) {
-      if (abiInterface === currentAbiInterface) {
-        continue;
-      }
-      try {
-        const result = decodeInput<T>(transactionInput, abiInterface);
-        currentAbiInterface = abiInterface;
-        return result;
-      } catch (err: any) {
-        error = err;
-      }
-    }
-    throw error;
   }
 
   private async savePaymentGatewayTransactionItem({
@@ -206,10 +159,10 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     dbPaymentGatewayTransactionItem.account = dbAccount;
     const eventData = decodeData(event.data!, ['uint256']);
 
-    const { getSqrPaymentGateway, getErc20Token } = this.context;
     const decimals = await this.cacheMachine.call(
       () => getCacheContractSettingKey(network, contractAddress),
       async () => {
+        const { getSqrPaymentGateway, getErc20Token } = this.context;
         const tokenAddress = await getSqrPaymentGateway(contractAddress).erc20Token();
         return getErc20Token(tokenAddress).decimals();
       },
@@ -274,10 +227,10 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
     let amount = 0;
 
     if (isClaim) {
-      const { getSqrVesting, getErc20Token } = this.context;
       const decimals = await this.cacheMachine.call(
         () => getCacheContractSettingKey(network, contractAddress),
         async () => {
+          const { getSqrVesting, getErc20Token } = this.context;
           const tokenAddress = await getSqrVesting(contractAddress).erc20Token();
           return getErc20Token(tokenAddress).decimals();
         },
@@ -386,13 +339,16 @@ export class EventStorageProcessor extends ServiceBrokerBase implements StorageP
       boostAverageExchangeRate = toNumberDecimals(BigInt(eventData[2]));
     }
 
-    const { getSqrpProRata } = this.context;
     const { baseDecimals, boostDecimals } = await this.cacheMachine.call(
       () => getCacheContractSettingKey(network, contractAddress),
       async () => {
+        const { getSqrpProRata } = this.context;
+
+        const sqrpProRata = getSqrpProRata(contractAddress);
+
         const [baseDecimals, boostDecimals] = await Promise.all([
-          await getSqrpProRata(contractAddress).baseDecimals(),
-          await getSqrpProRata(contractAddress).boostDecimals(),
+          await sqrpProRata.baseDecimals(),
+          await sqrpProRata.boostDecimals(),
         ]);
 
         return {
