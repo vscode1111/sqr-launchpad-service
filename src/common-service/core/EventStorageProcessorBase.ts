@@ -1,7 +1,7 @@
-import { Interface, InterfaceAbi } from 'ethers';
+import { Interface } from 'ethers';
 import { ServiceBroker } from 'moleculer';
 import { DataSource } from 'typeorm';
-import { EventNotifier, Started } from '~common';
+import { EventNotifier } from '~common';
 import { decodeInput } from '~common-back/utils';
 import { TypedContractEvent, TypedDeferredTopicFilter } from '~typechain-types/common';
 import { Web3BusEvent } from '~types';
@@ -9,10 +9,8 @@ import { DeployNetworkKey } from '../types';
 import { getTopic0 } from '../utils';
 import { ServiceBrokerBase } from './ServiceBrokerBase';
 
-export class EventStorageProcessorBase extends ServiceBrokerBase implements Started {
+export class EventStorageProcessorBase extends ServiceBrokerBase {
   protected topics0: string[];
-  protected abiInterfaces!: Interface[];
-  protected currentAbiInterface!: Interface;
 
   constructor(
     broker: ServiceBroker,
@@ -22,15 +20,6 @@ export class EventStorageProcessorBase extends ServiceBrokerBase implements Star
   ) {
     super(broker);
     this.topics0 = [];
-  }
-
-  async start(interfaceAbis?: InterfaceAbi[]) {
-    if (!interfaceAbis) {
-      return;
-    }
-
-    this.abiInterfaces = interfaceAbis.map((abi) => new Interface(abi));
-    this.currentAbiInterface = this.abiInterfaces[0];
   }
 
   async setTopic0(filter: TypedDeferredTopicFilter<TypedContractEvent>) {
