@@ -3,6 +3,7 @@ import utc from 'dayjs/plugin/utc';
 
 dayjs.extend(utc);
 
+export * from './batch';
 export * from './checks';
 export * from './config';
 export * from './constants';

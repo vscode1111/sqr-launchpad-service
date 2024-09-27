@@ -1,13 +1,11 @@
-// const NETWORK: DeployNetworkKey = 'bsc';
 import { Wallet } from 'ethers';
 import { retry } from '~common';
-import { DeployNetworkKey } from '~common-service';
+import { DeployNetworkKey } from '~common-service/types';
 import { getSqrLaunchpadContext } from '~contracts';
 import { accountDeposit } from './accountDeposit';
 import { depositVerifierPrivateKey, owner2PrivateKey } from './constants';
 import { ContextBase, GasRecord } from './types';
 
-// const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 const NETWORK: DeployNetworkKey = 'bsc';
 
 const TX_COUNT = 10;

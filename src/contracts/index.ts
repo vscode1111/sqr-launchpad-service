@@ -1,11 +1,7 @@
 import { JsonRpcProvider, Signer, Wallet } from 'ethers';
-import {
-  DEFAULT_JSON_RPC_PROVIDER_OPTIONS,
-  DeployNetworkKey,
-  RANDOM_PRIVATE_KEY,
-  config,
-} from '~common-service';
-import { SqrLaunchpadContext } from '~services';
+import { DeployNetworkKey } from '~common-service';
+import { config } from '~common-service/config';
+import { DEFAULT_JSON_RPC_PROVIDER_OPTIONS, RANDOM_PRIVATE_KEY } from '~common-service/constants';
 import {
   BABToken__factory,
   ERC20Token__factory,
@@ -13,6 +9,7 @@ import {
   SQRVesting__factory,
   SQRpProRata__factory,
 } from '~typechain-types';
+import { SqrLaunchpadContext } from '../services';
 
 export function getSqrLaunchpadContext(network: DeployNetworkKey): SqrLaunchpadContext {
   const rawProvider = new JsonRpcProvider(

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { BigNumberish } from 'ethers';
 import { toUnixTime, toWei } from '~common';
-import { ZERO } from '~common-service';
+import { ZERO } from '~common-service/constants';
 
 export const deployParams = {
   attempts: 1,

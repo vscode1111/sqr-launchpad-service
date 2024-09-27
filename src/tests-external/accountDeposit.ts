@@ -2,7 +2,7 @@ import { Provider, TransactionRequest } from 'ethers';
 import { v4 as uuidv4 } from 'uuid';
 import { toNumberDecimals, waitTx, waitUntil } from '~common';
 import { generateRandomWalletByPrivateKey, PendingCalculator } from '~common-back';
-import { CacheMachine } from '~common-service';
+import { CacheMachine } from '~common-service/utils';
 import {
   approveGasEstimation,
   deployData,
