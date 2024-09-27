@@ -1,4 +1,5 @@
-import { HDNodeWallet, Wallet, ethers } from 'ethers';
+import { HDNodeWallet, Provider, Wallet, isAddress } from 'ethers';
+import { StringNumber } from '~common';
 import { keccak256FromStr } from './cryptography';
 
 export async function generateRandomWallet(): Promise<HDNodeWallet> {
@@ -7,13 +8,13 @@ export async function generateRandomWallet(): Promise<HDNodeWallet> {
 
 export function generateRandomWalletByPrivateKey(
   privateKey: string,
-  salt: string,
-  rawProvider: ethers.JsonRpcProvider,
-): ethers.Wallet {
+  salt: StringNumber,
+  provider: Provider,
+): Wallet {
   const newPrivateKey = keccak256FromStr(`${privateKey}-${salt}`);
-  const wallet = new ethers.Wallet(newPrivateKey, rawProvider);
-  const isAddress = ethers.isAddress(wallet.address);
-  if (!isAddress) {
+  const wallet = new Wallet(newPrivateKey, provider);
+  const _isAddress = isAddress(wallet.address);
+  if (!_isAddress) {
     throw new Error('Not valid EVM address was generated');
   }
   return wallet;

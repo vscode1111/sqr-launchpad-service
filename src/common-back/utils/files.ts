@@ -1,4 +1,5 @@
 import {
+  Dirent,
   existsSync,
   mkdirSync,
   readFileSync,
@@ -18,7 +19,7 @@ export interface ReplaceRule {
   text: string;
 }
 
-export function replaceText(filePath: string, rule: ReplaceRule) {
+export function replaceText(filePath: string, rule: ReplaceRule): void {
   const { pattern, text } = rule;
   const content = readFileSync(filePath, 'utf-8');
   if (pattern.test(content)) {
@@ -93,7 +94,7 @@ export function convertContentToArray2D(
   return result;
 }
 
-export function eraseDirectorySync(directoryPath: string, pattern: RegExp) {
+export function eraseDirectorySync(directoryPath: string, pattern: RegExp): number {
   let count = 0;
   function eraseDirectoryInner(directoryPath: string, pattern: RegExp, level = 6) {
     const files = readdirSync(directoryPath, { withFileTypes: true });
@@ -115,7 +116,7 @@ export function eraseDirectorySync(directoryPath: string, pattern: RegExp) {
   return count;
 }
 
-export async function eraseDirectory(directoryPath: string, patterns: RegExp[]) {
+export async function eraseDirectory(directoryPath: string, patterns: RegExp[]): Promise<number> {
   console.log(`${directoryPath} start cleaning...`);
   let count = 0;
   async function eraseDirectoryInner(directoryPath: string, pattern: RegExp, level = 6) {
@@ -142,7 +143,7 @@ export async function eraseDirectory(directoryPath: string, patterns: RegExp[]) 
   return count;
 }
 
-export async function getSortedFiles(directoryPath: string) {
+export async function getSortedFiles(directoryPath: string): Promise<Dirent[]> {
   const files = await readdir(directoryPath, { withFileTypes: true });
   files.sort(
     (a, b) =>
@@ -152,7 +153,7 @@ export async function getSortedFiles(directoryPath: string) {
   return files;
 }
 
-export async function getActualFile(directoryPath: string) {
+export async function getActualFile(directoryPath: string): Promise<Dirent | undefined> {
   const files = await readdir(directoryPath, { withFileTypes: true });
   if (files.length > 0) {
     files.sort(
@@ -165,7 +166,7 @@ export async function getActualFile(directoryPath: string) {
   return undefined;
 }
 
-export async function eraseObsoleteFiles(directoryPath: string, limit: number) {
+export async function eraseObsoleteFiles(directoryPath: string, limit: number): Promise<void> {
   const files = await getSortedFiles(directoryPath);
   for (let i = limit; i < files.length; i++) {
     const file = files[i];
@@ -174,18 +175,22 @@ export async function eraseObsoleteFiles(directoryPath: string, limit: number) {
   }
 }
 
-export async function remove(path: string) {
+export async function remove(path: string): Promise<void> {
   if (existsSync(path)) {
     await rm(path, { recursive: true });
   }
 }
 
-export function getParentDirectory(targetFile: string) {
+export function getParentDirectory(targetFile: string): string {
   return path.dirname(targetFile);
 }
 
-export function checkFilePathSync(filePath: string) {
-  if (!existsSync(filePath)) {
+export function checkFilePathSync(filePath: string): boolean {
+  const isExists = existsSync(filePath);
+
+  if (!isExists) {
     mkdirSync(filePath, { recursive: true });
   }
+
+  return isExists;
 }

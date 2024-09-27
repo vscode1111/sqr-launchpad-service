@@ -1,6 +1,7 @@
 import 'tsconfig-paths/register';
 import { routes } from '~api';
-import { bootstrapService, config } from '~common-service';
+import { config } from '~common-service/config';
+import { bootstrapService } from '~common-service/utils';
 import { App } from '~core';
 import { Services } from '~services';
 import { checkBaseConfig } from '~utils';

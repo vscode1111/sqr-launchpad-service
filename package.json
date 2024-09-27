@@ -1,6 +1,6 @@
 {
   "name": "sqr-launchpad-service",
-  "version": "0.0.96",
+  "version": "0.0.97",
   "description": "sqr-launchpad-service",
   "repository": {
     "type": "git",
@@ -30,7 +30,7 @@
     "db:sync:prod": "cross-env NODE_ENV=prod cross-env RUN_SCRIPT=true npm run typeorm schema:sync -- -d src/db/dataSource.ts",
     "test": "mocha -r ts-node/register -r tsconfig-paths/register 'src/**/*spec.ts'",
     "test:watch": "cross-env NODE_ENV=local jest --watch",
-    "test:ext:local": "cross-env NODE_ENV=local cross-env RUN_SCRIPT=true mocha -r ts-node/register -r tsconfig-paths/register 'src/tests/**/*.ts' --timeout 600000"
+    "test:ext:local": "cross-env NODE_ENV=local cross-env RUN_SCRIPT=true mocha -r ts-node/register -r tsconfig-paths/register 'src/tests-external/**/*.ts' --timeout 600000"
   },
   "peerDependencies": {
     "moleculer": "0.14.29"

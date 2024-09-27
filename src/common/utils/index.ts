@@ -15,6 +15,7 @@ export * from './math';
 export * from './misc';
 export * from './reflection';
 export * from './reliability';
+export * from './retry';
 export * from './SpeedCounter';
 export * from './test';
 export * from './time';
