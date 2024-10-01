@@ -28,6 +28,12 @@ export const commonRoutes: ApiRouteSchema[] = modifyRoutes([
     },
   },
   {
+    path: '/:network',
+    aliases: {
+      'GET block/:id': `${apiPrefix}network.blocks.id`,
+    },
+  },
+  {
     path: '/indexer',
     aliases: {
       'GET :network/stats': `${apiPrefix}indexer.network.stats`,
