@@ -1,10 +1,10 @@
 {
-  "name": "sqr-launchpad-service",
+  "name": "web3-indexer-service",
   "version": "0.0.100",
-  "description": "sqr-launchpad-service",
+  "description": "web3-indexer-service",
   "repository": {
     "type": "git",
-    "url": "git@git.msq.local:magic-square/blockchain/sqr-launchpad-service.git"
+    "url": "git@git.msq.local:magic-square/blockchain/web3-indexer-service.git"
   },
   "scripts": {
     "commit": "git-cz",

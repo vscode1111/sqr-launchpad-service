@@ -11,16 +11,16 @@ import {
   config,
   networkObjectFactory,
 } from '~common-service';
-import { getSqrLaunchpadContext } from '~contracts';
+import { getWeb3LaunchpadContext } from '~contracts';
 import { MultiSyncEngine } from '~core';
 import { DataStorage } from '~db';
 import { Web3BusEvent } from '~types';
-import { SqrLaunchpadContext } from './types';
+import { Web3LaunchpadContext } from './types';
 
 export class Services extends ServicesBase implements Initialized, Started, Stopped {
   private started: boolean;
   private providers: NetworkObject<Provider>;
-  private sqrLaunchpadContexts: NetworkObject<SqrLaunchpadContext> | null;
+  private web3LaunchpadContexts: NetworkObject<Web3LaunchpadContext> | null;
 
   public multiSyncEngine: MultiSyncEngine;
   public dataStorage!: DataStorage;
@@ -40,7 +40,7 @@ export class Services extends ServicesBase implements Initialized, Started, Stop
         ),
     );
 
-    this.sqrLaunchpadContexts = null;
+    this.web3LaunchpadContexts = null;
 
     this.dataStorage = new DataStorage(broker);
 
@@ -55,7 +55,7 @@ export class Services extends ServicesBase implements Initialized, Started, Stop
   }
 
   async init() {
-    this.sqrLaunchpadContexts = networkObjectFactory((network) => getSqrLaunchpadContext(network));
+    this.web3LaunchpadContexts = networkObjectFactory((network) => getWeb3LaunchpadContext(network));
     await this.start();
   }
 
@@ -78,6 +78,6 @@ export class Services extends ServicesBase implements Initialized, Started, Stop
   }
 
   getNetworkContext(network: DeployNetworkKey) {
-    return this.sqrLaunchpadContexts?.[network];
+    return this.web3LaunchpadContexts?.[network];
   }
 }

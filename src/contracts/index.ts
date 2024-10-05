@@ -5,13 +5,13 @@ import { DEFAULT_JSON_RPC_PROVIDER_OPTIONS, RANDOM_PRIVATE_KEY } from '~common-s
 import {
   BABToken__factory,
   ERC20Token__factory,
-  SQRPaymentGateway__factory,
-  SQRVesting__factory,
-  SQRpProRata__factory,
+  WEB3PaymentGateway__factory,
+  WEB3Vesting__factory,
+  WEB3ProRata__factory,
 } from '~typechain-types';
-import { SqrLaunchpadContext } from '../services';
+import { Web3LaunchpadContext } from '../services';
 
-export function getSqrLaunchpadContext(network: DeployNetworkKey): SqrLaunchpadContext {
+export function getWeb3LaunchpadContext(network: DeployNetworkKey): Web3LaunchpadContext {
   const rawProvider = new JsonRpcProvider(
     config.web3.provider[network].http,
     undefined,
@@ -21,9 +21,9 @@ export function getSqrLaunchpadContext(network: DeployNetworkKey): SqrLaunchpadC
   const owner = new Wallet(config.web3.ownerPrivateKey ?? RANDOM_PRIVATE_KEY, rawProvider);
   const { address: ownerAddress } = owner;
 
-  const emptySqrPaymentGateway = SQRPaymentGateway__factory.connect(ownerAddress, owner);
-  const emptySqrVesting = SQRVesting__factory.connect(ownerAddress, owner);
-  const emptySqrpProRata = SQRpProRata__factory.connect(ownerAddress, owner);
+  const emptyWeb3PaymentGateway = WEB3PaymentGateway__factory.connect(ownerAddress, owner);
+  const emptyWeb3Vesting = WEB3Vesting__factory.connect(ownerAddress, owner);
+  const emptyWeb3pProRata = WEB3ProRata__factory.connect(ownerAddress, owner);
   const emptyBABToken = BABToken__factory.connect(ownerAddress, owner);
 
   return {
@@ -32,14 +32,14 @@ export function getSqrLaunchpadContext(network: DeployNetworkKey): SqrLaunchpadC
     getErc20Token: (address: string) => ERC20Token__factory.connect(address, owner),
     getErc20TokenByAccount: (address: string, signer: Signer) =>
       ERC20Token__factory.connect(address, signer),
-    emptySqrPaymentGateway,
-    getSqrPaymentGateway: (address: string) => SQRPaymentGateway__factory.connect(address, owner),
-    emptySqrVesting,
-    getSqrVesting: (address: string) => SQRVesting__factory.connect(address, owner),
-    emptySqrpProRata,
-    getSqrpProRata: (address: string) => SQRpProRata__factory.connect(address, owner),
-    getSqrpProRataByAccount: (address: string, signer: Signer) =>
-      SQRpProRata__factory.connect(address, signer),
+    emptyWeb3PaymentGateway,
+    getWeb3PaymentGateway: (address: string) => WEB3PaymentGateway__factory.connect(address, owner),
+    emptyWeb3Vesting,
+    getWeb3Vesting: (address: string) => WEB3Vesting__factory.connect(address, owner),
+    emptyWeb3pProRata,
+    getWeb3pProRata: (address: string) => WEB3ProRata__factory.connect(address, owner),
+    getWeb3pProRataByAccount: (address: string, signer: Signer) =>
+      WEB3ProRata__factory.connect(address, signer),
     emptyBABToken,
     getBABToken: (address: string) => BABToken__factory.connect(address, owner),
   };

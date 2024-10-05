@@ -46,20 +46,20 @@ const handlerFunc: HandlerFunc = () => ({
           throw new MissingServicePrivateKey();
         }
 
-        const { getSqrPaymentGateway, getErc20Token } = context;
+        const { getWeb3PaymentGateway, getErc20Token } = context;
 
-        const sqrPaymentGateway = getSqrPaymentGateway(contractAddress);
+        const web3PaymentGateway = getWeb3PaymentGateway(contractAddress);
 
         return Bluebird.map(
           transactionIds,
           async (transactionId) => {
             const [transactionItem, erc20Decimals, dbPaymentGatewayTransactionItem] =
               await Promise.all([
-                sqrPaymentGateway.fetchTransactionItem(transactionId),
+                web3PaymentGateway.fetchTransactionItem(transactionId),
                 cacheMachine.call(
                   () => getCacheContractSettingKey(network, contractAddress),
                   async () => {
-                    const tokenAddress = await getSqrPaymentGateway(contractAddress).erc20Token();
+                    const tokenAddress = await getWeb3PaymentGateway(contractAddress).erc20Token();
                     return getErc20Token(tokenAddress).decimals();
                   },
                 ),
@@ -106,19 +106,19 @@ const handlerFunc: HandlerFunc = () => ({
           throw new MissingServicePrivateKey();
         }
 
-        const { getSqrpProRata, getErc20Token } = context;
+        const { getWeb3pProRata, getErc20Token } = context;
 
-        const sqrPaymentGateway = getSqrpProRata(contractAddress);
+        const web3PaymentGateway = getWeb3pProRata(contractAddress);
 
         return Bluebird.map(
           transactionIds,
           async (transactionId) => {
             const [transactionItem, erc20Decimals, dbProRataTransactionItem] = await Promise.all([
-              sqrPaymentGateway.fetchTransactionItem(transactionId),
+              web3PaymentGateway.fetchTransactionItem(transactionId),
               cacheMachine.call(
                 () => getCacheContractSettingKey(network, contractAddress),
                 async () => {
-                  const tokenAddress = await getSqrpProRata(contractAddress).baseToken();
+                  const tokenAddress = await getWeb3pProRata(contractAddress).baseToken();
                   return getErc20Token(tokenAddress).decimals();
                 },
               ),
@@ -163,9 +163,9 @@ const handlerFunc: HandlerFunc = () => ({
           throw new MissingServicePrivateKey();
         }
 
-        const { getSqrpProRata, getErc20Token } = context;
+        const { getWeb3pProRata, getErc20Token } = context;
 
-        const proRata = getSqrpProRata(contractAddress);
+        const proRata = getWeb3pProRata(contractAddress);
         const [accountCount, erc20Decimals] = await Promise.all([
           proRata.getAccountCount(),
           cacheMachine.call(

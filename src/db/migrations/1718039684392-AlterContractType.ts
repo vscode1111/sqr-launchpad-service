@@ -11,7 +11,7 @@ export class AlterContractType1718039684392 implements MigrationInterface {
     }
 
     await queryRunner.query(`ALTER TYPE _contracts_type_enum ADD VALUE 'pro-rata'`);
-    await queryRunner.query(`ALTER TYPE _contracts_type_enum ADD VALUE 'pro-rata-sqrp-gated'`);
+    await queryRunner.query(`ALTER TYPE _contracts_type_enum ADD VALUE 'pro-rata-web3-gated'`);
   }
 
   public async down(): Promise<void> {}

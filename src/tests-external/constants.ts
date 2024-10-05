@@ -31,7 +31,7 @@ export const deployData = {
   deposit2: toBaseTokenWei(isTiny ? 0.002 : 4_000),
 };
 
-export const sqrpProRataAddress = '0xCC71EC2A528b6F9f0f8556129eDdB20098EF6b24';
+export const web3ProRataAddress = '0xCC71EC2A528b6F9f0f8556129eDdB20098EF6b24';
 
 export const owner2PrivateKey = 'aba327ef99e306d56512f1c15c61d82302e8edd4aa776692e99c394643da1f46';
 export const depositVerifierPrivateKey =

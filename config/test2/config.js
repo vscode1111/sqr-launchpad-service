@@ -13,7 +13,7 @@ module.exports = {
       port: 5432,
       user: 'postgres',
       password: '461301+PG',
-      database: 'sqr-launchpad',
+      database: 'web3-indexer',
     },
     kafka: {
       type: 'Kafka',
@@ -68,7 +68,7 @@ module.exports = {
       enable: false,
       url: 'http://127.0.0.1:8200',
       token: 'hvs.BvZIqprjR8qC42OVvr4GhdST',
-      baseRecord: 'secret/data/sqr-launchpad-service',
+      baseRecord: 'secret/data/web3-indexer-service',
       ownerPrivateKeyRecord: 'ownerPrivateKey',
     },
   },

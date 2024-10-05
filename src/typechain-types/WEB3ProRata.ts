@@ -23,7 +23,7 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export declare namespace SQRpProRata {
+export declare namespace WEB3ProRata {
   export type DepositSigParamsStruct = {
     baseAmount: BigNumberish;
     boost: boolean;
@@ -181,7 +181,7 @@ export declare namespace IDepositRefund {
   ] & { baseToken: string; boostToken: string };
 }
 
-export interface SQRpProRataInterface extends Interface {
+export interface WEB3ProRataInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "PRECISION_FACTOR"
@@ -376,7 +376,7 @@ export interface SQRpProRataInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "depositSig",
-    values: [SQRpProRata.DepositSigParamsStruct]
+    values: [WEB3ProRata.DepositSigParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "depositVerifier",
@@ -468,7 +468,7 @@ export interface SQRpProRataInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [SQRpProRata.ContractParamsStruct]
+    values: [WEB3ProRata.ContractParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "isAfterCloseDate",
@@ -996,11 +996,11 @@ export namespace WithdrawSwappedAmountEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface SQRpProRata extends BaseContract {
-  connect(runner?: ContractRunner | null): SQRpProRata;
+export interface WEB3ProRata extends BaseContract {
+  connect(runner?: ContractRunner | null): WEB3ProRata;
   waitForDeployment(): Promise<this>;
 
-  interface: SQRpProRataInterface;
+  interface: WEB3ProRataInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -1134,7 +1134,7 @@ export interface SQRpProRata extends BaseContract {
   decimalsFactor2: TypedContractMethod<[], [bigint], "view">;
 
   depositSig: TypedContractMethod<
-    [depositSigParams: SQRpProRata.DepositSigParamsStruct],
+    [depositSigParams: WEB3ProRata.DepositSigParamsStruct],
     [void],
     "nonpayable"
   >;
@@ -1145,13 +1145,13 @@ export interface SQRpProRata extends BaseContract {
 
   fetchAccountInfo: TypedContractMethod<
     [account: AddressLike],
-    [SQRpProRata.AccountInfoStructOutput],
+    [WEB3ProRata.AccountInfoStructOutput],
     "view"
   >;
 
   fetchTransactionItem: TypedContractMethod<
     [transactionId: string],
-    [SQRpProRata.TransactionItemStructOutput],
+    [WEB3ProRata.TransactionItemStructOutput],
     "view"
   >;
 
@@ -1220,7 +1220,7 @@ export interface SQRpProRata extends BaseContract {
   getStartDate: TypedContractMethod<[], [bigint], "view">;
 
   initialize: TypedContractMethod<
-    [contractParams: SQRpProRata.ContractParamsStruct],
+    [contractParams: WEB3ProRata.ContractParamsStruct],
     [void],
     "nonpayable"
   >;
@@ -1377,7 +1377,7 @@ export interface SQRpProRata extends BaseContract {
   getFunction(
     nameOrSignature: "depositSig"
   ): TypedContractMethod<
-    [depositSigParams: SQRpProRata.DepositSigParamsStruct],
+    [depositSigParams: WEB3ProRata.DepositSigParamsStruct],
     [void],
     "nonpayable"
   >;
@@ -1391,14 +1391,14 @@ export interface SQRpProRata extends BaseContract {
     nameOrSignature: "fetchAccountInfo"
   ): TypedContractMethod<
     [account: AddressLike],
-    [SQRpProRata.AccountInfoStructOutput],
+    [WEB3ProRata.AccountInfoStructOutput],
     "view"
   >;
   getFunction(
     nameOrSignature: "fetchTransactionItem"
   ): TypedContractMethod<
     [transactionId: string],
-    [SQRpProRata.TransactionItemStructOutput],
+    [WEB3ProRata.TransactionItemStructOutput],
     "view"
   >;
   getFunction(
@@ -1474,7 +1474,7 @@ export interface SQRpProRata extends BaseContract {
   getFunction(
     nameOrSignature: "initialize"
   ): TypedContractMethod<
-    [contractParams: SQRpProRata.ContractParamsStruct],
+    [contractParams: WEB3ProRata.ContractParamsStruct],
     [void],
     "nonpayable"
   >;

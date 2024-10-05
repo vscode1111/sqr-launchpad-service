@@ -3,6 +3,6 @@
 /* eslint-disable */
 export { BABToken__factory } from "./BABToken__factory";
 export { ERC20Token__factory } from "./ERC20Token__factory";
-export { SQRPaymentGateway__factory } from "./SQRPaymentGateway__factory";
-export { SQRVesting__factory } from "./SQRVesting__factory";
-export { SQRpProRata__factory } from "./SQRpProRata__factory";
+export { WEB3PaymentGateway__factory } from "./WEB3PaymentGateway__factory";
+export { WEB3ProRata__factory } from "./WEB3ProRata__factory";
+export { WEB3Vesting__factory } from "./WEB3Vesting__factory";

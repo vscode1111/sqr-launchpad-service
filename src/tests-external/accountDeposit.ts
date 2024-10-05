@@ -9,7 +9,7 @@ import {
   deployParams,
   depositSigGasEstimation,
   seedData,
-  sqrpProRataAddress,
+  web3ProRataAddress,
 } from './constants';
 import { ContextBase, GasRecord } from './types';
 import {
@@ -49,7 +49,7 @@ export async function accountDeposit({
   tokenName: string;
   gasRecords: GasRecord[];
 }) {
-  const { owner2, depositVerifier, getErc20TokenByAccount, getSqrpProRataByAccount } = context;
+  const { owner2, depositVerifier, getErc20TokenByAccount, getWeb3pProRataByAccount } = context;
 
   const { gasPrice } = await provider.getFeeData();
 
@@ -64,12 +64,12 @@ export async function accountDeposit({
     `-> Account ${account} is depositing, taskIndex: ${taskIndex}, walletIndex: ${walletIndex}, attempt: ${attempt} gasPrice: ${gasPrice} ...`,
   );
 
-  const userSQRpProRata = getSqrpProRataByAccount(sqrpProRataAddress, user);
-  const baseTokenAddress = await userSQRpProRata.baseToken();
+  const userWEB3ProRata = getWeb3pProRataByAccount(web3ProRataAddress, user);
+  const baseTokenAddress = await userWEB3ProRata.baseToken();
   const owner2BaseToken = getErc20TokenByAccount(baseTokenAddress, owner2);
   const userBaseToken = getErc20TokenByAccount(baseTokenAddress, user);
 
-  const nonce = await userSQRpProRata.getAccountDepositNonce(account);
+  const nonce = await userWEB3ProRata.getAccountDepositNonce(account);
   const transactionId = uuidv4();
 
   const params = {
@@ -121,7 +121,7 @@ export async function accountDeposit({
 
     // return;
 
-    const currentAllowance = await userBaseToken.allowance(account, sqrpProRataAddress);
+    const currentAllowance = await userBaseToken.allowance(account, web3ProRataAddress);
     logInfo(`${toNumberDecimals(currentAllowance, decimals)} token was allowed`);
 
     const needToApprove = params.amount > currentAllowance;
@@ -147,7 +147,7 @@ export async function accountDeposit({
               () => 'approve',
               async () =>
                 calculateAttemptGas(
-                  // await userBaseToken.approve.estimateGas(sqrpProRataAddress, totalSupply),
+                  // await userBaseToken.approve.estimateGas(web3ProRataAddress, totalSupply),
                   approveGasEstimation,
                   attempt,
                 ),
@@ -158,14 +158,14 @@ export async function accountDeposit({
       });
 
       await waitTx(
-        userBaseToken.approve(sqrpProRataAddress, totalSupply, txOverrides),
+        userBaseToken.approve(web3ProRataAddress, totalSupply, txOverrides),
         'approve',
         deployParams.attempts,
         deployParams.delay,
         // baseTokenFactory,
       );
       logInfo(
-        `${toNumberDecimals(totalSupply, decimals)} ${tokenName} was approved to ${sqrpProRataAddress}`,
+        `${toNumberDecimals(totalSupply, decimals)} ${tokenName} was approved to ${web3ProRataAddress}`,
       );
     }
   }
@@ -208,7 +208,7 @@ export async function accountDeposit({
   }
 
   const tx = await waitTx(
-    userSQRpProRata.depositSig(
+    userWEB3ProRata.depositSig(
       {
         baseAmount: params.amount,
         boost: params.boost,
@@ -222,7 +222,7 @@ export async function accountDeposit({
     'depositSig',
     deployParams.attempts,
     deployParams.delay,
-    // sqrpProRataFactory,
+    // web3ProRataFactory,
   );
 
   const gasRecord: GasRecord = {

@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { SQRVesting, SQRVestingInterface } from "../SQRVesting";
+import type { WEB3Vesting, WEB3VestingInterface } from "../WEB3Vesting";
 
 const _abi = [
   {
@@ -61,7 +61,7 @@ const _abi = [
             type: "uint32",
           },
         ],
-        internalType: "struct SQRVesting.ContractParams",
+        internalType: "struct WEB3Vesting.ContractParams",
         name: "contractParams",
         type: "tuple",
       },
@@ -777,7 +777,7 @@ const _abi = [
             type: "bool",
           },
         ],
-        internalType: "struct SQRVesting.ClaimInfo",
+        internalType: "struct WEB3Vesting.ClaimInfo",
         name: "",
         type: "tuple",
       },
@@ -1165,12 +1165,12 @@ const _abi = [
   },
 ] as const;
 
-export class SQRVesting__factory {
+export class WEB3Vesting__factory {
   static readonly abi = _abi;
-  static createInterface(): SQRVestingInterface {
-    return new Interface(_abi) as SQRVestingInterface;
+  static createInterface(): WEB3VestingInterface {
+    return new Interface(_abi) as WEB3VestingInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): SQRVesting {
-    return new Contract(address, _abi, runner) as unknown as SQRVesting;
+  static connect(address: string, runner?: ContractRunner | null): WEB3Vesting {
+    return new Contract(address, _abi, runner) as unknown as WEB3Vesting;
   }
 }

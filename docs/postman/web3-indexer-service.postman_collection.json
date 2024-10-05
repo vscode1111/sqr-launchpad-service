@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "70bc2842-e4b7-4208-aa9d-f06c35dc6cec",
-		"name": "sqr-launchpad-service",
+		"name": "web3-indexer-service",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "3158191"
 	},

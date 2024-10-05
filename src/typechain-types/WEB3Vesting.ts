@@ -23,7 +23,7 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export declare namespace SQRVesting {
+export declare namespace WEB3Vesting {
   export type ContractParamsStruct = {
     newOwner: AddressLike;
     erc20Token: AddressLike;
@@ -105,7 +105,7 @@ export declare namespace SQRVesting {
   };
 }
 
-export interface SQRVestingInterface extends Interface {
+export interface WEB3VestingInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "PERCENT_DIVIDER"
@@ -628,11 +628,11 @@ export namespace WithdrawExcessAmountEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface SQRVesting extends BaseContract {
-  connect(runner?: ContractRunner | null): SQRVesting;
+export interface WEB3Vesting extends BaseContract {
+  connect(runner?: ContractRunner | null): WEB3Vesting;
   waitForDeployment(): Promise<this>;
 
-  interface: SQRVestingInterface;
+  interface: WEB3VestingInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -734,7 +734,7 @@ export interface SQRVesting extends BaseContract {
 
   fetchClaimInfo: TypedContractMethod<
     [account: AddressLike],
-    [SQRVesting.ClaimInfoStructOutput],
+    [WEB3Vesting.ClaimInfoStructOutput],
     "view"
   >;
 
@@ -913,7 +913,7 @@ export interface SQRVesting extends BaseContract {
     nameOrSignature: "fetchClaimInfo"
   ): TypedContractMethod<
     [account: AddressLike],
-    [SQRVesting.ClaimInfoStructOutput],
+    [WEB3Vesting.ClaimInfoStructOutput],
     "view"
   >;
   getFunction(

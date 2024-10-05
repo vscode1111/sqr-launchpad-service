@@ -23,7 +23,7 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export declare namespace SQRPaymentGateway {
+export declare namespace WEB3PaymentGateway {
   export type FundItemStruct = {
     depositedAmount: BigNumberish;
     withdrewAmount: BigNumberish;
@@ -132,7 +132,7 @@ export declare namespace IDepositRefund {
   ] & { baseToken: string; boostToken: string };
 }
 
-export interface SQRPaymentGatewayInterface extends Interface {
+export interface WEB3PaymentGatewayInterface extends Interface {
   getFunction(
     nameOrSignature:
       | "MAX_INT"
@@ -357,7 +357,7 @@ export interface SQRPaymentGatewayInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [SQRPaymentGateway.ContractParamsStruct]
+    values: [WEB3PaymentGateway.ContractParamsStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "isAfterCloseDate",
@@ -726,11 +726,11 @@ export namespace WithdrawEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export interface SQRPaymentGateway extends BaseContract {
-  connect(runner?: ContractRunner | null): SQRPaymentGateway;
+export interface WEB3PaymentGateway extends BaseContract {
+  connect(runner?: ContractRunner | null): WEB3PaymentGateway;
   waitForDeployment(): Promise<this>;
 
-  interface: SQRPaymentGatewayInterface;
+  interface: WEB3PaymentGatewayInterface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,
@@ -837,7 +837,7 @@ export interface SQRPaymentGateway extends BaseContract {
 
   fetchAccountFundItem: TypedContractMethod<
     [account: AddressLike],
-    [SQRPaymentGateway.FundItemStructOutput],
+    [WEB3PaymentGateway.FundItemStructOutput],
     "view"
   >;
 
@@ -849,7 +849,7 @@ export interface SQRPaymentGateway extends BaseContract {
 
   fetchTransactionItem: TypedContractMethod<
     [transactionId: string],
-    [SQRPaymentGateway.TransactionItemStructOutput],
+    [WEB3PaymentGateway.TransactionItemStructOutput],
     "view"
   >;
 
@@ -857,13 +857,13 @@ export interface SQRPaymentGateway extends BaseContract {
 
   fetchUserFundItem: TypedContractMethod<
     [userId: string],
-    [SQRPaymentGateway.FundItemStructOutput],
+    [WEB3PaymentGateway.FundItemStructOutput],
     "view"
   >;
 
   fetchUserFundItemByAccount: TypedContractMethod<
     [account: AddressLike],
-    [SQRPaymentGateway.FundItemStructOutput],
+    [WEB3PaymentGateway.FundItemStructOutput],
     "view"
   >;
 
@@ -924,7 +924,7 @@ export interface SQRPaymentGateway extends BaseContract {
   getWithdrawNonce: TypedContractMethod<[userId: string], [bigint], "view">;
 
   initialize: TypedContractMethod<
-    [contractParams: SQRPaymentGateway.ContractParamsStruct],
+    [contractParams: WEB3PaymentGateway.ContractParamsStruct],
     [void],
     "nonpayable"
   >;
@@ -1073,7 +1073,7 @@ export interface SQRPaymentGateway extends BaseContract {
     nameOrSignature: "fetchAccountFundItem"
   ): TypedContractMethod<
     [account: AddressLike],
-    [SQRPaymentGateway.FundItemStructOutput],
+    [WEB3PaymentGateway.FundItemStructOutput],
     "view"
   >;
   getFunction(
@@ -1083,7 +1083,7 @@ export interface SQRPaymentGateway extends BaseContract {
     nameOrSignature: "fetchTransactionItem"
   ): TypedContractMethod<
     [transactionId: string],
-    [SQRPaymentGateway.TransactionItemStructOutput],
+    [WEB3PaymentGateway.TransactionItemStructOutput],
     "view"
   >;
   getFunction(
@@ -1093,14 +1093,14 @@ export interface SQRPaymentGateway extends BaseContract {
     nameOrSignature: "fetchUserFundItem"
   ): TypedContractMethod<
     [userId: string],
-    [SQRPaymentGateway.FundItemStructOutput],
+    [WEB3PaymentGateway.FundItemStructOutput],
     "view"
   >;
   getFunction(
     nameOrSignature: "fetchUserFundItemByAccount"
   ): TypedContractMethod<
     [account: AddressLike],
-    [SQRPaymentGateway.FundItemStructOutput],
+    [WEB3PaymentGateway.FundItemStructOutput],
     "view"
   >;
   getFunction(
@@ -1170,7 +1170,7 @@ export interface SQRPaymentGateway extends BaseContract {
   getFunction(
     nameOrSignature: "initialize"
   ): TypedContractMethod<
-    [contractParams: SQRPaymentGateway.ContractParamsStruct],
+    [contractParams: WEB3PaymentGateway.ContractParamsStruct],
     [void],
     "nonpayable"
   >;

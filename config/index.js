@@ -14,8 +14,8 @@ const path = require('path');
 const environmentConfig = require(path.join(__dirname, global.ENV, 'config'));
 
 const commonConfig = {
-  version: 'sqr',
-  serviceName: 'sqr-launchpad-service',
+  version: 'web3',
+  serviceName: 'web3-indexer-service',
   applicationUpload: 'application-uploader',
   taskListUrl: 'profile/validation-tasks/',
   magicIdService: 'magicid',

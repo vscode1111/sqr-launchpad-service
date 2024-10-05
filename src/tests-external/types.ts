@@ -1,5 +1,5 @@
 import { Signer, Wallet } from 'ethers';
-import { ERC20Token, SQRpProRata } from '~typechain-types';
+import { ERC20Token, WEB3ProRata } from '~typechain-types';
 
 export interface GasRecord {
   account: string;
@@ -14,5 +14,5 @@ export interface ContextBase {
   owner2: Wallet;
   depositVerifier: Wallet;
   getErc20TokenByAccount: (address: string, signer: Signer) => ERC20Token;
-  getSqrpProRataByAccount: (address: string, signer: Signer) => SQRpProRata;
+  getWeb3pProRataByAccount: (address: string, signer: Signer) => WEB3ProRata;
 }

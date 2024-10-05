@@ -54,7 +54,7 @@
             "type": "uint32"
           }
         ],
-        "internalType": "struct SQRVesting.ContractParams",
+        "internalType": "struct WEB3Vesting.ContractParams",
         "name": "contractParams",
         "type": "tuple"
       }
@@ -770,7 +770,7 @@
             "type": "bool"
           }
         ],
-        "internalType": "struct SQRVesting.ClaimInfo",
+        "internalType": "struct WEB3Vesting.ClaimInfo",
         "name": "",
         "type": "tuple"
       }

@@ -1,5 +1,5 @@
-docker build -t sqr-launchpad-service .
-docker run -d --name sqr-launchpad-service-01 -p 3000:3000 sqr-launchpad-service
+docker build -t web3-indexer-service .
+docker run -d --name web3-indexer-service-01 -p 3000:3000 web3-indexer-service
 
 typeorm migration:create ./src/db/migrations/SoftReset
 typeorm migration:create ./src/db/migrations/HardReset

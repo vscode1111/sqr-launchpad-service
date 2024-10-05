@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 import { Contract, Interface, type ContractRunner } from "ethers";
-import type { SQRpProRata, SQRpProRataInterface } from "../SQRpProRata";
+import type { WEB3ProRata, WEB3ProRataInterface } from "../WEB3ProRata";
 
 const _abi = [
   {
@@ -942,7 +942,7 @@ const _abi = [
             type: "bytes",
           },
         ],
-        internalType: "struct SQRpProRata.DepositSigParams",
+        internalType: "struct WEB3ProRata.DepositSigParams",
         name: "depositSigParams",
         type: "tuple",
       },
@@ -1051,7 +1051,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct SQRpProRata.AccountInfo",
+        internalType: "struct WEB3ProRata.AccountInfo",
         name: "",
         type: "tuple",
       },
@@ -1077,7 +1077,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct SQRpProRata.TransactionItem",
+        internalType: "struct WEB3ProRata.TransactionItem",
         name: "",
         type: "tuple",
       },
@@ -1459,7 +1459,7 @@ const _abi = [
             type: "bool",
           },
         ],
-        internalType: "struct SQRpProRata.ContractParams",
+        internalType: "struct WEB3ProRata.ContractParams",
         name: "contractParams",
         type: "tuple",
       },
@@ -1758,12 +1758,12 @@ const _abi = [
   },
 ] as const;
 
-export class SQRpProRata__factory {
+export class WEB3ProRata__factory {
   static readonly abi = _abi;
-  static createInterface(): SQRpProRataInterface {
-    return new Interface(_abi) as SQRpProRataInterface;
+  static createInterface(): WEB3ProRataInterface {
+    return new Interface(_abi) as WEB3ProRataInterface;
   }
-  static connect(address: string, runner?: ContractRunner | null): SQRpProRata {
-    return new Contract(address, _abi, runner) as unknown as SQRpProRata;
+  static connect(address: string, runner?: ContractRunner | null): WEB3ProRata {
+    return new Contract(address, _abi, runner) as unknown as WEB3ProRata;
   }
 }

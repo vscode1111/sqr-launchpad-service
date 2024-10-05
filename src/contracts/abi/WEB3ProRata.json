@@ -5,16 +5,6 @@
     "type": "constructor"
   },
   {
-    "inputs": [],
-    "name": "AchievedDepositGoal",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "AchievedWithdrawGoal",
-    "type": "error"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -38,7 +28,32 @@
   },
   {
     "inputs": [],
-    "name": "AmountNotZero",
+    "name": "AllUsersProcessedBaseSwapped",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "AllUsersProcessedRefund",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "BaseAmountNotZero",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "BaseTokenNotZeroAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "BoostExchangeRateNotZero",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "BoostTokenNotZeroAddress",
     "type": "error"
   },
   {
@@ -53,12 +68,22 @@
   },
   {
     "inputs": [],
-    "name": "ColdWalletNotZeroAddress",
+    "name": "ContractForExternalRefund",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "ContractMustHaveSufficientFunds",
+    "name": "ContractHasNoEnoughBaseTokensForRefund",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ContractHasNoEnoughBoostTokensForRefund",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "DepositVerifierNotZeroAddress",
     "type": "error"
   },
   {
@@ -106,22 +131,17 @@
   },
   {
     "inputs": [],
-    "name": "ERC20TokenNotZeroAddress",
-    "type": "error"
-  },
-  {
-    "inputs": [],
     "name": "FailedInnerCall",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "InvalidInitialization",
+    "name": "GoalNotZero",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "InvalidNonce",
+    "name": "InvalidInitialization",
     "type": "error"
   },
   {
@@ -136,7 +156,22 @@
   },
   {
     "inputs": [],
+    "name": "NotAllUsersProcessedBaseSwapped",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "NotInitializing",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotRefunded",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "NotWithdrawBaseGoal",
     "type": "error"
   },
   {
@@ -215,7 +250,17 @@
   },
   {
     "inputs": [],
+    "name": "UnreachedGoal",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "UsedTransactionId",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "UserHasBoostedDeposit",
     "type": "error"
   },
   {
@@ -229,22 +274,27 @@
     "type": "error"
   },
   {
+    "inputs": [],
+    "name": "WithdrewBaseSwappedAmount",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "batchSize",
+        "type": "uint32"
       },
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "balanceLimit",
-        "type": "uint256"
+        "internalType": "uint32",
+        "name": "endIndex",
+        "type": "uint32"
       }
     ],
-    "name": "ChangeBalanceLimit",
+    "name": "CalculateBaseSwappedAmount",
     "type": "event"
   },
   {
@@ -257,9 +307,21 @@
         "type": "address"
       },
       {
+        "indexed": true,
+        "internalType": "bool",
+        "name": "isBoost",
+        "type": "bool"
+      },
+      {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
+        "name": "baseAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "boostAmount",
         "type": "uint256"
       }
     ],
@@ -329,6 +391,43 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bool",
+        "name": "isBoost",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "baseAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "boostAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "boostAverageExchangeRate",
+        "type": "uint256"
+      }
+    ],
+    "name": "Refund",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "implementation",
         "type": "address"
       }
@@ -346,24 +445,62 @@
         "type": "address"
       },
       {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "baseAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "WithdrawBaseGoal",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
-        "name": "to",
+        "name": "account",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
+        "name": "baseAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "boostAmount",
         "type": "uint256"
       }
     ],
-    "name": "Withdraw",
+    "name": "WithdrawExcessTokens",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "baseAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "WithdrawSwappedAmount",
     "type": "event"
   },
   {
     "inputs": [],
-    "name": "MAX_INT",
+    "name": "PRECISION_FACTOR",
     "outputs": [
       {
         "internalType": "uint256",
@@ -388,30 +525,48 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "balanceLimit",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "userId",
-        "type": "string"
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
       }
     ],
     "name": "balanceOf",
     "outputs": [
       {
         "internalType": "uint256",
+        "name": "baseDeposited",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "boostDeposited",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "baseDecimals",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "baseGoal",
+    "outputs": [
+      {
+        "internalType": "uint256",
         "name": "",
         "type": "uint256"
       }
@@ -420,14 +575,47 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "baseToken",
+    "outputs": [
       {
-        "internalType": "address",
-        "name": "account",
+        "internalType": "contract IERC20",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "calculateAccountAllocation",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "boostDecimals",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "boostToken",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "calculateAccidentAmount",
     "outputs": [
       {
         "internalType": "uint256",
@@ -446,7 +634,158 @@
         "type": "address"
       }
     ],
-    "name": "calculateAccountRefund",
+    "name": "calculateAccountBaseAllocation",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "calculateAccountBaseRefund",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "calculateAccountBoostAverageExchangeRate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "calculateAccountBoostRefund",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "calculateAccountShare",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "_batchSize",
+        "type": "uint32"
+      }
+    ],
+    "name": "calculateBaseSwappedAmount",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "calculateBaseSwappedAmountAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "_baseDecimals",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_boostDecimals",
+        "type": "uint8"
+      }
+    ],
+    "name": "calculateDecimalsFactors",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "factor1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "factor2",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "calculateExcessBoostAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "calculateOverfundAmount",
     "outputs": [
       {
         "internalType": "uint256",
@@ -472,7 +811,7 @@
   },
   {
     "inputs": [],
-    "name": "calculateRemainWithdraw",
+    "name": "calculateRemainProcessedBaseSwappedIndex",
     "outputs": [
       {
         "internalType": "uint256",
@@ -484,16 +823,42 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "calculateRemainProcessedRefundIndex",
+    "outputs": [
       {
         "internalType": "uint256",
-        "name": "_balanceLimit",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "changeBalanceLimit",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "calculateRequiredBoostAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "calculateTotalBoostRefundAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -511,58 +876,20 @@
   },
   {
     "inputs": [],
-    "name": "coldWallet",
+    "name": "decimalsFactor1",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "uint256",
         "name": "",
-        "type": "address"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "userId",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "transactionId",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint32",
-        "name": "nonce",
-        "type": "uint32"
-      },
-      {
-        "internalType": "uint32",
-        "name": "timestampLimit",
-        "type": "uint32"
-      }
-    ],
-    "name": "deposit",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "depositGoal",
+    "name": "decimalsFactor2",
     "outputs": [
       {
         "internalType": "uint256",
@@ -576,34 +903,41 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "userId",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "transactionId",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint32",
-        "name": "timestampLimit",
-        "type": "uint32"
-      },
-      {
-        "internalType": "bytes",
-        "name": "signature",
-        "type": "bytes"
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "baseAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "boost",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "boostExchangeRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "transactionId",
+            "type": "string"
+          },
+          {
+            "internalType": "uint32",
+            "name": "timestampLimit",
+            "type": "uint32"
+          },
+          {
+            "internalType": "bytes",
+            "name": "signature",
+            "type": "bytes"
+          }
+        ],
+        "internalType": "struct WEB3ProRata.DepositSigParams",
+        "name": "depositSigParams",
+        "type": "tuple"
       }
     ],
     "name": "depositSig",
@@ -626,12 +960,12 @@
   },
   {
     "inputs": [],
-    "name": "erc20Token",
+    "name": "externalRefund",
     "outputs": [
       {
-        "internalType": "contract IERC20",
+        "internalType": "bool",
         "name": "",
-        "type": "address"
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -645,53 +979,74 @@
         "type": "address"
       }
     ],
-    "name": "fetchAccountFundItem",
+    "name": "fetchAccountInfo",
     "outputs": [
       {
         "components": [
           {
             "internalType": "uint256",
-            "name": "depositedAmount",
+            "name": "baseDeposited",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "boosted",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseAllocation",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "withdrewAmount",
+            "name": "baseDeposit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseRefund",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseRefunded",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "boostDeposit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "boostRefund",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "boostRefunded",
             "type": "uint256"
           },
           {
             "internalType": "uint32",
-            "name": "depositNonce",
+            "name": "nonce",
             "type": "uint32"
           },
           {
-            "internalType": "uint32",
-            "name": "withdrawNonce",
-            "type": "uint32"
+            "internalType": "uint256",
+            "name": "boostAverageExchangeRate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "share",
+            "type": "uint256"
           }
         ],
-        "internalType": "struct SQRPaymentGateway.FundItem",
+        "internalType": "struct WEB3ProRata.AccountInfo",
         "name": "",
         "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "fetchSiblingAccounts",
-    "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "",
-        "type": "address[]"
       }
     ],
     "stateMutability": "view",
@@ -715,108 +1070,7 @@
             "type": "uint256"
           }
         ],
-        "internalType": "struct SQRPaymentGateway.TransactionItem",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "userId",
-        "type": "string"
-      }
-    ],
-    "name": "fetchUserAccounts",
-    "outputs": [
-      {
-        "internalType": "address[]",
-        "name": "",
-        "type": "address[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "userId",
-        "type": "string"
-      }
-    ],
-    "name": "fetchUserFundItem",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "depositedAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "withdrewAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint32",
-            "name": "depositNonce",
-            "type": "uint32"
-          },
-          {
-            "internalType": "uint32",
-            "name": "withdrawNonce",
-            "type": "uint32"
-          }
-        ],
-        "internalType": "struct SQRPaymentGateway.FundItem",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      }
-    ],
-    "name": "fetchUserFundItemByAccount",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "depositedAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "withdrewAmount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint32",
-            "name": "depositNonce",
-            "type": "uint32"
-          },
-          {
-            "internalType": "uint32",
-            "name": "withdrawNonce",
-            "type": "uint32"
-          }
-        ],
-        "internalType": "struct SQRPaymentGateway.FundItem",
+        "internalType": "struct WEB3ProRata.TransactionItem",
         "name": "",
         "type": "tuple"
       }
@@ -880,8 +1134,27 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "getAccountDepositNonce",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
-    "name": "getBalance",
+    "name": "getBaseBalance",
     "outputs": [
       {
         "internalType": "uint256",
@@ -895,6 +1168,19 @@
   {
     "inputs": [],
     "name": "getBaseGoal",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBoostBalance",
     "outputs": [
       {
         "internalType": "uint256",
@@ -942,25 +1228,6 @@
       }
     ],
     "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "userId",
-        "type": "string"
-      }
-    ],
-    "name": "getDepositNonce",
-    "outputs": [
-      {
-        "internalType": "uint32",
-        "name": "",
-        "type": "uint32"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1093,7 +1360,7 @@
   },
   {
     "inputs": [],
-    "name": "getStartDate",
+    "name": "getProcessedBaseSwappedIndex",
     "outputs": [
       {
         "internalType": "uint32",
@@ -1105,14 +1372,21 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "getProcessedRefundIndex",
+    "outputs": [
       {
-        "internalType": "string",
-        "name": "userId",
-        "type": "string"
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
       }
     ],
-    "name": "getWithdrawNonce",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getStartDate",
     "outputs": [
       {
         "internalType": "uint32",
@@ -1134,8 +1408,23 @@
           },
           {
             "internalType": "address",
-            "name": "erc20Token",
+            "name": "baseToken",
             "type": "address"
+          },
+          {
+            "internalType": "uint8",
+            "name": "baseDecimals",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "boostToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint8",
+            "name": "boostDecimals",
+            "type": "uint8"
           },
           {
             "internalType": "address",
@@ -1144,17 +1433,7 @@
           },
           {
             "internalType": "uint256",
-            "name": "depositGoal",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address",
-            "name": "withdrawVerifier",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "withdrawGoal",
+            "name": "baseGoal",
             "type": "uint256"
           },
           {
@@ -1168,17 +1447,12 @@
             "type": "uint32"
           },
           {
-            "internalType": "address",
-            "name": "coldWallet",
-            "type": "address"
-          },
-          {
-            "internalType": "uint256",
-            "name": "balanceLimit",
-            "type": "uint256"
+            "internalType": "bool",
+            "name": "externalRefund",
+            "type": "bool"
           }
         ],
-        "internalType": "struct SQRPaymentGateway.ContractParams",
+        "internalType": "struct WEB3ProRata.ContractParams",
         "name": "contractParams",
         "type": "tuple"
       }
@@ -1229,33 +1503,7 @@
   },
   {
     "inputs": [],
-    "name": "isReachedDepositGoal",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "isReachedWithdrawGoal",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "isWithdrawReady",
+    "name": "isReachedBaseGoal",
     "outputs": [
       {
         "internalType": "bool",
@@ -1293,6 +1541,26 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint32",
+        "name": "_batchSize",
+        "type": "uint32"
+      }
+    ],
+    "name": "refund",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "refundAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
@@ -1314,7 +1582,7 @@
   },
   {
     "inputs": [],
-    "name": "totalDeposited",
+    "name": "totalBaseBoostDeposited",
     "outputs": [
       {
         "internalType": "uint256",
@@ -1327,7 +1595,98 @@
   },
   {
     "inputs": [],
-    "name": "totalWithdrew",
+    "name": "totalBaseDeposited",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalBaseNonBoostDeposited",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalBaseRefunded",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalBaseSwappedAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalBaseWithdrew",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalBoostRefunded",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalBoostSwapped",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalBoostWithdrew",
     "outputs": [
       {
         "internalType": "uint256",
@@ -1370,105 +1729,24 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "userId",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "transactionId",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint32",
-        "name": "nonce",
-        "type": "uint32"
-      },
-      {
-        "internalType": "uint32",
-        "name": "timestampLimit",
-        "type": "uint32"
-      }
-    ],
-    "name": "withdraw",
+    "inputs": [],
+    "name": "withdrawBaseGoal",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "withdrawGoal",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "userId",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "transactionId",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint32",
-        "name": "timestampLimit",
-        "type": "uint32"
-      },
-      {
-        "internalType": "bytes",
-        "name": "signature",
-        "type": "bytes"
-      }
-    ],
-    "name": "withdrawSig",
+    "name": "withdrawBaseSwappedAmount",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "withdrawVerifier",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "withdrawExcessTokens",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

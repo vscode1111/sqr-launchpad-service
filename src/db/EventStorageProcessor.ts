@@ -21,9 +21,9 @@ import {
   StorageProcessor,
   findContracts,
 } from '~common-service';
-import sqrPaymentGatewayABI from '~contracts/abi/SQRPaymentGateway.json';
-import sqrpProRataABI from '~contracts/abi/SQRpProRata.json';
-import { SqrLaunchpadContext } from '~services';
+import web3PaymentGatewayABI from '~contracts/abi/WEB3PaymentGateway.json';
+import web3ProRataABI from '~contracts/abi/WEB3ProRata.json';
+import { Web3LaunchpadContext } from '~services';
 import { Web3BusEvent } from '~types';
 import { getCacheContractSettingKey } from '~utils';
 import { PaymentGatewayDepositInput, ProRataDepositInput } from './EventStorageProcessor.types';
@@ -51,10 +51,10 @@ import { ProRataTransactionItem } from './entities/process/ProRataTransactionIte
 const CONTRACT_EVENT_ENABLE = true;
 
 export class EventStorageProcessor extends EventStorageProcessorBase implements StorageProcessor {
-  private sqrPaymentGatewayAbiInterfaces!: Interface[];
-  private sqrPaymentGatewayCurrentAbiInterface!: Interface;
-  private sqrpProRataAbiInterfaces!: Interface[];
-  private sqrpProRataCurrentAbiInterface!: Interface;
+  private web3PaymentGatewayAbiInterfaces!: Interface[];
+  private web3PaymentGatewayCurrentAbiInterface!: Interface;
+  private web3ProRataAbiInterfaces!: Interface[];
+  private web3ProRataCurrentAbiInterface!: Interface;
   private paymentGatewayDepositTopic0!: string;
   private vestingClaimTopic0!: string;
   private vestingRefundTopic0!: string;
@@ -66,7 +66,7 @@ export class EventStorageProcessor extends EventStorageProcessorBase implements 
 
   private idLock;
   private cacheMachine: CacheMachine;
-  private context!: SqrLaunchpadContext;
+  private context!: Web3LaunchpadContext;
 
   constructor(
     broker: ServiceBroker,
@@ -82,11 +82,11 @@ export class EventStorageProcessor extends EventStorageProcessorBase implements 
   }
 
   async start() {
-    this.sqrPaymentGatewayAbiInterfaces = [new Interface(sqrPaymentGatewayABI)];
-    this.sqrPaymentGatewayCurrentAbiInterface = this.sqrPaymentGatewayAbiInterfaces[0];
+    this.web3PaymentGatewayAbiInterfaces = [new Interface(web3PaymentGatewayABI)];
+    this.web3PaymentGatewayCurrentAbiInterface = this.web3PaymentGatewayAbiInterfaces[0];
 
-    this.sqrPaymentGatewayAbiInterfaces = [new Interface(sqrpProRataABI)];
-    this.sqrpProRataCurrentAbiInterface = this.sqrPaymentGatewayAbiInterfaces[0];
+    this.web3PaymentGatewayAbiInterfaces = [new Interface(web3ProRataABI)];
+    this.web3ProRataCurrentAbiInterface = this.web3PaymentGatewayAbiInterfaces[0];
 
     const context = services.getNetworkContext(this.network);
     if (!context) {
@@ -94,16 +94,16 @@ export class EventStorageProcessor extends EventStorageProcessorBase implements 
     }
     this.context = context;
 
-    const { emptySqrPaymentGateway, emptySqrVesting, emptySqrpProRata, emptyBABToken } = context;
+    const { emptyWeb3PaymentGateway, emptyWeb3Vesting, emptyWeb3pProRata, emptyBABToken } = context;
     this.paymentGatewayDepositTopic0 = await this.setTopic0(
-      emptySqrPaymentGateway.filters.Deposit(),
+      emptyWeb3PaymentGateway.filters.Deposit(),
     );
 
-    this.vestingClaimTopic0 = await this.setTopic0(emptySqrVesting.filters.Claim());
-    this.vestingRefundTopic0 = await this.setTopic0(emptySqrVesting.filters.Refund());
+    this.vestingClaimTopic0 = await this.setTopic0(emptyWeb3Vesting.filters.Claim());
+    this.vestingRefundTopic0 = await this.setTopic0(emptyWeb3Vesting.filters.Refund());
 
-    this.proRataDepositTopic0 = await this.setTopic0(emptySqrpProRata.filters.Deposit());
-    this.proRataRefundTopic0 = await this.setTopic0(emptySqrpProRata.filters.Refund());
+    this.proRataDepositTopic0 = await this.setTopic0(emptyWeb3pProRata.filters.Deposit());
+    this.proRataRefundTopic0 = await this.setTopic0(emptyWeb3pProRata.filters.Refund());
 
     this.babTokenAttestTopic0 = await this.setTopic0(emptyBABToken.filters.Attest());
     this.babTokenBurnTopic0 = await this.setTopic0(emptyBABToken.filters.Burn());
@@ -138,8 +138,8 @@ export class EventStorageProcessor extends EventStorageProcessorBase implements 
 
     const decodedDepositInput = this.tryDecode<PaymentGatewayDepositInput>(
       event.transactionHash.input,
-      this.sqrPaymentGatewayAbiInterfaces,
-      this.sqrPaymentGatewayCurrentAbiInterface,
+      this.web3PaymentGatewayAbiInterfaces,
+      this.web3PaymentGatewayCurrentAbiInterface,
     );
     const userId = decodedDepositInput.userId;
     const transactionId = decodedDepositInput.transactionId;
@@ -162,8 +162,8 @@ export class EventStorageProcessor extends EventStorageProcessorBase implements 
     const decimals = await this.cacheMachine.call(
       () => getCacheContractSettingKey(network, contractAddress),
       async () => {
-        const { getSqrPaymentGateway, getErc20Token } = this.context;
-        const tokenAddress = await getSqrPaymentGateway(contractAddress).erc20Token();
+        const { getWeb3PaymentGateway, getErc20Token } = this.context;
+        const tokenAddress = await getWeb3PaymentGateway(contractAddress).erc20Token();
         return getErc20Token(tokenAddress).decimals();
       },
     );
@@ -230,8 +230,8 @@ export class EventStorageProcessor extends EventStorageProcessorBase implements 
       const decimals = await this.cacheMachine.call(
         () => getCacheContractSettingKey(network, contractAddress),
         async () => {
-          const { getSqrVesting, getErc20Token } = this.context;
-          const tokenAddress = await getSqrVesting(contractAddress).erc20Token();
+          const { getWeb3Vesting, getErc20Token } = this.context;
+          const tokenAddress = await getWeb3Vesting(contractAddress).erc20Token();
           return getErc20Token(tokenAddress).decimals();
         },
       );
@@ -304,8 +304,8 @@ export class EventStorageProcessor extends EventStorageProcessorBase implements 
     if (isDeposit) {
       const decodedDepositInputs = this.tryDecode<ProRataDepositInput>(
         event.transactionHash.input,
-        this.sqrpProRataAbiInterfaces,
-        this.sqrpProRataCurrentAbiInterface,
+        this.web3ProRataAbiInterfaces,
+        this.web3ProRataCurrentAbiInterface,
       );
       const decodedDepositInput = decodedDepositInputs[0];
 
@@ -342,13 +342,13 @@ export class EventStorageProcessor extends EventStorageProcessorBase implements 
     const { baseDecimals, boostDecimals } = await this.cacheMachine.call(
       () => getCacheContractSettingKey(network, contractAddress),
       async () => {
-        const { getSqrpProRata } = this.context;
+        const { getWeb3pProRata } = this.context;
 
-        const sqrpProRata = getSqrpProRata(contractAddress);
+        const web3ProRata = getWeb3pProRata(contractAddress);
 
         const [baseDecimals, boostDecimals] = await Promise.all([
-          await sqrpProRata.baseDecimals(),
-          await sqrpProRata.boostDecimals(),
+          await web3ProRata.baseDecimals(),
+          await web3ProRata.boostDecimals(),
         ]);
 
         return {

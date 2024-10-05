@@ -44,7 +44,7 @@ export interface Web3ConfigContract {
 export interface Web3Config {
   ownerPrivateKey: string;
   ownerAddress: string;
-  sqrContractAddress: string;
+  web3ContractAddress: string;
   sharesThreshold: number;
   apiKey?: {
     bscScan?: string;

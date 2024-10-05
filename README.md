@@ -1,5 +1,5 @@
 
-# Service for SQR launchpad functionality
+# Service for WEB3 launchpad functionality
 
 ## Getting Started
 

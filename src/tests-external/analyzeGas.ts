@@ -1,7 +1,7 @@
 import { Wallet } from 'ethers';
 import { retry } from '~common';
 import { DeployNetworkKey } from '~common-service/types';
-import { getSqrLaunchpadContext } from '~contracts';
+import { getWeb3LaunchpadContext } from '~contracts';
 import { accountDeposit } from './accountDeposit';
 import { depositVerifierPrivateKey, owner2PrivateKey } from './constants';
 import { ContextBase, GasRecord } from './types';
@@ -31,17 +31,17 @@ describe.only('analyze-gas', () => {
   });
 
   it.only('get-signature', async () => {
-    // const sqrLaunchpadContext = services.getNetworkContext(NETWORK);
-    const sqrLaunchpadContext = getSqrLaunchpadContext(NETWORK);
-    if (!sqrLaunchpadContext) {
+    // const web3LaunchpadContext = services.getNetworkContext(NETWORK);
+    const web3LaunchpadContext = getWeb3LaunchpadContext(NETWORK);
+    if (!web3LaunchpadContext) {
       return;
     }
 
     const {
       rawProvider: provider,
       getErc20TokenByAccount,
-      getSqrpProRataByAccount,
-    } = sqrLaunchpadContext;
+      getWeb3pProRataByAccount,
+    } = web3LaunchpadContext;
 
     // const tx2 = await owner2BaseToken.approve(user.address, BigInt(1));
 
@@ -49,7 +49,7 @@ describe.only('analyze-gas', () => {
       owner2: new Wallet(owner2PrivateKey, provider),
       depositVerifier: new Wallet(depositVerifierPrivateKey, provider),
       getErc20TokenByAccount,
-      getSqrpProRataByAccount,
+      getWeb3pProRataByAccount,
     };
 
     const gasRecords: GasRecord[] = [];

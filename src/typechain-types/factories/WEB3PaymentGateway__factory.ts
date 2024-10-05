@@ -4,9 +4,9 @@
 
 import { Contract, Interface, type ContractRunner } from "ethers";
 import type {
-  SQRPaymentGateway,
-  SQRPaymentGatewayInterface,
-} from "../SQRPaymentGateway";
+  WEB3PaymentGateway,
+  WEB3PaymentGatewayInterface,
+} from "../WEB3PaymentGateway";
 
 const _abi = [
   {
@@ -680,7 +680,7 @@ const _abi = [
             type: "uint32",
           },
         ],
-        internalType: "struct SQRPaymentGateway.FundItem",
+        internalType: "struct WEB3PaymentGateway.FundItem",
         name: "",
         type: "tuple",
       },
@@ -725,7 +725,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct SQRPaymentGateway.TransactionItem",
+        internalType: "struct WEB3PaymentGateway.TransactionItem",
         name: "",
         type: "tuple",
       },
@@ -785,7 +785,7 @@ const _abi = [
             type: "uint32",
           },
         ],
-        internalType: "struct SQRPaymentGateway.FundItem",
+        internalType: "struct WEB3PaymentGateway.FundItem",
         name: "",
         type: "tuple",
       },
@@ -826,7 +826,7 @@ const _abi = [
             type: "uint32",
           },
         ],
-        internalType: "struct SQRPaymentGateway.FundItem",
+        internalType: "struct WEB3PaymentGateway.FundItem",
         name: "",
         type: "tuple",
       },
@@ -1188,7 +1188,7 @@ const _abi = [
             type: "uint256",
           },
         ],
-        internalType: "struct SQRPaymentGateway.ContractParams",
+        internalType: "struct WEB3PaymentGateway.ContractParams",
         name: "contractParams",
         type: "tuple",
       },
@@ -1483,15 +1483,15 @@ const _abi = [
   },
 ] as const;
 
-export class SQRPaymentGateway__factory {
+export class WEB3PaymentGateway__factory {
   static readonly abi = _abi;
-  static createInterface(): SQRPaymentGatewayInterface {
-    return new Interface(_abi) as SQRPaymentGatewayInterface;
+  static createInterface(): WEB3PaymentGatewayInterface {
+    return new Interface(_abi) as WEB3PaymentGatewayInterface;
   }
   static connect(
     address: string,
     runner?: ContractRunner | null
-  ): SQRPaymentGateway {
-    return new Contract(address, _abi, runner) as unknown as SQRPaymentGateway;
+  ): WEB3PaymentGateway {
+    return new Contract(address, _abi, runner) as unknown as WEB3PaymentGateway;
   }
 }
