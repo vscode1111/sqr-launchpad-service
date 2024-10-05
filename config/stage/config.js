@@ -11,9 +11,9 @@ module.exports = {
       port: 30114,
       user: 'postgres',
       password: 'friCtVi5bM',
-      // user: 'launchpad',
+      // user: 'indexer',
       // password: 'a966fb72ad83df61',
-      database: 'launchpad',
+      database: 'indexer',
     },
     // redis: {
     //   host: '192.168.0.14',
@@ -46,7 +46,7 @@ module.exports = {
       syncRule: '*/30 * * * * *',
     },
     kafka: {
-      outTopic: 'web3.launchpad',
+      outTopic: 'web3.indexer',
     },
   },
   integrations: {

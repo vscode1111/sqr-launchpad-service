@@ -9,9 +9,9 @@ import {
   WEB3Vesting__factory,
   WEB3ProRata__factory,
 } from '~typechain-types';
-import { Web3LaunchpadContext } from '../services';
+import { Web3IndexerContext } from '../services';
 
-export function getWeb3LaunchpadContext(network: DeployNetworkKey): Web3LaunchpadContext {
+export function getWeb3IndexerContext(network: DeployNetworkKey): Web3IndexerContext {
   const rawProvider = new JsonRpcProvider(
     config.web3.provider[network].http,
     undefined,

@@ -23,7 +23,7 @@ import {
 } from '~common-service';
 import web3PaymentGatewayABI from '~contracts/abi/WEB3PaymentGateway.json';
 import web3ProRataABI from '~contracts/abi/WEB3ProRata.json';
-import { Web3LaunchpadContext } from '~services';
+import { Web3IndexerContext } from '~services';
 import { Web3BusEvent } from '~types';
 import { getCacheContractSettingKey } from '~utils';
 import { PaymentGatewayDepositInput, ProRataDepositInput } from './EventStorageProcessor.types';
@@ -66,7 +66,7 @@ export class EventStorageProcessor extends EventStorageProcessorBase implements 
 
   private idLock;
   private cacheMachine: CacheMachine;
-  private context!: Web3LaunchpadContext;
+  private context!: Web3IndexerContext;
 
   constructor(
     broker: ServiceBroker,

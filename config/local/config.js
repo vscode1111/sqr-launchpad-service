@@ -230,7 +230,7 @@ module.exports = {
       syncRule: '*/5 * * * * *',
     },
     kafka: {
-      outTopic: 'web3.launchpad',
+      outTopic: 'web3.indexer',
     },
     vault: {
       enable: false,

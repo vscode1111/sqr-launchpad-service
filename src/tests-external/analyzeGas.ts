@@ -1,7 +1,7 @@
 import { Wallet } from 'ethers';
 import { retry } from '~common';
 import { DeployNetworkKey } from '~common-service/types';
-import { getWeb3LaunchpadContext } from '~contracts';
+import { getWeb3IndexerContext } from '~contracts';
 import { accountDeposit } from './accountDeposit';
 import { depositVerifierPrivateKey, owner2PrivateKey } from './constants';
 import { ContextBase, GasRecord } from './types';
@@ -31,9 +31,9 @@ describe.only('analyze-gas', () => {
   });
 
   it.only('get-signature', async () => {
-    // const web3LaunchpadContext = services.getNetworkContext(NETWORK);
-    const web3LaunchpadContext = getWeb3LaunchpadContext(NETWORK);
-    if (!web3LaunchpadContext) {
+    // const web3IndexerContext = services.getNetworkContext(NETWORK);
+    const web3IndexerContext = getWeb3IndexerContext(NETWORK);
+    if (!web3IndexerContext) {
       return;
     }
 
@@ -41,7 +41,7 @@ describe.only('analyze-gas', () => {
       rawProvider: provider,
       getErc20TokenByAccount,
       getWeb3pProRataByAccount,
-    } = web3LaunchpadContext;
+    } = web3IndexerContext;
 
     // const tx2 = await owner2BaseToken.approve(user.address, BigInt(1));
 

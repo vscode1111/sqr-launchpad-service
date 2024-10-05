@@ -4,7 +4,7 @@ import { BABToken, ERC20Token, WEB3PaymentGateway, WEB3Vesting, WEB3ProRata } fr
 
 export type ContractTypeMap = Record<ContractType, string[]>;
 
-export interface Web3LaunchpadContext {
+export interface Web3IndexerContext {
   owner: Wallet;
   rawProvider: JsonRpcProvider;
   getErc20Token: (address: string) => ERC20Token;

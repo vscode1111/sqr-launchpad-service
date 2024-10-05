@@ -11,16 +11,16 @@ import {
   config,
   networkObjectFactory,
 } from '~common-service';
-import { getWeb3LaunchpadContext } from '~contracts';
+import { getWeb3IndexerContext } from '~contracts';
 import { MultiSyncEngine } from '~core';
 import { DataStorage } from '~db';
 import { Web3BusEvent } from '~types';
-import { Web3LaunchpadContext } from './types';
+import { Web3IndexerContext } from './types';
 
 export class Services extends ServicesBase implements Initialized, Started, Stopped {
   private started: boolean;
   private providers: NetworkObject<Provider>;
-  private web3LaunchpadContexts: NetworkObject<Web3LaunchpadContext> | null;
+  private web3IndexerContexts: NetworkObject<Web3IndexerContext> | null;
 
   public multiSyncEngine: MultiSyncEngine;
   public dataStorage!: DataStorage;
@@ -40,7 +40,7 @@ export class Services extends ServicesBase implements Initialized, Started, Stop
         ),
     );
 
-    this.web3LaunchpadContexts = null;
+    this.web3IndexerContexts = null;
 
     this.dataStorage = new DataStorage(broker);
 
@@ -55,7 +55,7 @@ export class Services extends ServicesBase implements Initialized, Started, Stop
   }
 
   async init() {
-    this.web3LaunchpadContexts = networkObjectFactory((network) => getWeb3LaunchpadContext(network));
+    this.web3IndexerContexts = networkObjectFactory((network) => getWeb3IndexerContext(network));
     await this.start();
   }
 
@@ -78,6 +78,6 @@ export class Services extends ServicesBase implements Initialized, Started, Stop
   }
 
   getNetworkContext(network: DeployNetworkKey) {
-    return this.web3LaunchpadContexts?.[network];
+    return this.web3IndexerContexts?.[network];
   }
 }

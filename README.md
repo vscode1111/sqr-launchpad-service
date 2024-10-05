@@ -1,5 +1,4 @@
-
-# Service for WEB3 launchpad functionality
+# EVM indexer service
 
 ## Getting Started
 
